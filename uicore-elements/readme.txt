@@ -3,8 +3,8 @@ Contributors: uicore
 Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
-Tested up to: 6.6.1
-Stable tag: 1.0.10
+Tested up to: 6.7
+Stable tag: 1.0.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,19 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+
+= 1.0.11 =
+* NEW - Added new widget: Advanced Product Grid
+* NEW - Added new widget: Custom Table (with Nested capabilities)
+* NEW - Added suffix/prefix style options and motion animation transition options to Counter widget
+* UPD - Improved the Andvanced Post Grid widget core
+* FIX - Removed unnecessary bottom spacing from multiple widgets
+* FIX - Fixed Advanced Product Grid and Carousel widgets bug where ‘current’ query ignored taxonomy on archive pages
+* FIX - Fixed Post Grid width bug on Masonry layout
+* FIX - Fixed border-radius bug on Custom Slider
+* FIX - Fixed Contact Form and Newsletter widgets bug that prevented the form from being sent if the widget was added to footer/header templates
+* FIX - Fixed Icon Box icon animation mouse-out transition
+* FIX - Fixed Contact Form compatibility with Elementor PRO
 
 = 1.0.10 =
 * FIX - Disabled autocomplete on honeypot fields on form Widgets, preventing browsers from adding data and blocking form submission.

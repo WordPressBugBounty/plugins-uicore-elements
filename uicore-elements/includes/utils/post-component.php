@@ -70,39 +70,17 @@ trait Post_Trait {
                     'type' => Controls_Manager::SELECT,
                     'default' => 'uicore-medium',
                     'options' => Helper::get_images_sizes(),
+                    'separator' => 'after',
                     'condition' => [
                         'image' => 'yes',
                     ]
                 ]
             );
-            // $this->add_control('cat_type',[
-            //         'label' => __( 'Cat Type', 'uicore-elements' ),
-            //         'type' => Controls_Manager::SELECT,
-            //         'default' => 'category',
-            //         'options' => [
-            //             'category'  => __( 'Category', 'uicore-elements' ),
-            //             'custom' => __( 'Custom Taxonomy', 'uicore-elements' ),
-            //         ],
-            //         'condition' => array(
-            //             'category' => 'yes',
-            //         ),
-            //     ]
-            // );
-            //     $this->add_control('cat_type_name',[
-            //             'label' => __( 'Taxonomy', 'uicore-elements' ),
-            //             'type' => Controls_Manager::TEXT,
-            //             'placeholder' => __( 'my_custom_tax', 'uicore-elements' ),
-            //             'condition' => array(
-            //                 'cat_type' => 'custom',
-            //             ),
-            //         ]
-            //     );
             $this->add_control(
                 'title',
                 [
                     'label' => __('Title', 'uicore-elements'),
                     'type' => Controls_Manager::SWITCHER,
-                    'separator' => 'before',
                     'default' => 'yes'
                 ]
             );
@@ -111,7 +89,6 @@ trait Post_Trait {
                 [
                     'label' => __('Excerpt', 'uicore-elements'),
                     'type' => Controls_Manager::SWITCHER,
-                    'separator' => 'before',
                     'default' => 'yes'
                 ]
             );
@@ -124,6 +101,7 @@ trait Post_Trait {
                     'max' => 100,
                     'step' => 1,
                     'default' => 55,
+                    'separator' => 'after',
                     'condition' => array(
                         'excerpt' => 'yes',
                     ),
@@ -134,10 +112,10 @@ trait Post_Trait {
                 [
                     'label' => __('Read More Button', 'uicore-elements'),
                     'type' => Controls_Manager::SWITCHER,
-                    'separator' => 'before',
                     'default' => 'no'
                 ]
             );
+
         if($section) {
             $this->end_controls_section();
         }
@@ -174,7 +152,13 @@ trait Post_Trait {
             $this->end_controls_section();
         }
     }
-    function TRAIT_register_post_meta_controls($section = true)
+    /**
+     * Register Post Meta Controls.
+     *
+     * @param bool $section. Print section or not.
+     * @param bool $product_metas. If true, will only print options that relates with products.
+     */
+    function TRAIT_register_post_meta_controls($section = true, $product_metas = false)
     {
         if($section){
             $this->start_controls_section(
@@ -190,10 +174,10 @@ trait Post_Trait {
                 [
                     'label' => esc_html__('Top Meta', 'uicore-elements'),
                     'type' => \Elementor\Controls_Manager::REPEATER,
-                    'fields' => $this->get_meta_content_controls(),
+                    'fields' => $this->get_meta_content_controls($product_metas),
                     'default' => [
                         [
-                            'type' => 'author'
+                            'type' => $product_metas ? 'product sale' : 'category'
                         ],
                     ],
                     'title_field' => '<span style="text-transform: capitalize">{{{ type }}}</span>',
@@ -206,10 +190,10 @@ trait Post_Trait {
                 [
                     'label' => esc_html__('Before Title Meta', 'uicore-elements'),
                     'type' => \Elementor\Controls_Manager::REPEATER,
-                    'fields' => $this->get_meta_content_controls(),
+                    'fields' => $this->get_meta_content_controls($product_metas),
                     'default' => [
                         [
-                            'type' => 'author'
+                            'type' => $product_metas ? 'none' : 'author'
                         ],
                     ],
                     'title_field' => '<span style="text-transform: capitalize">{{{ type }}}</span>',
@@ -222,10 +206,10 @@ trait Post_Trait {
                 [
                     'label' => esc_html__('After Title Meta', 'uicore-elements'),
                     'type' => \Elementor\Controls_Manager::REPEATER,
-                    'fields' => $this->get_meta_content_controls(),
+                    'fields' => $this->get_meta_content_controls($product_metas),
                     'default' => [
                         [
-                            'type' => 'author'
+                            'type' => $product_metas ? 'product price' : 'date'
                         ],
                     ],
                     'title_field' => '<span style="text-transform: capitalize">{{{ type }}}</span>',
@@ -238,10 +222,10 @@ trait Post_Trait {
                 [
                     'label' => esc_html__('Bottom Meta', 'uicore-elements'),
                     'type' => \Elementor\Controls_Manager::REPEATER,
-                    'fields' => $this->get_meta_content_controls(),
+                    'fields' => $this->get_meta_content_controls($product_metas),
                     'default' => [
                         [
-                            'type' => 'author'
+                            'type' => $product_metas ? 'none' : 'none'
                         ],
                     ],
                     'title_field' => '<span style="text-transform: capitalize">{{{ type }}}</span>',
@@ -347,7 +331,7 @@ trait Post_Trait {
         }
     }
 
-    // Styles
+    // Control Register Styles functions
     function TRAIT_register_post_item_style_controls($section = true, $active_tab = false)
     {
         if($section){
@@ -884,9 +868,9 @@ trait Post_Trait {
             ]
         );
     }
-
     /**
      * Registers specific controls that can't be registered in blocks because of diferent use by different widgets or some other reason.
+     * TODO: update to the use injection control, a better approach.
      *
      * @param string $control The control to register.
      * @return void
@@ -921,8 +905,15 @@ trait Post_Trait {
         }
     }
 
-    // Helper functions
-    function TRAIT_query_posts($settings)
+    /**
+     * Returns the proper query args for a given post type.
+     *
+     * @param array $settings Elementor controls settings.
+     * @param object $default_query The default query object. Used to tell if is a frontend or rest api request.
+     *
+     * @return void Don't return anything, but sets the query object to $_query variable that can be accessed by the widget.
+    */
+    function TRAIT_query_posts($settings, $default_query)
     {
         $post_type = $settings['posts-filter_post_type'];
 
@@ -930,14 +921,28 @@ trait Post_Trait {
             $this->_query = Helper::get_related('random', $settings['item_limit']['size']);
 
         } else {
-            $query_args = Query::get_query_args('posts-filter', $settings, get_the_ID());
+            $query_args = Query::get_query_args('posts-filter', $settings);
+
+            if ($post_type === 'current') {
+                $query_args = $default_query;
+
+                // Post type fallback for APG
+                if( isset($default_query['post_type']) || isset($default_query['query']['post_type']) ){
+                    $post_type = $default_query['post_type'] ?? $default_query['query']['post_type'];
+                } else {
+                    $post_type = 'post';
+                }
+
+                // Set pagination
+                $query_args['paged'] = Query::get_queried_page($settings);
+
+                // Set tax filters for filter component, if enabled
+                $queried_filters = Query::get_queried_filters($settings, get_post_type(), 'posts-filter');
+                $query_args['tax_query'] = empty($queried_filters['tax_query']) ? [] : $queried_filters['tax_query'];
+            }
 
             if ($post_type === 'portfolio') {
                 $query_args['orderby'] = 'menu_order date';
-            }
-
-            if ($post_type === 'current') {
-                unset($query_args['posts_per_page']);
             }
 
             $this->_query = new \WP_Query($query_args);
@@ -948,14 +953,19 @@ trait Post_Trait {
      // Render functions
     function get_post_image()
     {
+        if ($this->get_settings_for_display('image') !== 'yes') {
+            return;
+        }
 
-        if ($this->get_settings_for_display('image') === 'yes') {
-            $pic_id = get_post_thumbnail_id();
-            if (!$pic_id)
-                return;
-            $size = $this->get_settings_for_display('image_size_select') ?? 'uicore-medium';
-            ?>
-            <a class="ui-e-post-img-wrapp" href="<?php echo esc_url(get_permalink()); ?>" title="<?php echo esc_attr__('View Post:', 'uicore-elements') . the_title_attribute(['echo' => false]); ?>">
+        $pic_id = get_post_thumbnail_id();
+        if (!$pic_id)
+            return;
+        $size = $this->get_settings_for_display('image_size_select') ?? 'uicore-medium';
+        ?>
+            <a class="ui-e-post-img-wrapp"
+               href="<?php echo esc_url(get_permalink()); ?>"
+               title="<?php echo esc_attr__('View Post:', 'uicore-elements') . the_title_attribute(['echo' => false]); ?>">
+
                 <?php if ($this->get_settings_for_display('masonry') === 'ui-e-maso') { ?>
                     <?php the_post_thumbnail($size, ['class' => 'ui-e-post-img']); ?>
                 <?php } else { ?>
@@ -963,15 +973,17 @@ trait Post_Trait {
                 <?php } ?>
             </a>
         <?php
-        }
+
     }
     function get_post_title()
     {
-        if ($this->get_settings_for_display('title') === 'yes')
+        if ($this->get_settings_for_display('title') !== 'yes') {
+            return;
+        }
         ?>
-        <a href="<?php echo esc_url( get_permalink() );?>" title="<?php echo esc_attr__('View Post:','uicore-elements') . esc_html(the_title_attribute(['echo'=>false])); ?>">
-            <h4 class="ui-e-post-title"><span><?php echo esc_html(get_the_title()); ?></span></h4>
-        </a>
+            <a href="<?php echo esc_url( get_permalink() );?>" title="<?php echo esc_attr__('View Post:','uicore-elements') . esc_html(the_title_attribute(['echo'=>false])); ?>">
+                <h4 class="ui-e-post-title"><span><?php echo esc_html(get_the_title()); ?></span></h4>
+            </a>
         <?php
     }
     function get_post_meta($position)
@@ -985,9 +997,7 @@ trait Post_Trait {
         echo '<div class="ui-e-post-meta ui-e-'.esc_attr($position).'">';
             foreach ($meta_list as $meta) {
                 if($meta['type'] != 'none'){
-                    echo '<div class="ui-e-meta-item">';
                     $this->display_meta($meta);
-                    echo '</div>';
 
                     if( next( $meta_list ) && $this->get_settings_for_display( $position.'_meta_separator' ) ) {
                         echo '<span class="ui-e-separator">'.esc_html($this->get_settings_for_display( $position.'_meta_separator' )).'</span>';
@@ -997,9 +1007,23 @@ trait Post_Trait {
         echo '</div>';
         echo ($position == 'top' || $position == 'after_title') ? '</div>' : '';
     }
-    function get_button()
+    /**
+     * Render the post read more button.
+     *
+     * @param bool $is_product. If true, will render an add to cart button.
+     *
+     * @return void
+     */
+    function TRAIT_get_button($is_product = false)
     {
-        $settings = $this->get_settings_for_display();
+        $settings   = $this->get_settings_for_display();
+
+        if( $is_product ){
+            global $product;
+
+            // Get default add to cart text as fallback
+            $settings['text'] = empty($settings['text']) ? $product->add_to_cart_text() : $settings['text'];
+        }
 
         $this->add_render_attribute('button', [
             'class' => ['elementor-button-link', 'elementor-button', 'ui-e-readmore'],
@@ -1040,16 +1064,14 @@ trait Post_Trait {
             $tbn_content .= '</span>';
         }
 
-        $tbn_content .= '<span ' . $this->get_render_attribute_string('text') . '>' . $this->get_settings_for_display('text') . '</span>';
-        $tbn_content .= '</span>';
+        $tbn_content .= '<span ' . $this->get_render_attribute_string('text') . '>';
+        $tbn_content .= $settings['text'];
+        $tbn_content .= '</span> </span>';
 
-        if ('product' === get_post_type()) {
-            // WooCommerce product
-            global $product;
-
+        // WooCommerce add to cart button
+        if ($is_product) {
             if ($product) {
-                // Display WooCommerce add to cart button
-                echo wp_kses_post(apply_filters(
+                echo Helper::esc_svg(apply_filters(
                     'woocommerce_loop_add_to_cart_link', // WPCS: XSS ok.
                     sprintf(
                         '<a href="%s" data-quantity="%s" %s>%s</a>',
@@ -1061,25 +1083,32 @@ trait Post_Trait {
                     $product
                 ));
             }
-        } else {
 
-            // Default button
-        ?>
-            <a href="<?php echo esc_url(get_permalink()); ?>" <?php $this->print_render_attribute_string('button'); ?>>
-                <?php echo Helper::esc_svg( $tbn_content ); ?>
-            </a>
-        <?php
+        // Default button
+        } else {
+            ?>
+                <a href="<?php echo esc_url(get_permalink()); ?>" <?php $this->print_render_attribute_string('button'); ?>>
+                    <?php echo Helper::esc_svg( $tbn_content ); ?>
+                </a>
+            <?php
         }
     }
+    /**
+     * Renders a post item with various settings and options.
+     * Important: any changes here should also be considered to `TRAIT_render_product()` from Product Component.
+     *
+     * @param bool $carousel Indicates if the item needs carousel classnames.
+     * @param bool $legacy Indicates if the item is using legacy classnames.
+     *
+     * @return void
+     */
     function TRAIT_render_item($carousel = false, $legacy = false)
     {
         $settings       = $this->get_settings_for_display();
         $excerpt_length = $settings['excerpt_trim'];
 
-        // TODO: remove `ui-e-item-wrp`, at least, 2 releases after 1.0.6
-
         // Classnames but checking if we the widget is APG (legacy version)
-        $item_classes     = $legacy ? ['ui-e-post-item', 'ui-e-item', 'ui-e-item-wrp'] : ['ui-e-item', 'ui-e-item-wrp'] ; // Single item lower wrap class receptor
+        $item_classes     = $legacy ? ['ui-e-post-item', 'ui-e-item'] : ['ui-e-item'] ; // Single item lower wrap class receptor
         $hover_item_class = $legacy ? 'anim_item' : 'item_hover_animation'; // item hover animation class
 
         // If widget is not carousel type, we set animations classes directly on item selector
@@ -1091,7 +1120,7 @@ trait Post_Trait {
         } else {
             // Get entrance and item hover animation classes
             $entrance   = (isset($settings['animate_items']) &&  $settings['animate_items'] == 'ui-e-grid-animate') ? 'elementor-invisible' : '';
-            $hover      = isset($settings[$hover_item_class]) ? $settings[$hover_item_class] : ''; //$settings[$hover_item_class] : null;
+            $hover      = isset($settings[$hover_item_class]) ? $settings[$hover_item_class] : '';
             $animations = sprintf('%s %s', $entrance, $hover);
 
             // Check if entrance or hover animation are set
@@ -1126,7 +1155,7 @@ trait Post_Trait {
                         <?php $this->get_post_meta('bottom');  // button
                         ?>
                         <?php
-                        if ($this->get_settings_for_display('show_button') === 'yes') {
+                        if ( $this->get_settings_for_display('show_button') === 'yes' ) {
                             // Add match height spacing element if carousel. May look intrusive, but is the simplest method compared
                             // to absolute positioning or catching last content element to apply margin.
                             if($carousel && $settings['match_height'] === 'yes'){
@@ -1134,7 +1163,10 @@ trait Post_Trait {
                                     <span class="ui-e-match-height"></span>
                                 <?php
                             }
-                            $this->get_button();
+
+                            if( !isset($settings['button_position']) || empty($settings['button_position']) ) {
+                                $this->TRAIT_get_button();
+                            }
                         }
                         ?>
                     </div>

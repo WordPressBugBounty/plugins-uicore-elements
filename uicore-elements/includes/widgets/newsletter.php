@@ -555,6 +555,9 @@ class Newsletter extends UiCoreWidget {
 		$instance = $this->get_settings_for_display();
         $is_recaptcha_required = false;
 
+        // Save widget settings so form API can retrieve them
+        set_transient('ui_e_form_widget_settings_' . $this->get_id(), $instance, DAY_IN_SECONDS);
+
         // Render Form and Fields Atts
 		$this->add_render_attribute(
 			[
@@ -709,10 +712,5 @@ class Newsletter extends UiCoreWidget {
             add_action('wp_footer', [$this, 'TRAIT_recaptcha_key_js'], 999);
         }
 	}
-
-    /*
-    TODO:
-	protected function content_template() {}
-    */
 }
 \Elementor\Plugin::instance()->widgets_manager->register(new Newsletter());

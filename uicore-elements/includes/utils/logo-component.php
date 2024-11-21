@@ -433,13 +433,12 @@ trait Logo_Trait {
             ],
         ]);
 
-        // TODO: remove `ui-e-item-wrp`, at least, 2 releases after 1.0.6
         foreach ( $settings['logo_list'] as $index => $item ) {
 
             // Params
             $key = 'logo_'.$index;
             $tag = 'div ';
-            $this->add_render_attribute($key, 'class', ['ui-e-item', 'ui-e-item-wrp'] );
+            $this->add_render_attribute($key, 'class', 'ui-e-item' );
 
             // Build URL
             if (!empty($item['link']['url'])) {

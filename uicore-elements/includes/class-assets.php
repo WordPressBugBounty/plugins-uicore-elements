@@ -95,6 +95,11 @@ class Assets {
                 'version'   => UICORE_ELEMENTS_VERSION,
                 'in_footer' => true
             ],
+            'ui-e-masonry' => [
+                'src'       => UICORE_ELEMENTS_ASSETS . '/js/utils/global-masonry.js',
+                'version'   => UICORE_ELEMENTS_VERSION,
+                'in_footer' => true
+            ],
             'ui-e-ajax-request' => [
                 'src'       => UICORE_ELEMENTS_ASSETS . '/js/utils/ajax-request.js',
                 'version'   => UICORE_ELEMENTS_VERSION,

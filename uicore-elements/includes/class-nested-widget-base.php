@@ -118,7 +118,9 @@ abstract class UiCoreNestedWidget extends UiCoreWidget {
 	 */
 	public function print_child( $index ) {
 		$children = $this->get_children();
-
+		\error_log('print_child');
+		\error_log( print_r( $children, true ) );
+		\error_log( print_r( $index, true ) );
 		if ( ! empty( $children[ $index ] ) ) {
 			$children[ $index ]->print_element();
 		}

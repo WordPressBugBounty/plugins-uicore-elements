@@ -16,16 +16,10 @@ trait Pagination_Trait {
 
     function pagination_options()
     {
-        // Set pagination options
-        $options = [
+        return [
             'numbers' => esc_html__('Numbers', 'uicore-elements'),
+            'load_more' => esc_html__('Load More', 'uicore-elements'),
         ];
-
-        // if($this->get_settings('posts-filter_post_type') !== 'current'){
-            $options['load_more'] = esc_html__('Load More', 'uicore-elements');
-        // }
-
-        return $options;
     }
     function TRAIT_register_pagination_controls($section = true)
     {
@@ -65,7 +59,6 @@ trait Pagination_Trait {
             $this->end_controls_section();
         }
     }
-
     function TRAIT_register_pagination_style_controls($section = true)
     {
         if($section){
@@ -437,10 +430,23 @@ trait Pagination_Trait {
      * @author Andrei Voica <andrei@uicore.co>
      * @since 1.0.0
      */
-    function render_numbers($args = [])
+    function render_numbers($is_product, $args = [])
     {
-       global $query;
+        //
+        if ( $is_product ){
+            $query = $this->get_query();
 
+            //
+            $total_items = $query['limit'] ?? get_option('posts_per_page'); // TODO: using products quantity from framework maybe better
+            $total_count = wc_get_products( array_merge($query, ['limit' => -1, 'return' => 'ids']) );  // Fetch all products
+            $total = ceil( count($total_count) / $total_items );
+            $current_page = max(1, get_query_var('paged'));
+
+        } else {
+            global $query;
+        }
+
+        // Set pagination args
         $args = wp_parse_args($args, [
             'mid_size' => 2,
             'prev_next' => true,
@@ -450,68 +456,70 @@ trait Pagination_Trait {
             'type' => 'array',
             'current' => max(1, get_query_var('paged')),
         ]);
-        if (class_exists('WooCommerce') && isset($query->query['post_type']) && $query->query['post_type'] == 'product' ) {
-            if ( ! wc_get_loop_prop( 'is_paginated' ) || ! woocommerce_products_will_display() ) {
+
+
+        // Build woo pagination args
+        if ( $is_product ) {
+
+            if ( $total && $total <= 1 ) {
                 return;
             }
 
-            $total = wc_get_loop_prop('total_pages',false);
-            if ($total && $total <= 1) {
-                return;
-            } elseif ($total) {
-                $args = apply_filters('woocommerce_pagination_args', [
-                    // WPCS: XSS ok.
-                    'current' => max(1, wc_get_loop_prop('current_page')),
-                    'total' => $total,
-                    'prev_text' => '',
-                    'next_text' => '',
-                    'type' => 'array',
-                    'base'    => esc_url_raw( add_query_arg( 'product-page', '%#%', false ) ),
-                    'screen_reader_text' => _x('Products navigation', 'Frontend - Pagination', 'uicore-elements'),
-                ]);
-                if ( ! wc_get_loop_prop( 'is_shortcode' ) ) {
-                    $args['format'] = '';
-                    $args['base']   = esc_url_raw( str_replace( 999999999, '%#%', remove_query_arg( 'add-to-cart', get_pagenum_link( 999999999, false ) ) ) );
-                }
+            $args = apply_filters('woocommerce_pagination_args', [
+                // WPCS: XSS ok.
+                'current' => $current_page,
+                'total' => $total,
+                'prev_text' => '',
+                'next_text' => '',
+                'type' => 'array',
+                'base'    => esc_url_raw( add_query_arg( 'product-page', '%#%', false ) ),
+                'screen_reader_text' => _x('Products navigation', 'Frontend - Pagination', 'uicore-elements'),
+            ]);
+
+            if ( ! wc_get_loop_prop( 'is_shortcode' ) ) {
+                $args['format'] = '';
+                $args['base']   = esc_url_raw( str_replace( 999999999, '%#%', remove_query_arg( 'add-to-cart', get_pagenum_link( 999999999, false ) ) ) );
             }
         }
+
         $links = paginate_links($args);
         $class = 'uicore-pagination';
         $class .= !defined('UICORE_ASSETS') ? ' ui-e-pagination' : '';
+
         if (is_array($links) || is_object($links)) { ?>
-		<nav aria-label="<?php echo $args['screen_reader_text']; ?>" class="<?php echo esc_attr($class);?>">
-            <ul>
-                <?php foreach ($links as $key => $link) :
-                    // If next/prev buttons and Uicore Framework is not active, get arrow icon and append it
-                    if ((strpos($link, 'prev') || strpos($link, 'next')) && !defined('UICORE_ASSETS')) {
-                        $svg  = \file_get_contents(UICORE_ELEMENTS_ASSETS . '/media/svg/pagination-icon.svg');
-                        $link = str_replace('</a>', $svg . '</a>', $link);
-                    }
-                    ?>
-                    <li class="uicore-page-item <?php echo strpos($link, 'current') ? 'uicore-active' : ''; ?>">
-                        <?php echo str_replace('page-numbers', 'uicore-page-link', $link); ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-		</nav>
+            <nav aria-label="<?php echo $args['screen_reader_text']; ?>" class="<?php echo esc_attr($class);?>">
+                <ul>
+                    <?php foreach ($links as $key => $link) :
+                        // If next/prev buttons and Uicore Framework is not active, get arrow icon and append it
+                        if ( (strpos($link, 'prev') || strpos($link, 'next')) && !defined('UICORE_ASSETS') ) {
+                            $svg  = \file_get_contents(UICORE_ELEMENTS_ASSETS . '/media/svg/pagination-icon.svg');
+                            $link = str_replace('</a>', $svg . '</a>', $link);
+                        }
+                        ?>
+                        <li class="uicore-page-item <?php echo strpos($link, 'current') ? 'uicore-active' : ''; ?>">
+                            <?php echo str_replace('page-numbers', 'uicore-page-link', $link); ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
 		<?php }
     }
     function render_load_more()
     {
+        // No logic here. It's handled by ajax-request script and rest-api endpoint
         ?>
-        <nav aria-label="Posts navigation" class="ui-e-pagination">
-            <button class="ui-e-load-more elementor-button">Load more</button>
-        </nav>
+            <nav aria-label="Posts navigation" class="ui-e-pagination">
+                <button class="ui-e-load-more elementor-button">Load more</button>
+            </nav>
         <?php
     }
-    function TRAIT_render_pagination()
+    function TRAIT_render_pagination($settings, $is_product = false)
     {
-        if($this->get_settings_for_display('pagination') === 'yes'){
-
-            if($this->get_settings_for_display('pagination_type') === 'load_more'){
+        if( $settings['pagination'] === 'yes'){
+            if( $settings['pagination_type'] === 'load_more'){
                 $this->render_load_more();
             } else {
-                $this->render_numbers();
+                $this->render_numbers($is_product);
             }
         }
     }

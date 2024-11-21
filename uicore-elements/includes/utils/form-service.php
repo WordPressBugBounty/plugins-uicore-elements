@@ -257,6 +257,13 @@ class Contact_Form_Service {
         $attachments = [];
         $errors = '';
 
+        if( !isset($files['form_fields']) || empty($files['form_fields']) ) {
+            return [
+                'files' => '',
+                'errors' => ''
+            ];
+        }
+
         // Requires wp_handle_upload() file if unavailable
         if ( ! function_exists( 'wp_handle_upload' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );

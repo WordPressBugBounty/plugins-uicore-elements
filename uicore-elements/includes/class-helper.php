@@ -15,21 +15,38 @@ class Helper
         return '<span class="uicore-meta-separator"></span>';
     }
 
-    public static function get_taxonomies($custom = true)
+    public static function get_taxonomies($custom = true, $only_products = false)
     {
-        $taxonomies = get_taxonomies(['public' => true], 'objects');
-        $exclusions = ['nav_menu', 'link_category', 'post_format']; // Exclude these taxonomies from the list
 
-        $taxonomies = array_filter($taxonomies, function ($taxonomy) use ($exclusions) {
-            return !in_array($taxonomy->name, $exclusions);
-        });
+        // Woo only taxonomies
+        if ($only_products) {
+            $taxonomies = [
+                'product_cat' => 'Product Categories',
+                'product_tag' => 'Product Tags'
+            ];
 
-        $taxonomies = array_map(function ($taxonomy) {
-            if('portfolio_category' === $taxonomy->name){
-                return 'Portfolio Category';
+            $attributes = wc_get_attribute_taxonomies();
+            foreach ($attributes as $att) {
+                $taxonomies['pa_' . $att->attribute_name] = $att->attribute_label;
             }
-            return $taxonomy->label;
-        }, $taxonomies);
+
+        // All taxonomies
+        } else {
+
+            $taxonomies = get_taxonomies(['public' => true], 'objects');
+            $exclusions = ['nav_menu', 'link_category', 'post_format']; // Exclude these taxonomies from the list
+
+            $taxonomies = array_filter($taxonomies, function ($taxonomy) use ($exclusions) {
+                return !in_array($taxonomy->name, $exclusions);
+            });
+
+            $taxonomies = array_map(function ($taxonomy) {
+                if('portfolio_category' === $taxonomy->name){
+                    return 'Portfolio Category';
+                }
+                return $taxonomy->label;
+            }, $taxonomies);
+        }
 
         if ($custom) {
             $taxonomies = array_merge(['custom' => __('Custom Meta', 'uicore-elements')], $taxonomies);
@@ -105,7 +122,6 @@ class Helper
         return $handle;
     }
 
-
     public static function get_related($filter, $number)
     {
         global $post;
@@ -116,33 +132,32 @@ class Helper
             $categories = get_the_category($post->ID);
 
             if ($categories) {
-                $category_ids = [];
-                foreach ($categories as $individual_category) {
-                    $category_ids[] = $individual_category->term_id;
-                }
+                $category_ids = array_map(fn($cat) => $cat->term_id, $categories);
 
+                // basic args
                 $args = [
-                    'category__in' => $category_ids,
                     'post__not_in' => [$post->ID],
                     'posts_per_page' => $number,
+                    'category__in' => $category_ids,
                     'ignore_sticky_posts' => 1,
                 ];
             }
+
         } elseif ($filter == 'tag') {
             $tags = wp_get_post_tags($post->ID);
 
             if ($tags) {
-                $tag_ids = [];
-                foreach ($tags as $individual_tag) {
-                    $tag_ids[] = $individual_tag->term_id;
-                }
+                $tag_ids = array_map(fn($tag) => $tag->term_id, $tags);
+
                 $args = [
-                    'tag__in' => $tag_ids,
                     'post__not_in' => [$post->ID],
                     'posts_per_page' => $number,
+                    'tag__in' => $tag_ids,
                     'ignore_sticky_posts' => 1,
                 ];
             }
+
+        // default/random filter
         } else {
             $args = [
                 'post__not_in' => [$post->ID],
@@ -151,15 +166,18 @@ class Helper
             ];
         }
 
-        $related_query = new \wp_query($args);
-
-        if ($related_query->have_posts()) {
-            return $related_query;
-        } else {
-            return false;
-        }
+        $related_query = new \WP_Query($args);
+        return $related_query->have_posts() ? $related_query : false;
     }
 
+    public static function get_product_related($limit)
+    {
+        global $post;
+
+        // TODO: problems related to the lack of ID on posts object should be treated here.
+
+        return wc_get_related_products($post->ID, $limit);
+    }
 
     /*
     * Get the current post id (used in Theme Builder - UiCore Framework)
@@ -330,6 +348,7 @@ class Helper
      * @return array|string The settings of the widget, or an error message if the request is invalid.
      *
      * @since 1.0.5
+     * @deprecated Deprecated since version 1.0.11 Use the transient method instead.
      */
     public static function get_widget_settings($post_id, $widget_id) {
 

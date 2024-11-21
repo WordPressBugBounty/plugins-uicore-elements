@@ -182,9 +182,7 @@ class PostMeta extends Widget_Base {
             echo '<div class="ui-e-post-meta ui-e-tb-meta">';
             foreach ($meta_list as $meta) {
                 if($meta['type'] != 'none'){
-                    echo '<div class="ui-e-meta-item">';
                     $this->display_meta($meta);
-                    echo '</div>';
 
                     if( next( $meta_list ) && $this->get_settings_for_display( 'tb-meta_meta_separator' ) ) {
                         echo '<span class="ui-e-separator">'.esc_html($this->get_settings_for_display('tb-meta_meta_separator' )).'</span>';

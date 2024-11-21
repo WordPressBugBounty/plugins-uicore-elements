@@ -2042,6 +2042,9 @@ class ContactForm extends UiCoreWidget {
 		$instance = $this->get_settings_for_display();
         $is_recaptcha_required = false;
 
+        // Save widget settings so form API can retrieve them
+        set_transient('ui_e_form_widget_settings_' . $this->get_id(), $instance, DAY_IN_SECONDS);
+
         // Render Form Atts
 		$this->add_render_attribute(
 			[

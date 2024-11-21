@@ -289,52 +289,74 @@ trait Post_Filters_Trait {
         $this->end_controls_section();
     }
 
-    function TRAIT_render_filters()
+    function TRAIT_render_filters($settings, $is_product = false)
     {
-        $settings  = $this->get_settings();
-        $taxonomy  = $settings['filters_taxonomies'] == 'custom' ? $this->get_settings('custom_meta') : $this->get_settings('filters_taxonomies');
-        $ajax      = isset($settings['pagination_type']) && $settings['pagination_type'] == 'load_more';
-        $post_type = $settings['posts-filter_post_type'];
+        $slug      = $is_product ? 'product-filter_' : 'posts-filter_';
+        $post_type = $is_product ? 'product' : $settings[$slug . 'post_type']; // $settings[] option may not necesarilly be a valid post type
+        $taxonomy  = $settings['filters_taxonomies'] === 'custom' ? $settings['custom_meta'] : $settings['filters_taxonomies']; // taxonomy label
+        $ajax      = isset($settings['pagination_type']) && $settings['pagination_type'] == 'load_more'; // if filters should work with rest api
+        $is_main_query = $post_type === 'current';
 
         // Return if filters are disabled or if there's no taxonomies
         if ($settings['post_filtering'] !== 'yes' || !$taxonomy) {
             return;
         }
 
+        // Get taxonomy list
+        $post_type = $post_type === 'current' ? get_post_type() : $settings[$slug . 'post_type'];
+        $taxonomy_list = get_object_taxonomies($post_type);
+
+        // Invalid/nonexistent taxonomy fallback
+        if (!$is_product && !taxonomy_exists($taxonomy)) {
+            if (!in_array($taxonomy, $taxonomy_list)) {
+                if (\Elementor\Plugin::instance()->editor->is_edit_mode()) {
+                    echo sprintf(__('<i>%s</i> is not a valid taxonomy.', 'uicore-elements'), esc_html($taxonomy));
+                }
+                return;
+            }
+        }
+
+        // Get the taxonomy label
+        $tax_obj = get_taxonomy($taxonomy);
+        $label = $tax_obj ? $tax_obj->label : '';
+
         // Check if a tax query is set in the current WP_Query
         $active_terms = [];
-        $taxonomies = get_object_taxonomies($post_type, 'objects');
-        foreach ($taxonomies as $object) {
-            $setting_key = 'posts-filter_' . $object->name . '_ids';
+        foreach ($taxonomy_list as $tax) {
+            $setting_key = $slug . $tax . '_ids';
             if (!empty($settings[$setting_key])) {
                 $active_terms = $settings[$setting_key];
             }
         }
 
+        // Fetch terms
         $terms = get_terms([
             'taxonomy' => $taxonomy,
             'hide_empty' => false,
             'include' => $active_terms
         ]);
 
-        // If is not ajax, clear button needs an URL
+        // Build archive url if we're not using rest api
         if(!$ajax){
-            // In current query we work with standart archive pages
-            if(is_main_query()){
-                $archive = get_post_type_archive_link( get_post_type());
-                // If no post is found, $archive will return false, so we get the archive url throught queried object method
+
+            // main query is the current query, so we get the post type archive pages
+            if( $is_main_query ){
+                $archive = get_post_type_archive_link($post_type);
+                // If post type don't have an archive page, we get the current page.
                 if(!$archive){
-                    $term    = get_taxonomy( get_queried_object()->taxonomy)->object_type;
-                    $archive = get_post_type_archive_link($term[0]);
+                    global $wp;
+                    $archive = home_url( $wp->request );
                 }
+
             // On other queries we keep at the same page
             } else {
                 global $wp;
                 $archive = home_url( $wp->request );
             }
         }
+
         ?>
-        <nav class="ui-e-filters" aria-label="<?php echo esc_html($taxonomy);?>">
+        <nav class="ui-e-filters" aria-label="<?php echo esc_html($label);?>">
 
             <?php if(!$ajax) : ?>
                 <a href="<?php echo esc_url($archive); ?>">
@@ -345,10 +367,8 @@ trait Post_Filters_Trait {
             <?php endif; ?>
 
             <?php foreach ($terms as $term) :
-                // work in progress
                 $active_class = '';
-                //
-                if(is_archive() && !is_post_type_archive() && is_main_query()){
+                if( (is_archive() || is_tax() || is_post_type_archive()) && $is_main_query ){
                     $current = get_queried_object();
                     if($term->term_id == $current->term_id){
                         $active_class = 'ui-e-active';
@@ -360,14 +380,14 @@ trait Post_Filters_Trait {
 
                 <?php if(!$ajax) :
                     // current query works with standart term links, other queries uses url params
-                    $term_url = is_main_query() ? get_term_link($term->term_id) : $archive . '?tax=' . $term->taxonomy . '&term=' . $term->term_id;
+                    $term_url = $is_main_query ? get_term_link($term->term_id, $term->taxonomy) : $archive . '?tax=' . $term->taxonomy . '&term=' . $term->term_id;
                     ?>
                     <a href="<?php echo esc_url($term_url); ?>">
                 <?php endif; ?>
 
                     <button
                         class="ui-e-filter-item <?php echo esc_attr($active_class);?>"
-                        data-ui-e-action="filter",
+                        data-ui-e-action="filter"
                         data-ui-e-term="<?php echo esc_attr($term->term_id); ?>"
                         data-ui-e-taxonomy="<?php echo esc_attr($term->taxonomy);?>"
                         >

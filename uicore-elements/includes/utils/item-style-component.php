@@ -73,7 +73,7 @@ trait Item_Style_Component {
 						'isLinked' => true,
 					],
 					'selectors'  => [
-						'{{WRAPPER}} .ui-e-item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                        '{{WRAPPER}}' => '--ui-e-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};', // Sliders use --ui-e-radius var as item radius
 					],
 				]
 			);

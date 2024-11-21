@@ -18,8 +18,10 @@ use UiCoreElements\Controls\Query;
 defined('ABSPATH') || exit();
 
 /**
- * Scripts and Styles Class
+ * Post Grid
+ *
  */
+
 class PostGrid extends UiCoreWidget
 {
     private $_query;
@@ -50,7 +52,7 @@ class PostGrid extends UiCoreWidget
     }
     public function get_styles()
     {
-        return [];
+        return ['post-grid'];
     }
     public function get_scripts()
     {
@@ -397,31 +399,19 @@ class PostGrid extends UiCoreWidget
         $col = $settings['col_number']['size'];
         $type = $settings['posts-filter_post_type'];
 
-        $blog_item_style = $settings['box_style'];
-
         if($type != 'portfolio'){
 
-            $type = str_replace(' ', '-', $blog_item_style);
-            if( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-                $content = '';
+            $type = str_replace(' ', '-', $settings['box_style']);
 
-                $content .= \file_get_contents( Assets::get_global('uicore-blog.css') );
-                if($blog_item_style != 'default'){
-                    $content .= \file_get_contents(UICORE_ELEMENTS_ASSETS . '/css/post-grid.css');
-                }
-
+            // Adds the global css to edit page
+            if( $this->is_edit_mode()) {
+                $content = \file_get_contents( Assets::get_global('uicore-blog.css') );
                 ?>
                 <style>
                     <?php echo esc_html(wp_strip_all_tags($content)); ?>
                 </style>
                 <?php
             }
-            else{
-				if($blog_item_style != 'default'){
-                	wp_enqueue_style('uicore_blog_grid_'.$type, UICORE_ELEMENTS_ASSETS . '/css/post-grid.css', UICORE_ELEMENTS_VERSION);
-				}
-            }
-
         }
 
         $this->query_posts($settings['item_limit']['size'], $type);
@@ -436,8 +426,7 @@ class PostGrid extends UiCoreWidget
         if ($type === 'portfolio') {
 
             if( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-                $content = '';
-                $content .= \file_get_contents( Assets::get_global('uicore-portfolio.css') );
+                $content = \file_get_contents( Assets::get_global('uicore-portfolio.css') );
                 ?>
                 <style>
                     <?php  echo wp_strip_all_tags($content); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -454,7 +443,7 @@ class PostGrid extends UiCoreWidget
 
         } else {
             $layout = $settings['layout'] === 'default' ? null : $settings['layout'];
-            $style = $blog_item_style === 'default' ? null : $blog_item_style;
+            $style = $settings['box_style'] === 'default' ? null : $settings['box_style'];
 
             if(isset($settings['box_ratio'])){
                 $ratio = $settings['box_ratio'] === 'default' ? null : $settings['box_ratio'];

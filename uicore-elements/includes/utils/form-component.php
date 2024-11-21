@@ -580,7 +580,6 @@ trait Form_Component {
         );
     }
 
-    // TODO: this style controls were copied from newsletter, not contact form. Carefull when updating contact form with this functions
     // Style Controls
     function TRAIT_register_form_style_controls($section = true)
     {

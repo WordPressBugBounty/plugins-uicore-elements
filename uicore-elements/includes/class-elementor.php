@@ -31,6 +31,7 @@ class Elementor
 
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/highlighted-text.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/advanced-post-grid.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/advanced-product-grid.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/advanced-post-carousel.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/counter.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/icon-box.php';
@@ -47,6 +48,8 @@ class Elementor
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/contact-form.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/newsletter.php';
 
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/custom-table.php';
+
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/the-content.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/the-title.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/post-meta.php';
@@ -56,8 +59,10 @@ class Elementor
 
     public function init_controls()
     {
-    require UICORE_ELEMENTS_INCLUDES . '/controls/class-post-filter-control.php';
+        require UICORE_ELEMENTS_INCLUDES . '/controls/class-post-filter-control.php';
+        require UICORE_ELEMENTS_INCLUDES . '/controls/class-product-filter-control.php';
     }
+
 
 
     public function init_utils()
@@ -72,6 +77,7 @@ class Elementor
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/post-filter-component.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/item-style-component.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/post-component.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/utils/product-component.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/form-service.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/form-component.php';
     }

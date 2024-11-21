@@ -1428,14 +1428,13 @@ trait Testimonial_Trait {
         // and also check if entrance is set
         $has_animation = $entrance !== '' ? true : $has_animation;
 
-        // TODO: remove `ui-e-item-wrp`, at least, 2 releases after 1.0.6
         ?>
 
         <div class="ui-e-wrp swiper-slide">
             <?php if (!empty($has_animation)) : ?>
                 <div class="ui-e-animations-wrp <?php echo esc_attr($animations);?>">
             <?php endif; ?>
-                <div class="ui-e-item-wrp ui-e-item">
+                <div class="ui-e-item">
                     <?php
                     switch($layout){
                         case 'layout_2' :

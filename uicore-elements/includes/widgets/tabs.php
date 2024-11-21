@@ -186,7 +186,6 @@ class Tabs extends UiCoreNestedWidget {
             ] );
 
 			// Tabs position and alignment group values
-			// TODO: check use and necessity of flex-shrink
 			$styling_block_start = '--ui-e-tabs-direction: column; --ui-e-tabs-head-direction: row; --ui-e-tabs-head-width: initial; --ui-e-tabs-title-flex-basis: content; --ui-e-tabs-title-flex-shrink: initial;';
 			$styling_block_end = '--ui-e-tabs-direction: column-reverse; --ui-e-tabs-head-direction: row; --ui-e-tabs-head-width: initial; --ui-e-tabs-title-flex-basis: content; --ui-e-tabs-title-flex-shrink: initial;';
 			$styling_inline_end = '--ui-e-tabs-direction: row-reverse; --ui-e-tabs-head-direction: column; --ui-e-tabs-head-width: 240px; --ui-e-tabs-title-flex-basis: initial; --ui-e-tabs-title-flex-shrink: 0; --ui-e-tabs-title-width: 100%';
@@ -1371,7 +1370,7 @@ class Tabs extends UiCoreNestedWidget {
 				'hover_animation' => $settings['hover_animation'],
 				'show_description' => $settings['show_description'],
 				'item' => $item,
-				'settings' => $settings, // TODO: check if is being used
+				'settings' => $settings,
 			];
 
 			$tab_titles_html .= $this->render_tab_titles_html( $item_settings );

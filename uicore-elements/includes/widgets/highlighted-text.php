@@ -161,7 +161,7 @@ class HighlightedText extends UiCoreWidget
 				'label' => esc_html__( 'Color', 'uicore-elements' ),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}}  {{CURRENT_ITEM}}.ui-e-highlight-icon, {{WRAPPER}}  {{CURRENT_ITEM}} .ui-e-headline-text' => 'color: {{VALUE}}; fill: {{VALUE}}', //icon as a font + svg
+					'{{WRAPPER}}  {{CURRENT_ITEM}}.ui-e-highlight-icon, {{WRAPPER}} {{CURRENT_ITEM}}' => 'color: {{VALUE}}; fill: {{VALUE}}', //icon as a font + svg
 
 				],
 				'condition' => [ 'type' => ['icon','text'] ],

@@ -183,18 +183,20 @@ class AdvancedPostCarousel extends UiCoreWidget
     protected function render()
     {
 
-        // Get query args and widget settings
+        // Get query args, settings and post type slug
         global  $wp_query;
         $default_query = $wp_query;
         $settings = $this->get_settings();
-        $this->TRAIT_query_posts( $settings );
+        $pt_slug = strpos($this->get_name(), 'product') !== false ? 'product-filter' : 'posts-filter';
+
+        $this->TRAIT_query_posts( $pt_slug, $settings, $this->get_name() );
         $wp_query = $this->get_query();
 
         // Get the quantity of items and creates a loop control
         $items = $settings['item_limit']['size'];
         $loops = 0;
 
-        $this->TRAIT_render_filters();
+        $this->TRAIT_render_filters($settings);
 
         // No posts found
         if (!$wp_query->have_posts()) {

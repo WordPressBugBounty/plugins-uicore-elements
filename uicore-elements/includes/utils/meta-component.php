@@ -11,31 +11,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 trait Meta_Trait {
 
-    function get_meta_content_controls()
+    function get_meta_content_controls($product_metas = false)
     {
 
+        // Meta options
         $options = [
-            'none'  => __( 'None', 'uicore-elements' ),
-            'author' => __( 'Author', 'uicore-elements' ),
-            'date' => __( 'Posted Date', 'uicore-elements' ),
+            'none' => __( 'None', 'uicore-elements' ),
+        ];
+        $generic_posts = [
+            'author'       => __( 'Author', 'uicore-elements' ),
+            'date'         => __( 'Posted Date', 'uicore-elements' ),
             'updated date' => __( 'Updated Date', 'uicore-elements' ),
-            'comment' => __( 'Comments Count', 'uicore-elements' ),
+            'comment'      => __( 'Comments Count', 'uicore-elements' ),
             'reading time' => __( 'Reading Time', 'uicore-elements' ),
-            'category' => __( 'Category', 'uicore-elements' ),
-            'custom meta' => __( 'Custom Meta', 'uicore-elements' ),
-            'custom taxonomy' => __( 'Custom Taxonomy', 'uicore-elements' ),
-            'custom html' => __( 'Custom HTML', 'uicore-elements' ),
+            'category'     => __( 'Category', 'uicore-elements' ),
+        ];
+        $products = [
+            'product price'     => __( 'Product Price', 'uicore-elements' ),
+            'product rating'    => __( 'Product Rating', 'uicore-elements' ),
+            'product stock'     => __( 'Product Stock', 'uicore-elements' ),
+            'product category'  => __( 'Product Category', 'uicore-elements' ),
+            'product tag'       => __( 'Product Tag', 'uicore-elements' ),
+            'product attribute' => __( 'Product Attribute', 'uicore-elements' ),
+            'product sale'      => __( 'Product Sale', 'uicore-elements' ),
+        ];
+        $custom = [
+            'custom meta'       => __( 'Custom Meta', 'uicore-elements' ),
+            'custom taxonomy'   => __( 'Custom Taxonomy', 'uicore-elements' ),
+            'custom html'       => __( 'Custom HTML', 'uicore-elements' ),
+        ];
+        $portfolio = [
+            'portfolio category' => __( 'Portfolio Category', 'uicore-elements' ),
         ];
 
-        //add woocomerce meta to options if woocommerce is instaled
-        $options['product price'] = __( 'Product Price', 'uicore-elements' );
-        $options['product rating'] = __( 'Product Rating', 'uicore-elements' );
-        // $options['product stock'] = __( 'Product Stock', 'uicore-elements' );
-        $options['product category'] = __( 'Product Category', 'uicore-elements' );
-        $options['product tag'] = __( 'Product Tag', 'uicore-elements' );
-        $options['product attribute'] = __( 'Product Attribute', 'uicore-elements' );
+        $options = $product_metas ?
+            array_merge($options, $products, $custom) : // specific to product widgets
+            array_merge($options, $generic_posts, $products, $portfolio, $custom); // generic posts widgets
 
-        $options['portfolio category'] = __( 'Portfolio Category', 'uicore-elements' );
 
         $repeater = new \Elementor\Repeater();
         $repeater->add_control('type',[
@@ -124,7 +136,6 @@ trait Meta_Trait {
                 'condition' => [
                     'autor_display' => 'name',
                     'type!' => 'none',
-
                 ],
             ]
         );
@@ -148,7 +159,7 @@ trait Meta_Trait {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .ui-e-'.$position => 'color: {{VALUE}}',
-
+                    '{{WRAPPER}} .ui-e-'.$position.' svg' => 'fill: {{VALUE}}',
 				],
 			]
 		);
@@ -159,7 +170,7 @@ trait Meta_Trait {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .ui-e-'.$position.' .ui-e-meta-item a' => 'color: {{VALUE}}',
-
+                    '{{WRAPPER}} .ui-e-'.$position.' .ui-e-meta-item svg' => 'fill: {{VALUE}}',
 				],
 			]
 		);
@@ -170,7 +181,6 @@ trait Meta_Trait {
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .ui-e-'.$position.' .ui-e-meta-item a:hover' => 'color: {{VALUE}}',
-
 				],
 			]
 		);
@@ -326,13 +336,17 @@ trait Meta_Trait {
             case 'product price':
                 return $product->get_price_html();
             case 'product rating':
-                return $product->get_rating_html();
+                return  wc_get_rating_html( $product->get_average_rating() );
             case 'product category':
                 return get_the_term_list($product->get_id(), 'product_cat', '', ', ', '');
             case 'product tag':
                 return get_the_term_list($product->get_id(), 'product_tag', '', ', ', '');
+            case 'product stock' :
+                return ( $product->managing_stock() && $product->is_type('simple') && $product->get_stock_quantity() !== null ) ? $product->get_stock_quantity() : '';
             case 'product attribute':
                 return wc_display_product_attributes($product);
+            case 'product sale' :
+                return $product->is_on_sale() ? esc_html__( 'Sale!', 'uicore-elements' ) : '';
             default:
                 return 'Invalid meta type.';
         }
@@ -344,39 +358,61 @@ trait Meta_Trait {
         if($meta['type'] === 'none')
             return;
 
-        \Elementor\Icons_Manager::render_icon( $meta['icon'], [ 'aria-hidden' => 'true', 'class'=>'ui-e-meta-icon' ],'span' );
+        $content = '';
+        $wrapper = '<div class="ui-e-meta-item">';
+        $type    = $meta['type'];
+        $prefix  = $meta['before'] ? '<span>'.esc_html($meta['before']).'</span>' : '';
+        $suffix  = $meta['after'] ? '<span class="ui-e-meta-after">'.esc_html($meta['after']).'</span>' : '';
 
-        if($meta['before'])
-            echo '<span>'.esc_html($meta['before']).'</span>';
+        ob_start();
+        \Elementor\Icons_Manager::render_icon( $meta['icon'], [ 'aria-hidden' => 'true', 'class'=> 'ui-e-meta-icon' ], 'span' );
+        $icon = ob_get_clean();
 
-        $type = $meta['type'];
-        if($type === 'author'){
-            echo $this->get_meta_the_author($meta['autor_display']);  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        }elseif($type === 'date'){
-            echo Helper::format_date(get_the_date('U'), $meta['date_format'], $meta['custom_format']); // 'U' param returns the date in timestamp, necessary for format_date()
-        }elseif($type === 'updated date'){
-            echo Helper::format_date(get_the_modified_date('U'), $meta['date_format'], $meta['custom_format']); // 'U' param returns the date in timestamp, necessary for format_date()
-        }elseif($type === 'category'){
-            echo Helper::get_taxonomy('category');
-        }elseif($type === 'portfolio category'){
-            echo Helper::get_taxonomy('portfolio_category');
-        }elseif($type === 'comment'){
-            echo esc_html(get_comments_number());
-        }elseif($type === 'custom meta'){
-            echo esc_html(get_post_meta( get_the_ID(), $meta['type_custom'], true ));
-        }elseif($type === 'custom taxonomy'){
-            echo Helper::get_taxonomy($meta['type_custom']);
-        }elseif($type === 'custom html'){
-            echo wp_kses_post($meta['html_custom']);
-        }elseif($type === 'reading time'){
-            echo esc_html(Helper::get_reading_time());
-        }else if(strpos($type, 'product') === 0){
-            echo wp_kses_post($this->get_woo_meta($type));
-        }else{
-            echo \esc_html($type);
+        // Build content
+        switch ($type) {
+            case 'author':
+                $content .= $this->get_meta_the_author($meta['autor_display']);  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                break;
+            case 'date':
+                $content .= Helper::format_date(get_the_date('U'), $meta['date_format'], $meta['custom_format']); // 'U' param returns the date in timestamp, necessary for format_date()
+                break;
+            case 'updated date':
+                $content .= Helper::format_date(get_the_modified_date('U'), $meta['date_format'], $meta['custom_format']); // 'U' param returns the date in timestamp, necessary for format_date()
+                break;
+            case 'category':
+                $content .= Helper::get_taxonomy('category');
+                break;
+            case 'portfolio category':
+                $content .= Helper::get_taxonomy('portfolio_category');
+                break;
+            case 'comment':
+                $content .= esc_html(get_comments_number());
+                break;
+            case 'custom meta':
+                $content .= esc_html(get_post_meta( get_the_ID(), $meta['type_custom'], true ));
+                break;
+            case 'custom taxonomy':
+                $content .= Helper::get_taxonomy($meta['type_custom']);
+                break;
+            case 'custom html':
+                $content .= wp_kses_post($meta['html_custom']);
+                break;
+            case 'reading time':
+                $content .= esc_html(Helper::get_reading_time());
+                break;
+            default:
+                if (strpos($type, 'product') === 0) {
+                    if ($this->get_woo_meta($type) === false) return; // Abort if there's no data for this product meta
+                    $content .= wp_kses_post($this->get_woo_meta($type));
+                } else {
+                    echo \esc_html($type);
+                }
+                break;
         }
 
-        if($meta['after'])
-        echo '<span class="ui-e-meta-after">'.esc_html($meta['after']).'</span>';
+        // Only output if there's content
+        if (!empty($content)) {
+            echo $wrapper . Helper::esc_svg($icon) . $prefix . $content . $suffix . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        }
     }
 }

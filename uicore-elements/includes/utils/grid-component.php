@@ -77,7 +77,6 @@ trait Grid_Trait {
                     '{{WRAPPER}} .ui-e-grid' => 'column-count: var(--ui-e-column-count); column-gap: {{gap.SIZE}}{{gap.UNIT}};',
                     '{{WRAPPER}} .ui-e-wrp' => 'margin-bottom: {{gap.SIZE}}{{gap.UNIT}};'
                 ],
-                //'render_type' => 'template',
             ]
         );
     }

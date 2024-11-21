@@ -63,7 +63,11 @@ class AdvancedPostGrid extends UiCoreWidget
     public function get_scripts()
     {
         return [
-            'advanced-post-grid',
+            'masonry' => [
+                'condition' => [
+                    'masonry' => 'ui-e-maso'
+                ],
+            ],
             'entrance' => [
                 'condition' => [
                     'animate_items' => 'ui-e-grid-animate'
@@ -79,11 +83,16 @@ class AdvancedPostGrid extends UiCoreWidget
 
     private function filter_missing_taxonomies($settings)
     {
+        // Check if is an "Advanced Product.." widget, since this widget is extended by other(s)
+        $slug = strpos($this->get_name(), 'product') !== false ?
+                'product-filter_post_type' :
+                'posts-filter_post_type';
+
         $taxonomy_filter_args = [
             'show_in_nav_menus' => true,
         ];
-        if (!empty($settings['posts-filter_post_type'])) {
-            $taxonomy_filter_args['object_type'] = [$settings['posts-filter_post_type']];
+        if ( !empty($settings[$slug]) ) {
+            $taxonomy_filter_args['object_type'] = [$settings[$slug]];
         }
 
         $taxonomies = get_taxonomies($taxonomy_filter_args, 'objects');
@@ -139,7 +148,7 @@ class AdvancedPostGrid extends UiCoreWidget
         $this->TRAIT_register_post_item_controls();
         $this->TRAIT_register_post_button_controls();
         $this->TRAIT_register_post_meta_controls();
-        $this->TRAIT_register_post_query_controls();
+        $this->TRAIT_register_post_query_controls(true, $this->get_name());
         $this->TRAIT_register_filter_controls();
         $this->TRAIT_register_pagination_controls();
 
@@ -175,6 +184,7 @@ class AdvancedPostGrid extends UiCoreWidget
             'frontend_available' => true,
             'default'  => 'no',
             'return_value' => 'ui-e-maso',
+            'render_type' => 'template',
             // reset values from component
             'prefix_class' => '',
             'condition' => [],
@@ -189,21 +199,22 @@ class AdvancedPostGrid extends UiCoreWidget
     /**
      * Renders the widget content using AJAX.
      *
-     * This method retrieves the query arguments and widget settings, sets up the query, and renders each post item.
+     * This method retrieves the widget settings; set up the query, and renders each post item.
      * If no posts are found, it returns false. After rendering, it resets the query and returns the output.
      *
+     * @param array|false $current_query The current query args, or false if the widget isn't set to use the current query.
+     *
      * @return string|false The rendered widget content or false if no posts are found.
-     */
-    public function render_ajax()
+    */
+    public function render_ajax($current_query)
     {
-        // Get query args and widget settings
-        global $wp_query;
-        $default_query = $wp_query;
+
+        // Get settings and post type
         $settings = $this->get_settings();
-        $this->TRAIT_query_posts($settings);
+
+        $this->TRAIT_query_posts( $settings, $current_query );
         $wp_query = $this->get_query();
 
-        //return false if no post found
         if (!$wp_query->have_posts()) {
             return false;
         }
@@ -213,20 +224,54 @@ class AdvancedPostGrid extends UiCoreWidget
             $wp_query->the_post();
             $this->TRAIT_render_item(false, true);
         }
-        wp_reset_query();
-        $wp_query = $default_query;
-        return \ob_get_clean();
+        $markup = \ob_get_clean();
+
+        return [
+            'markup' => $markup,
+        ];
     }
 
     protected function render()
     {
-
-        // Get query args and widget settings
-        global  $wp_query;
+        // Get query args, settings and post type slug
+        global $wp_query;
         $default_query = $wp_query;
         $settings = $this->get_settings();
-        $this->TRAIT_query_posts($settings);
+
+        // Build query
+        $this->TRAIT_query_posts( $settings, $wp_query->query );
         $wp_query = $this->get_query();
+
+        // If SVG icon is enabled, we need to get each meta font-size and pass it to css so SVG sizes can use it
+        if(\Elementor\Plugin::$instance->experiments->is_feature_active('e_font_icon_svg')){
+            $default_size = '16px';
+
+            // get each meta font-size
+            $top_meta_size    = $settings['top_meta_typography_font_size']['size'];
+            $before_meta_size = $settings['before_title_meta_typography_font_size']['size'];
+            $after_meta_size  = $settings['after_title_meta_typography_font_size']['size'];
+            $bot_meta_size    = $settings['bottom_meta_typography_font_size']['size'];
+
+            // makes sure we're not passing empty values with units
+            $meta_font_sizes = [
+                'top'          => empty($top_meta_size) ? $default_size : $top_meta_size . $settings['top_meta_typography_font_size']['unit'],
+                'before_title' => empty($before_meta_size) ? $default_size : $before_meta_size . $settings['before_title_meta_typography_font_size']['unit'],
+                'after_title'  => empty($after_meta_size) ? $default_size : $after_meta_size . $settings['after_title_meta_typography_font_size']['unit'],
+                'bottom'       => empty($bot_meta_size) ? $default_size : $bot_meta_size . $settings['bottom_meta_typography_font_size']['unit'],
+            ];
+
+            // print it on the main widget wrapper
+            $this->add_render_attribute(
+                '_wrapper',
+                'style',
+                [
+                    '--top-meta-font-size: ' . esc_html($meta_font_sizes['top']) . ';',
+                    '--before-title-meta-font-size: ' . esc_html($meta_font_sizes['before_title']) . ';',
+                    '--after-title-meta-font-size: ' . esc_html($meta_font_sizes['after_title']) . ';',
+                    '--bot-meta-font-size: ' . esc_html($meta_font_sizes['bottom']) . ';',
+                ]
+            );
+        }
 
         // Store widget settings in a transient
         $ID = strval($this->get_ID());
@@ -236,31 +281,41 @@ class AdvancedPostGrid extends UiCoreWidget
         $items = $settings['item_limit']['size'];
         $loops = 0;
 
-        $this->TRAIT_render_filters();
+        $this->TRAIT_render_filters($settings);
 
         // No posts found
         if (!$wp_query->have_posts()) {
             echo '<p style="text-align:center">' . __('No posts found.', 'uicore-elements') . '</p>';
         } else {
 
-        ?>
-            <div class="ui-e-adv-grid">
-                <?php
-                while ($wp_query->have_posts()) {
+            ?>
+                <div class="ui-e-adv-grid">
+                    <?php
+                    while ($wp_query->have_posts()) {
 
-                    if ($settings['sticky'] && $items == $loops) {
-                        break; // sticky posts disregards posts per page, so ending the loop if $items == $loop forces the query respects the users item limit
+                        // sticky posts disregards posts per page, so ending the loop if $items == $loop forces the query respects the users item limit
+                        if ($settings['sticky'] && $items == $loops) {
+                            break;
+                        }
+
+                        $wp_query->the_post();
+                        $this->TRAIT_render_item(false, true);
+
+                        $loops++;
                     }
+                    ?>
+                </div>
+            <?php
 
-                    $wp_query->the_post();
-                    $this->TRAIT_render_item(false, true);
+                $this->TRAIT_render_pagination($settings);
 
-                    $loops++;
+                if( $settings['pagination'] == 'yes' && $settings['pagination_type'] == 'load_more' && $settings['posts-filter_post_type'] == 'current' ) {
+
+                    echo '<script>';
+                        echo 'window.ui_total_pages_' . esc_html($ID) . ' = "none";'; // add none to avoid ajax errors for lack of value, but posts don't need it
+                        echo 'window.ui_query_' . esc_html($ID) . ' = ' . \json_encode($wp_query) . ';';
+                    echo '</script>';
                 }
-                ?>
-            </div>
-        <?php
-            $this->TRAIT_render_pagination();
         }
 
         //reset query

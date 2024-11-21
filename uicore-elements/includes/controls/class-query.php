@@ -6,56 +6,37 @@ defined('ABSPATH') || exit();
 
 class Query extends Control_Select2
 {
-    const CONTROL_ID = 'query';
+    const CONTROL_ID = 'elements_query';
 
     public function get_type()
     {
         return self::CONTROL_ID;
     }
 
-    public static function get_query_args($control_id, $settings, $current_id = null)
+    /**
+     * Get query args for a given post type query
+     *
+     * @param string $control_id The control slug, should be '{post-type}-filter'. Eg: `product-filter`.
+     * @param array $settings The control settings array.
+     * @param bool $is_product If the args are for woocommerce products. Default is false.
+     */
+    public static function get_query_args($control_id, $settings, $is_product = false)
     {
+        // get post type
+        $post_type = $settings[$control_id . '_post_type'];
 
+        // Add extra settings
         $defaults = [
-            $control_id . '_post_type' => 'post',
+            $control_id . '_post_type' => $post_type, // TODO: test without, maybe is not needed anymore.
             $control_id . '_posts_ids' => [],
             'orderby' => 'date',
             'order' => 'desc',
         ];
-
         $settings = wp_parse_args($settings, $defaults);
 
-        $post_type = $settings[$control_id . '_post_type'];
-        if($post_type == 'current'){
+        $paged = self::get_queried_page( $settings );
 
-            $query_type = get_post_meta( $current_id, 'tb_rule_include', true );
-            $query_type = isset($query_type[0]['rule']['value']) ? $query_type[0]['rule']['value'] : '';
-            switch ( $query_type ) {
-                case 'special-blog':
-                    $post_type = 'post';
-                    break;
-                default:
-                if( ($type = substr( $query_type, 0, 11 )) === "cp-archive-" ){
-                    $post_type = str_replace($type,'',$query_type);
-                    break;
-                }
-                $post_type = 'post';
-                break;
-            }
-        }
-
-        if(!isset($settings['__current_page'])){
-            if (get_query_var('paged')) {
-                $paged = get_query_var('paged');
-            } elseif (get_query_var('page')) {
-                $paged = get_query_var('page');
-            } else {
-                $paged = 1;
-            }
-        } else {
-            $paged = $settings['__current_page'];
-        }
-
+        // Build query args
         $query_args = [
             'orderby' => $settings['orderby'],
             'order' => $settings['order'],
@@ -65,42 +46,26 @@ class Query extends Control_Select2
             'posts_per_page' => isset( $settings['item_limit'] ) ? $settings['item_limit']['size'] : get_option('posts_per_page'),
         ];
 
-        // If the offset is set, we need to set the offset and paged parameters
-        if(isset($settings['offset']) && !empty($settings['offset']['size'])){
+        // Update posts quantity to woo requirements
+        if ($is_product) {
+            $query_args['limit'] = $query_args['posts_per_page'];
+            unset($query_args['posts_per_page']);
+        }
+
+        // Offset arg
+        if( isset($settings['offset']) && !empty($settings['offset']['size']) ){
             $query_args['offset'] = $settings['offset']['size'];
         }
 
-        if( isset( $settings['sticky'] ) && $settings['sticky']){
+        // Sticky arg
+        if( isset( $settings['sticky'] ) && $settings['sticky'] ){
             $query_args['ignore_sticky_posts'] = false;
         }
 
-        // If filters are enabled, checks for url taxonomy params. Eg: since not every post widget has filters, so we also need to check if is set.
-        if( isset($settings['post_filtering']) && $settings['post_filtering'] && isset($_GET['tax']) && isset($_GET['term'])){
-
-            $query_args['tax_query'][] = [
-                'taxonomy' => $_GET['tax'],
-                'field' => 'term_id',
-                'terms' => $_GET['term'],
-            ];
-
-        } else {
-            $query_args['post_type'] = $post_type;
-            $query_args['tax_query'] = [];
-
-            $taxonomies = get_object_taxonomies($post_type, 'objects');
-
-            foreach ($taxonomies as $object) {
-                $setting_key = $control_id . '_' . $object->name . '_ids';
-
-                if (!empty($settings[$setting_key])) {
-                    $terms_list = $settings[$setting_key];
-                    $query_args['tax_query'][] = [
-                        'taxonomy' => $object->name,
-                        'field' => 'term_id',
-                        'terms' => $terms_list,
-                    ];
-                }
-            }
+        //
+        $queried_filters = self::get_queried_filters($settings, $post_type, $control_id);
+        if ( !empty($queried_filters['tax_query']) ) {
+            $query_args['tax_query'] = $queried_filters['tax_query'];
         }
 
         //Enable for data analysis
@@ -112,6 +77,113 @@ class Query extends Control_Select2
         return $query_args;
     }
 
+    /**
+     * Get the current page value in a query.
+     *
+     * @param array $settings The control settings array.
+     */
+    public static function get_queried_page( $settings )
+    {
+        if( !isset($settings['__current_page']) ){
+            if (get_query_var('paged')) {
+                $paged = get_query_var('paged');
+
+            } elseif (get_query_var('page')) {
+                $paged = get_query_var('page');
+
+            } else {
+                $paged = 1;
+            }
+
+        } else {
+            $paged = $settings['__current_page'];
+        }
+
+        return $paged;
+    }
+
+    /**
+     * Build the query args to work with filter component under rest api.
+     *
+     * @param array $settings The control settings array.
+     * @param string $post_type The post type slug.
+     * @param string $control_id The control slug. Can be 'posts-type' or 'product-filter'.
+     *
+     * @return array The query args.
+     */
+    public static function get_queried_filters($settings, $post_type, $control_id)
+    {
+        $args = [
+            'post_type' => $post_type,
+            'tax_query' => [],
+        ];
+
+        if (isset($settings['post_filtering']) && $settings['post_filtering'] && isset($_GET['tax']) && isset($_GET['term'])) {
+            $args['tax_query'][] = [
+                'taxonomy' => sanitize_text_field($_GET['tax']),
+                'field'    => 'term_id',
+                'terms'    => intval($_GET['term']),
+            ];
+
+        } else {
+            $taxonomies = get_object_taxonomies($post_type, 'objects');
+
+            foreach ($taxonomies as $object) {
+                $setting_key = $control_id . '_' . $object->name . '_ids';
+
+                if ( !empty($settings[$setting_key]) ) {
+                    $terms_list = $settings[$setting_key];
+
+                    if ( !is_array($terms_list) ) {
+                        $terms_list = explode(',', $terms_list);
+                    }
+
+                    $args['tax_query'][] = [
+                        'taxonomy' => $object->name,
+                        'field'    => 'term_id',
+                        'terms'    => array_map('intval', $terms_list),
+                    ];
+                }
+            }
+        }
+
+        // If multiple tax queries are set, specify a relation (default to 'AND')
+        if ( count($args['tax_query']) > 1 ) {
+            $args['tax_query']['relation'] = 'AND';
+        };
+
+        return $args;
+    }
+
+    /**
+     * Get all products from a given product query and return the total amount of pages for it. Only for woo product queries.
+     *
+     * TODO: investigate more performatic approaches, since this runs a query for the second time.
+     */
+    public static function get_total_pages($default_query)
+    {
+        // Set non-limit posts and a light return type
+        $calc_args = [
+            'limit' => '-1',
+            'return' => 'ids'
+        ];
+        $calc_args = array_merge($default_query, $calc_args);
+
+        // Makes sure we have a limit set
+        if( isset($default_query['limit']) || isset($default_query['posts_per_page']) ) {
+            $limit = isset($default_query['limit']) ? $default_query['limit'] : $default_query['posts_per_page'];
+        } else {
+            $limit = get_option('posts_per_page');
+        }
+
+        // Get total pages value
+        $total_products = wc_get_products($calc_args);
+        $total = ceil(count($total_products) / $limit);
+
+        return $total;
+    }
+
+
 }
 
-\Elementor\Plugin::$instance->controls_manager->register_control('query', new Query());
+\Elementor\Plugin::$instance->controls_manager->register_control('elements_query', new Query());

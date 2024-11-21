@@ -43,7 +43,7 @@ class Post_Filter extends Group_Control_Base
     {
 
         //Extra
-        require UICORE_ELEMENTS_INCLUDES . '/controls/class-query.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-query.php';
 
         $fields = [];
 
@@ -55,11 +55,18 @@ class Post_Filter extends Group_Control_Base
         return $fields;
     }
 
-    protected function prepare_fields($fields)
+    /**
+     *  Prepare the fields options for the control.
+     *
+     * @param array $fields The fields options.
+     * @param bool $only_products If true, the 'Source' will offer only Woocommerce usefull options.
+     */
+    protected function prepare_fields($fields, $only_products = false)
     {
+
         $args = $this->get_args();
 
-        $post_types = self::get_post_types($args);
+        $post_types = self::get_post_types($args, $only_products);
 
         $post_types_options = $post_types;
 
@@ -81,7 +88,7 @@ class Post_Filter extends Group_Control_Base
         foreach ($taxonomies as $taxonomy => $object) {
             $taxonomy_args = [
                 'label' => $object->label,
-                'type' => 'query',
+                'type' => 'elements_query',
                 'label_block' => true,
                 'multiple' => true,
                 'object_type' => $taxonomy,
@@ -112,8 +119,17 @@ class Post_Filter extends Group_Control_Base
         return parent::prepare_fields($fields);
     }
 
-    private static function get_post_types($args = [])
+    private static function get_post_types($args = [], $only_products = false)
     {
+
+        if($only_products){
+            return [
+                'product' => esc_html__( 'Custom', 'uicore-framework' ),
+                'current' => esc_html__( 'Current', 'uicore-framework' ),
+                'related' => esc_html__( 'Related', 'uicore-framework' )
+            ];
+        }
+
         $post_type_args = [
             'show_in_nav_menus' => true,
         ];
@@ -129,11 +145,18 @@ class Post_Filter extends Group_Control_Base
         foreach ($_post_types as $post_type => $object) {
             $post_types[$post_type] = $object->label;
         }
+
         unset($post_types['page']);
         unset($post_types['e-landing-page']);
         unset($post_types['uicore-tb']);
+
+        if(!$only_products){
+            unset($post_types['product']);
+        }
+
         $post_types['current'] = esc_html__( 'Current', 'uicore-elements' );
         $post_types['related'] = esc_html__( 'Related', 'uicore-elements' );
+
         return $post_types;
     }
 
