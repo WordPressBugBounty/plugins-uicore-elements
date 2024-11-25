@@ -112,7 +112,15 @@ class ContactForm extends UiCoreWidget {
 	function get_attribute_id( $item ) {
 		return 'form-field-' . $item['custom_id'];
 	}
-	function add_required_attribute( $element ) {
+	function add_required_attribute( $element, $js_verication = false ) {
+
+        // Used for elements (eg: checkbox) that aren't natively supported by the browsers validations
+        if($js_verication) {
+            $this->add_render_attribute( $element, 'data-ui-e-required', 'true' );
+            return;
+        }
+
+        // Default method
 		$this->add_render_attribute( $element, 'required', 'required' );
 		$this->add_render_attribute( $element, 'aria-required', 'true' );
 	}
@@ -446,6 +454,10 @@ class ContactForm extends UiCoreWidget {
 					]
 				);
 
+                if ( $item['required'] ) {
+                    $this->add_required_attribute( $element_id, true );
+                }
+
 				if ( ! empty( $item['field_value'] ) && $option_value === $item['field_value'] ) {
 					$this->add_render_attribute( $element_id, 'checked', 'checked' );
 				}
@@ -625,7 +637,6 @@ class ContactForm extends UiCoreWidget {
                                     'name' => 'field_type',
                                     'operator' => '!in',
                                     'value' => [
-                                        'checkbox',
                                         'recaptcha',
                                         'recaptcha_v3',
                                         'hidden',
@@ -1353,6 +1364,29 @@ class ContactForm extends UiCoreWidget {
                     'label_block' => true,
                     'condition' => [
                         'custom_messages!' => '',
+                    ],
+                    'render_type' => 'none',
+                    'dynamic' => [
+                        'active' => true,
+                    ],
+                ]
+            );
+            $this->add_control(
+                'required_fields_message',
+                [
+                    'label' => esc_html__( 'Required Fields', 'uicore-elements' ),
+                    'type' => Controls_Manager::TEXT,
+                    'default' => $default_messages['required'],
+                    'placeholder' => $default_messages['required'],
+                    'label_block' => true,
+                    'conditions' => [
+                        'terms' => [
+                            [
+                                'name' => 'custom_messages',
+                                'operator' => '!=',
+                                'value' => '',
+                            ],
+                        ],
                     ],
                     'render_type' => 'none',
                     'dynamic' => [
@@ -2108,6 +2142,13 @@ class ContactForm extends UiCoreWidget {
 			$referer_title = get_option( 'blogname' );
 		}
 
+        // Get default messages
+        $messages = Contact_Form_Service::get_default_messages();
+
+        // Set frontend validation message
+        $front_msg_required = isset($instance['required_fields_message'])
+                                ? $instance['required_fields_message']
+                                : $messages['required'];
 		?>
 
 		<form class="ui-e-form" method="post" <?php $this->print_render_attribute_string( 'form' ); ?>>
@@ -2115,9 +2156,11 @@ class ContactForm extends UiCoreWidget {
             <input type="hidden" name="post_id" value="<?php echo esc_attr( get_the_ID()); ?>"/>
             <input type="hidden" name="widget_type" value="contact-form">
 
+            <input type="hidden" name="required_fields_message" value="<?php echo esc_html($front_msg_required);?>">
+
 			<div <?php $this->print_render_attribute_string( 'wrapper' ); ?>>
-				<?php
-				foreach ( $instance['form_fields'] as $item_index => $item ) :
+
+				<?php foreach ( $instance['form_fields'] as $item_index => $item ) :
 					$this->form_fields_render_attributes( $item_index, $instance, $item );
 
 					$field_type = $item['field_type'];
@@ -2219,7 +2262,6 @@ class ContactForm extends UiCoreWidget {
             <div class="ui-e-message <?php echo $this->is_edit_mode() ? 'elementor-hidden' : ''; ?>">
                <?php if($this->is_edit_mode()) :
                     // Get custom messages if set, else use default
-                    $messages = Contact_Form_Service::get_default_messages();
                     $success = isset($instance['success_message']) ? $instance['success_message'] : $messages['success'];
                     $error = isset($instance['error_message']) ? $instance['error_message'] : $messages['error'];
                     ?>
@@ -2234,6 +2276,15 @@ class ContactForm extends UiCoreWidget {
         if($is_recaptcha_required){
             add_action('wp_footer', [$this, 'recaptcha_js'], 999);
         }
+
+        // Add frontend validation messages to js var
+        ?>
+            <script>
+                window.ui_e_form_validation_messages = <?php echo json_encode([
+                    'required_fields' => esc_html($front_msg_required),
+                ]); ?>;
+            </script>
+        <?php
 	}
 	protected function content_template() {
 		?>

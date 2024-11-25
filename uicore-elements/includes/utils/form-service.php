@@ -524,6 +524,7 @@ class Contact_Form_Service {
 			'success'    => esc_html__( 'Your submission was successful.', 'uicore-elements' ),
 			'error'      => esc_html__( 'Your submission failed because of an error.', 'uicore-elements' ),
             'mail_error' => esc_html__( 'Failed to send email.', 'uicore-elements' ),
+            'required'   => esc_html__( 'Fill all required fields.', 'uicore-elements' ),
             'redirect'   => esc_html__( 'Redirecting...', 'uicore-elements' ),
 		];
     }

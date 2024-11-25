@@ -12,7 +12,7 @@ defined('ABSPATH') || exit();
 /**
  * Product Component
  *
- * @since [currentVersion]
+ * @since 1.0.11
  */
 
 trait Product_Trait {

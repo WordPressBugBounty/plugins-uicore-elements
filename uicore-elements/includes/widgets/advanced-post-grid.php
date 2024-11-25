@@ -242,36 +242,7 @@ class AdvancedPostGrid extends UiCoreWidget
         $this->TRAIT_query_posts( $settings, $wp_query->query );
         $wp_query = $this->get_query();
 
-        // If SVG icon is enabled, we need to get each meta font-size and pass it to css so SVG sizes can use it
-        if(\Elementor\Plugin::$instance->experiments->is_feature_active('e_font_icon_svg')){
-            $default_size = '16px';
-
-            // get each meta font-size
-            $top_meta_size    = $settings['top_meta_typography_font_size']['size'];
-            $before_meta_size = $settings['before_title_meta_typography_font_size']['size'];
-            $after_meta_size  = $settings['after_title_meta_typography_font_size']['size'];
-            $bot_meta_size    = $settings['bottom_meta_typography_font_size']['size'];
-
-            // makes sure we're not passing empty values with units
-            $meta_font_sizes = [
-                'top'          => empty($top_meta_size) ? $default_size : $top_meta_size . $settings['top_meta_typography_font_size']['unit'],
-                'before_title' => empty($before_meta_size) ? $default_size : $before_meta_size . $settings['before_title_meta_typography_font_size']['unit'],
-                'after_title'  => empty($after_meta_size) ? $default_size : $after_meta_size . $settings['after_title_meta_typography_font_size']['unit'],
-                'bottom'       => empty($bot_meta_size) ? $default_size : $bot_meta_size . $settings['bottom_meta_typography_font_size']['unit'],
-            ];
-
-            // print it on the main widget wrapper
-            $this->add_render_attribute(
-                '_wrapper',
-                'style',
-                [
-                    '--top-meta-font-size: ' . esc_html($meta_font_sizes['top']) . ';',
-                    '--before-title-meta-font-size: ' . esc_html($meta_font_sizes['before_title']) . ';',
-                    '--after-title-meta-font-size: ' . esc_html($meta_font_sizes['after_title']) . ';',
-                    '--bot-meta-font-size: ' . esc_html($meta_font_sizes['bottom']) . ';',
-                ]
-            );
-        }
+        $this->TRAIT_set_meta_font_size_to_svg($settings); // SVG icon experiment font-size adjustment
 
         // Store widget settings in a transient
         $ID = strval($this->get_ID());

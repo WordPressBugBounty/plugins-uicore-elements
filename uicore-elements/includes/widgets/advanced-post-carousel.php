@@ -187,10 +187,11 @@ class AdvancedPostCarousel extends UiCoreWidget
         global  $wp_query;
         $default_query = $wp_query;
         $settings = $this->get_settings();
-        $pt_slug = strpos($this->get_name(), 'product') !== false ? 'product-filter' : 'posts-filter';
 
-        $this->TRAIT_query_posts( $pt_slug, $settings, $this->get_name() );
+        $this->TRAIT_query_posts( $settings, $wp_query->query );
         $wp_query = $this->get_query();
+
+        $this->TRAIT_set_meta_font_size_to_svg($settings); // SVG icon experiment font-size adjustment
 
         // Get the quantity of items and creates a loop control
         $items = $settings['item_limit']['size'];
@@ -203,23 +204,27 @@ class AdvancedPostCarousel extends UiCoreWidget
             echo '<p style="text-align:center">' . __('No posts found.', 'uicore-elements') . '</p>';
         } else {
 
-        ?>
-            <div class="ui-e-carousel swiper">
-                <div class='swiper-wrapper'>
-                    <?php
-                    while ($wp_query->have_posts()) {
-                        if ($settings['sticky'] && $items == $loops) {
-                            break; // sticky posts disregards posts per page, so ending the loop if $items == $loop forces the query respects the users item limit
+            ?>
+                <div class="ui-e-carousel swiper">
+                    <div class='swiper-wrapper'>
+                        <?php
+                        while ($wp_query->have_posts()) {
+
+                            // sticky posts disregards posts per page, so ending the loop if $items == $loop forces the query respects the users item limit
+                            if ($settings['sticky'] && $items == $loops) {
+                                break;
+                            }
+
+                            $wp_query->the_post();
+                            $this->TRAIT_render_item(true);
+
+                            $loops++;
                         }
-                        $wp_query->the_post();
-                        $this->TRAIT_render_item(true);
-                        $loops++;
-                    }
-                    ?>
+                        ?>
+                    </div>
+                    <?php $this->TRAIT_render_carousel_navigations(); ?>
                 </div>
-                <?php $this->TRAIT_render_carousel_navigations(); ?>
-            </div>
-        <?php
+            <?php
         }
 
         //reset query

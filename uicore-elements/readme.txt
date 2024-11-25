@@ -3,8 +3,8 @@ Contributors: uicore
 Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
-Tested up to: 6.7
-Stable tag: 1.0.11
+Tested up to: 6.7.1
+Stable tag: 1.0.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,12 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 
 == Changelog ==
 
+= 1.0.12 =
+* NEW - Added 'required' option to Checkbox field on Contact Form
+* FIX - Fixed Icon List gap bug that only applied horizontal spacing
+* FIX - Fixed Advanced Carousel Grid bug where you couldn't edit pages that used the widget
+* FIX - Fixed APG bug where meta icons weren't inheriting the font-size if SVG experiment was enabled
+
 = 1.0.11 =
 * NEW - Added new widget: Advanced Product Grid
 * NEW - Added new widget: Custom Table (with Nested capabilities)
@@ -63,22 +69,22 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 * FIX - Fixed Contact Form compatibility with Elementor PRO
 
 = 1.0.10 =
-* FIX - Disabled autocomplete on honeypot fields on form Widgets, preventing browsers from adding data and blocking form submission.
-* FIX - Fixed Carousel/Slide widgets mobile overflow bug.
-* FIX - Fixed Icon List Widget bug where Icons sometimes had different sizes.
-* UPD - Changed Icon Box Widget content padding to not impact images if set as full width.
-* UPD - Added 'px' option to Testimonial Widget's avatar size, allowing small avatars to fit better.
+* FIX - Disabled autocomplete on honeypot fields on form Widgets, preventing browsers from adding data and blocking form submission
+* FIX - Fixed Carousel/Slide widgets mobile overflow bug
+* FIX - Fixed Icon List Widget bug where Icons sometimes had different sizes
+* UPD - Changed Icon Box Widget content padding to not impact images if set as full width
+* UPD - Added 'px' option to Testimonial Widget's avatar size, allowing small avatars to fit better
 * UPD - Turned Icon List Widget 'Vertical Alignment Offset' option responsive
-* UPD - Turned Form Widgets field padding option responsive.
+* UPD - Turned Form Widgets field padding option responsive
 
 = 1.0.9 =
-* FIX - Fixed Accordion bug where links in content weren't clickable.
-* FIX - Fixed Advanced Post widgets bug where readmore button icons weren't printed if Elementor Inline Font Icon feature was enabled.
-* FIX - Fixed APG bug where Item Limits weren't respected.
-* FIX - Fixed Motion Blur Counter animation bug caused by Waypoint update.
-* UPD - Totally removed Waypoint from the plugin, replacing it with InterserctionObserver.
-* UPD - Added dragging control to Testimonial Slider's Circular Avatar animation.
-* UPD - Small improvements on instructions texts and code overall.
+* FIX - Fixed Accordion bug where links in content weren't clickable
+* FIX - Fixed Advanced Post widgets bug where readmore button icons weren't printed if Elementor Inline Font Icon feature was enabled
+* FIX - Fixed APG bug where Item Limits weren't respected
+* FIX - Fixed Motion Blur Counter animation bug caused by Waypoint update
+* UPD - Totally removed Waypoint from the plugin, replacing it with InterserctionObserver
+* UPD - Added dragging control to Testimonial Slider's Circular Avatar animation
+* UPD - Small improvements on instructions texts and code overall
 
 = 1.0.8 =
 * FIX - Fixed Grid and Carousel entrance animations
@@ -88,17 +94,17 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 * NEW - Added new widget: Custom Carousel (with Nested capabilities)
 * NEW - Added new widget: Custom Slider (with Nested capabilities)
 * NEW - Added new animation to Testimonial Slider: Circular Avatar
-* NEW - Added Mailchimp Integration to form widgets.
-* FIX - Fixed Slider Widget's Stacked animation bug.
+* NEW - Added Mailchimp Integration to form widgets
+* FIX - Fixed Slider Widget's Stacked animation bug
 * FIX - Fixed Counter icon color bug with Inline Font Icon experiment.
-* FIX - Fixed Icon List numbers bug that outputted only odd values.
-* FIX - Fixed Testimonial Grid masonry bug where desktop columns overcome mobile values.
-* FIX - Fixed Icon Box bug where title spacing, with inline icon, was also applied to the media.
-* FIX - Fixed Icon Box background icon color bug.
-* UPD - Made several improvements to Carousel and Slider widgets.
-* UPD - Improved Testimonial widget's layout 6 design by setting the media above content on mobile.
-* UPD - Added hover style options to the Icon Box badge.
-* UPD - Improved Icon Box readmore options by setting Box Hover and Button Hover separated styles.
+* FIX - Fixed Icon List numbers bug that outputted only odd values
+* FIX - Fixed Testimonial Grid masonry bug where desktop columns overcome mobile values
+* FIX - Fixed Icon Box bug where title spacing, with inline icon, was also applied to the media
+* FIX - Fixed Icon Box background icon color bug
+* UPD - Made several improvements to Carousel and Slider widgets
+* UPD - Improved Testimonial widget's layout 6 design by setting the media above content on mobile
+* UPD - Added hover style options to the Icon Box badge
+* UPD - Improved Icon Box readmore options by setting Box Hover and Button Hover separated styles
 
 = 1.0.6 =
 * NEW - Added new widget: Tabs (with Nested capabilities)

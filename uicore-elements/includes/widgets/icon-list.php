@@ -173,7 +173,6 @@ class IconList extends UiCoreWidget
                     '5' => '5',
                     '6' => '6',
                 ],
-                'render_type' => 'template',
                 'selectors' => [
                     '{{WRAPPER}} ul' => 'grid-template-columns: repeat({{SIZE}}, 1fr);',
                 ],
@@ -197,7 +196,7 @@ class IconList extends UiCoreWidget
 					'size' => 10,
 				],
                 'selectors' => [
-                    '{{WRAPPER}} li' => '--ui-e-grid-gap: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}}' => '--ui-e-grid-gap: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -1190,10 +1189,9 @@ class IconList extends UiCoreWidget
         $this->add_render_attribute('icon_list', 'class', $settings['show_number_icon'] === 'yes' ? 'ui-e-number' : '');
         ?>
             <ul>
+                <?php foreach ($settings['icon_list'] as $index => $item) :
 
-                <?php
-                $i = 1; // counter
-                foreach ($settings['icon_list'] as $index => $item) :
+                    $i = $index + 1; // index is 0 based
 
                     // Prepare the atts
                     $repeater_setting_key = $this->get_repeater_setting_key('text', 'icon_list', $index);
@@ -1201,69 +1199,66 @@ class IconList extends UiCoreWidget
                     $this->add_render_attribute($repeater_setting_key, 'class', 'elementor-icon-list-text');
                     $this->add_render_attribute('list_title_tags', 'class', 'ui-e-title', true);
 
-                    // Check if current item has link
+                    // Build url wrapper if link is set
                     if (!empty( $item['link']['url'] ) ) {
-                        $link_key = 'link_' . $index; // creates an unique link key via index
-                        $this->add_link_attributes( $link_key, $item['link'] ); // render links atts
+                        $link_key = 'link_' . $index;
+                        $this->add_link_attributes( $link_key, $item['link'] );
 
-                        $wrapper        = "<a class='ui-e-wrap' {$this->get_render_attribute_string($link_key)}>"; // creates the html
+                        $wrapper        = "<a class='ui-e-wrap' {$this->get_render_attribute_string($link_key)}>";
                         $wrapperClosure = 'a';
+
+                    // Build default wrapper otherwise
                     } else {
-                        $wrapper        = '<div class="ui-e-wrap">';  // if it hasn't, creates basic div wrapper
+                        $wrapper        = '<div class="ui-e-wrap">';
                         $wrapperClosure = 'div';
                     }
 
-                    // Check if the current item is below another one so we can start apply spacing
-                    if ($i > intval($settings['columns'])) {
-                        $this->add_render_attribute('list_class', 'class', 'ui-e-spacing', true);
-                    }
-                ?>
-                    <li <?php $this->print_render_attribute_string('list_class');?>>
+                    ?>
+                        <li <?php $this->print_render_attribute_string('list_class');?>>
 
-                        <?php echo wp_kses_post($wrapper); ?>
+                            <?php echo wp_kses_post($wrapper); ?>
 
-                            <?php if($settings['show_number_icon'] == 'yes') : ?>
-                                <div class='ui-e-number'>
-                                    <span> <?php echo esc_html($i);?> </span>
+                                <?php if($settings['show_number_icon'] == 'yes') : ?>
+                                    <div class='ui-e-number'>
+                                        <span> <?php echo esc_html($i);?> </span>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($item['img']['url'])) : ?>
+                                    <div class="ui-e-img">
+                                        <?php
+                                        $thumb_url = $item['img']['url'];
+                                        if ($thumb_url) {
+                                            echo wp_kses_post(wp_get_attachment_image(
+                                                $item['img']['id'],
+                                                'medium',
+                                                false,
+                                                [
+                                                    'alt' => esc_html($item['text'])
+                                                ]
+                                            ));
+                                        }
+                                        ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <div class="ui-e-content">
+                                    <<?php echo esc_html($tag);?> <?php $this->print_render_attribute_string('list_title_tags');?>>
+                                        <?php echo wp_kses_post($item['text']); ?>
+                                    </<?php echo esc_html($tag);?>>
+                                    <p class="ui-e-text"> <?php echo wp_kses_post($item['text_details']);?> </p>
                                 </div>
-                            <?php endif; ?>
 
-                            <?php if (!empty($item['img']['url'])) : ?>
-                                <div class="ui-e-img">
-                                    <?php
-                                    $thumb_url = $item['img']['url'];
-                                    if ($thumb_url) {
-                                        echo wp_kses_post(wp_get_attachment_image(
-                                            $item['img']['id'],
-                                            'medium',
-                                            false,
-                                            [
-                                                'alt' => esc_html($item['text'])
-                                            ]
-                                        ));
-                                    }
-                                    ?>
-                                </div>
-                            <?php endif; ?>
+                                <?php if (!empty($item['list_icon']['value'])) : ?>
+                                    <div class="ui-e-icon">
+                                        <?php Icons_Manager::render_icon($item['list_icon'], ['aria-hidden' => 'true']); ?>
+                                    </div>
+                                <?php endif; ?>
 
-                            <div class="ui-e-content">
-                                <<?php echo esc_html($tag);?> <?php $this->print_render_attribute_string('list_title_tags');?>>
-                                    <?php echo wp_kses_post($item['text']); ?>
-                                </<?php echo esc_html($tag);?>>
-                                <p class="ui-e-text"> <?php echo wp_kses_post($item['text_details']);?> </p>
-                            </div>
-
-                            <?php if (!empty($item['list_icon']['value'])) : ?>
-                                <div class="ui-e-icon">
-                                    <?php Icons_Manager::render_icon($item['list_icon'], ['aria-hidden' => 'true']); ?>
-                                </div>
-                            <?php endif; ?>
-
-                        </<?php echo esc_html($wrapperClosure)?>>
-                    </li>
-                <?php
-                $i++; // increase counter
-            endforeach; ?>
+                            </<?php echo esc_html($wrapperClosure)?>>
+                        </li>
+                    <?php
+                endforeach; ?>
             </ul>
         <?php
     }
