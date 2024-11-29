@@ -38,6 +38,7 @@ class Query extends Control_Select2
 
         // Build query args
         $query_args = [
+            'post_type' => $post_type,
             'orderby' => $settings['orderby'],
             'order' => $settings['order'],
             'post_status' => 'publish', // Hide drafts/private posts for admins
@@ -50,6 +51,7 @@ class Query extends Control_Select2
         if ($is_product) {
             $query_args['limit'] = $query_args['posts_per_page'];
             unset($query_args['posts_per_page']);
+            unset($query_args['post_type']);
         }
 
         // Offset arg

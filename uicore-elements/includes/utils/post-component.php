@@ -1083,17 +1083,23 @@ trait Post_Trait {
         if (!empty($settings['hover_animation'])) {
             $this->add_render_attribute('button', 'class', 'elementor-animation-' . $settings['hover_animation']);
         }
+
+        $btn_classes = isset($settings['icon_align'])
+                        ? ['elementor-button-icon', 'elementor-align-icon-' . $settings['icon_align'] ]
+                        : 'elementor-button-icon';
+
         $this->add_render_attribute([
             'icon-align' => [
-                'class' => [
-                    'elementor-button-icon',
-                    'elementor-align-icon-' . $settings['icon_align'],
-                ],
+                'class' => $btn_classes
             ],
             'text' => [
                 'class' => 'elementor-button-text',
             ],
         ]);
+
+        if( isset($settings['icon_align']) ){
+            $this->add_render_attribute('content-wrapper', 'class', 'elementor-button-content');
+        }
 
         $tbn_content = '<span ' . $this->get_render_attribute_string('content-wrapper') . '>';
 

@@ -4,7 +4,7 @@ Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
 Tested up to: 6.7.1
-Stable tag: 1.0.12
+Stable tag: 1.0.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,10 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+
+= 1.0.13 =
+* FIX - Fixed APG bug where Portfolio posts worked only by setting a taxonomy.
+* FIX - Fixed Contact Form bug where forms without required checkboxes failed on submitting.
 
 = 1.0.12 =
 * NEW - Added 'required' option to Checkbox field on Contact Form
