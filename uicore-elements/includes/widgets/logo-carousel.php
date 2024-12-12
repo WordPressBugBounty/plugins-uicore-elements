@@ -60,7 +60,7 @@ class LogoCarousel extends UiCoreWidget
     }
     public function get_scripts()
     {
-        return $this->TRAIT_get_scripts();
+        return $this->TRAIT_get_carousel_scripts();
     }
     protected function register_controls()
     {

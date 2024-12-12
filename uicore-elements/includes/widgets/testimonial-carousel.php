@@ -67,7 +67,7 @@ class TestimonialCarousel extends UiCoreWidget
                 ]
             ]
         ];
-        return array_merge($scripts, $this->TRAIT_get_scripts());
+        return array_merge($scripts, $this->TRAIT_get_carousel_scripts());
     }
     protected function register_controls()
     {

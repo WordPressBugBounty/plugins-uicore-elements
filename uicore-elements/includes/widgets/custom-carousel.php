@@ -50,7 +50,7 @@ class CustomCarousel extends UiCoreNestedWidget {
     }
     public function get_scripts()
     {
-        return $this->TRAIT_get_scripts(false);
+        return $this->TRAIT_get_carousel_scripts(false);
     }
 
     // Nested required functions

@@ -29,20 +29,20 @@ trait Item_Style_Component {
 			$this->add_group_control(
 				Group_Control_Background::get_type(),
 				[
-					'name'      => 'item_background',
-					'selector'  => '{{WRAPPER}} .ui-e-item',
+					'name' => 'item_background',
+					'selector' => '{{WRAPPER}} .ui-e-item',
 				]
 			);
 			$this->add_group_control(
 				Group_Control_Border::get_type(),
 				[
-					'name'           => 'item_border',
-					'label'          => esc_html__( 'Border', 'uicore-elements' ),
+					'name' => 'item_border',
+					'label' => esc_html__( 'Border', 'uicore-elements' ),
 					'fields_options' => [
 						'border' => [
 							'default' => 'solid',
 						],
-						'width'  => [
+						'width' => [
 							'default' => [
 								'top'      => '1',
 								'right'    => '1',
@@ -55,14 +55,14 @@ trait Item_Style_Component {
 							'default' => '#EEE'
 						]
 					],
-					'selector'       => '{{WRAPPER}} .ui-e-item',
+					'selector' => '{{WRAPPER}} .ui-e-item',
 				]
 			);
 			$this->add_control(
 				'item_border_radius',
 				[
-					'label'      => esc_html__( 'Border Radius', 'uicore-elements' ),
-					'type'       => Controls_Manager::DIMENSIONS,
+					'label' => esc_html__( 'Border Radius', 'uicore-elements' ),
+					'type' => Controls_Manager::DIMENSIONS,
 					'size_units' => [ 'px', '%' ],
 					'default' => [
 						'top' => 12,
@@ -72,16 +72,17 @@ trait Item_Style_Component {
 						'unit' => 'px',
 						'isLinked' => true,
 					],
-					'selectors'  => [
+					'selectors' => [
                         '{{WRAPPER}}' => '--ui-e-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};', // Sliders use --ui-e-radius var as item radius
+                        '{{WRAPPER}} .ui-e-item' => 'border-radius: var(--ui-e-radius);',
 					],
 				]
 			);
 			$this->add_control(
 				'item_padding',
 				[
-					'label'      => esc_html__( 'Padding', 'uicore-elements' ),
-					'type'       => Controls_Manager::DIMENSIONS,
+					'label' => esc_html__( 'Padding', 'uicore-elements' ),
+					'type' => Controls_Manager::DIMENSIONS,
 					'size_units' => [ 'px', 'em', '%' ],
 					'default' => [
 						'top' => 30,
@@ -91,7 +92,7 @@ trait Item_Style_Component {
 						'unit' => 'px',
 						'isLinked' => true,
 					],
-					'selectors'  => [
+					'selectors' => [
 						'{{WRAPPER}} .ui-e-item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					],
 				]
@@ -99,7 +100,7 @@ trait Item_Style_Component {
 			$this->add_group_control(
 				Group_Control_Box_Shadow::get_type(),
 				[
-					'name'     => 'item_box_shadow',
+					'name' => 'item_box_shadow',
 					'selector' => '{{WRAPPER}} .ui-e-item',
 				]
 			);
@@ -123,15 +124,15 @@ trait Item_Style_Component {
 			$this->add_group_control(
 				Group_Control_Background::get_type(),
 				[
-					'name'      => 'item_hover_background',
-					'selector'  => '{{WRAPPER}} .ui-e-item:hover',
+					'name' => 'item_hover_background',
+					'selector' => '{{WRAPPER}} .ui-e-item:hover',
 				]
 			);
 			$this->add_control(
 				'item_hover_border_color',
 				[
-					'label'     => esc_html__( 'Border Color', 'uicore-elements' ),
-					'type'      => Controls_Manager::COLOR,
+					'label' => esc_html__( 'Border Color', 'uicore-elements' ),
+					'type' => Controls_Manager::COLOR,
 					'condition' => [
 						'item_border_border!' => '',
 					],
@@ -143,7 +144,7 @@ trait Item_Style_Component {
 			$this->add_group_control(
 				Group_Control_Box_Shadow::get_type(),
 				[
-					'name'     => 'item_hover_box_shadow',
+					'name' => 'item_hover_box_shadow',
 					'selector' => '{{WRAPPER}} .ui-e-wrp:hover .ui-e-item',
 				]
 			);
@@ -167,15 +168,15 @@ trait Item_Style_Component {
 			$this->add_group_control(
 				Group_Control_Background::get_type(),
 				[
-					'name'      => 'item_active_background',
-					'selector'  => '{{WRAPPER}} .ui-e-wrp.is-selected .ui-e-item',
+					'name' => 'item_active_background',
+					'selector' => '{{WRAPPER}} .ui-e-wrp.is-selected .ui-e-item',
 				]
 			);
 			$this->add_control(
 				'item_active_border_color',
 				[
-					'label'     => esc_html__( 'Border Color', 'uicore-elements' ),
-					'type'      => Controls_Manager::COLOR,
+					'label' => esc_html__( 'Border Color', 'uicore-elements' ),
+					'type' => Controls_Manager::COLOR,
 					'condition' => [
 						'item_border_border!' => '',
 					],
@@ -187,7 +188,7 @@ trait Item_Style_Component {
 			$this->add_group_control(
 				Group_Control_Box_Shadow::get_type(),
 				[
-					'name'     => 'item_active_box_shadow',
+					'name' => 'item_active_box_shadow',
 					'selector' => '{{WRAPPER}} .ui-e-wrp.is-selected .ui-e-item',
 				]
 			);

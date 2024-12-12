@@ -13,14 +13,11 @@ trait Grid_Trait {
     /**
      * Registers the grid layout controls.
      *
-     * @param bool $maso Whether to enable masonry layout. (Default: true)
-     * @param array $maso_conditions The conditions for masonry layout.
-     * @param bool $legacy_maso Whether to use legacy masonry layout.
-     * @param bool/array $column_prefix Set a prefix class to be returned with the column value
-     * @param array $gap_conditions The conditions for columns.
+     * @param array $conditions Conditions for the grid layout controls. Eg: ['{control-slug}' => '{control-value}']
      */
-    function TRAIT_register_grid_layout_controls()
+    function TRAIT_register_grid_layout_controls($conditions = [])
     {
+
         $this->add_responsive_control(
             'columns',
             [
@@ -43,6 +40,7 @@ trait Grid_Trait {
                     '{{WRAPPER}} .ui-e-grid' => 'grid-template-columns: repeat({{VALUE}}, minmax(0, 1fr)); --ui-e-column-count: {{VALUE}};', // the var is used by masonry
                     '{{WRAPPER}} .ui-e-adv-grid' => 'grid-template-columns: repeat({{VALUE}}, minmax(0, 1fr))', // Old APG Suport
                 ],
+                'condition' => $conditions
             ]
         );
         $this->add_responsive_control(
@@ -65,6 +63,7 @@ trait Grid_Trait {
                     '{{WRAPPER}} .ui-e-grid' => 'grid-gap: {{SIZE}}{{UNIT}};',
                     '{{WRAPPER}} .ui-e-adv-grid' => 'grid-gap: {{SIZE}}{{UNIT}};', // Old APG Suport
                 ],
+                'condition' => $conditions
             ]
         );
         $this->add_control(
@@ -77,6 +76,7 @@ trait Grid_Trait {
                     '{{WRAPPER}} .ui-e-grid' => 'column-count: var(--ui-e-column-count); column-gap: {{gap.SIZE}}{{gap.UNIT}};',
                     '{{WRAPPER}} .ui-e-wrp' => 'margin-bottom: {{gap.SIZE}}{{gap.UNIT}};'
                 ],
+                'condition' => $conditions
             ]
         );
     }

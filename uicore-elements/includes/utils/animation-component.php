@@ -13,13 +13,16 @@ trait Animation_Trait {
      *
      * @param string $name The name of the control.
      * @param array $conditions Control conditions. (optional)
-     * @param array $filter Animation Filter list. (optional)
+     * @param array $filter Removes requested animations from the options. (optional)
      * @param string|null $custom_slug A custom slug for the control. If null, use $name as slug, formating it. (optional)
+     * @param bool $use_new Include new animations not globally available. (optional)
+     *
      * @return void
      */
-    function TRAIT_register_hover_animation_control($name, $conditions = [], $filter = [], $custom_slug = null)
+    function TRAIT_register_hover_animation_control($name, $conditions = [], $filter = [], $custom_slug = null, $use_new = false)
     {
         // Custom slug or name converted to slug
+        // TODO: use sanitize_title() instead of the 3 functions combined above
         $slug  = isset($custom_slug) ? $custom_slug : strtolower(preg_replace('/\s+/', '_', preg_replace('/[^a-zA-Z0-9\s]/', '', $name)));
 
         $this->add_control(
@@ -29,7 +32,7 @@ trait Animation_Trait {
                 'type' => Controls_Manager::SELECT,
                 'default' => '',
                 'label_block' => true,
-                'options' => $this->uicore_get_animations($filter),
+                'options' => $this->uicore_get_animations($filter, $use_new),
                 'condition' => $conditions
             ]
         );
@@ -155,11 +158,18 @@ trait Animation_Trait {
      * Retrieves the animations list available for the widget.
      *
      * @param array $filter_list Optional. An array of animation names to filter the results.
+     * @param bool $use_new Optional. Include new animations not globally available. Default is false.
+     *
      * @return array The list of animations available for the widget.
      */
-    function uicore_get_animations($filter_list = [])
+    function uicore_get_animations($filter_list = [], $use_new = false)
     {
-        // Animations
+        // New animations (transfer to default animation_list only after testing and updating all affected widgets)
+        $new_animations = [
+            'show' => 'Show'
+        ];
+
+        // Solid animations
         $animation_list = [
             ''          => 'None',
             'translate' => 'Translate',
@@ -169,6 +179,11 @@ trait Animation_Trait {
         ];
         $list = [];
         $animation_list = wp_parse_args($this->animation, $animation_list);
+
+        // Add new animations if requested
+        if( $use_new ){
+            $animation_list = array_merge($animation_list, $new_animations);
+        }
 
         // Filter the list of animations
         if (!empty($filter_list)) {
@@ -182,5 +197,32 @@ trait Animation_Trait {
         }
 
         return $list;
+    }
+
+    /**
+     * Update an existent animation control with newest animations.
+     *
+     * This method is meant to progressively add new animation to the previous
+     * animations list without impacting all widgets at once. It must be removed
+     * after a given animation is globaly available.
+     *
+     * @param $name The name of the existent control to be updated.
+     * @param array $filter Animation Filter list. (optional)
+     *
+     * @return void
+     */
+    function TRAIT_extend_control_animations($name, $filter = [])
+    {
+
+        // Get animations with new animations enabled
+        $animations = $this->uicore_get_animations($filter, true);
+
+        // Update the required control
+        $this->update_control(
+            $name,
+            [
+                'options' => $animations
+            ]
+        );
     }
 }

@@ -57,12 +57,22 @@ trait Carousel_Trait {
      * Returns the Carousel/Slider widget scripts.
      *
      * @param bool $use_entrance If the entrance script should be enqueued or not. Default is `true`.
+     * @param array $extra_conditions Extra conditions to be added to the scripts.
      *
      * @return array The array of scripts for the widget.
      */
-    function TRAIT_get_scripts($use_entrance = true) { // TODO: update name
+    function TRAIT_get_carousel_scripts($use_entrance = true, $extra_conditions = null) {
 
-        $base = ['carousel'];
+        $base = [ 'carousel' ];
+
+        // Add extra conditions to carousel script if requested
+        if( isset($extra_conditions) ){
+			$base['carousel'] = ['condition' => []];
+
+            foreach ($extra_conditions as $key => $value){
+                $base['carousel']['condition'][$key] = $value;
+            }
+        }
 
         if($use_entrance) {
             $base['entrance'] = [
@@ -696,7 +706,7 @@ trait Carousel_Trait {
 							'title' => __('Center', 'uicore-elements'),
 							'icon'  => 'eicon-v-align-middle',
 						],
-						'top: auto; bottom: -25px' => [
+						'top: auto; bottom: -25px !important;' => [
 							'title' => __('Bottom', 'uicore-elements'),
 							'icon'  => 'eicon-v-align-bottom',
 						],
@@ -704,7 +714,7 @@ trait Carousel_Trait {
 					'selectors' => [
 						'{{WRAPPER}} .ui-e-dots' => '{{VALUE}}'
 					],
-					'default' => 'bottom: -25px;',
+					'default' => 'top: auto; bottom: -25px !important;',
 					'conditions' =>  $this->nav_conditions('dots'),
 				]
 			);
@@ -1663,11 +1673,6 @@ trait Carousel_Trait {
 	function TRAIT_render_carousel_navigations()
 	{
 		$navigation = $this->get_settings_for_display('navigation');
-
-		// Migration code from old navigation select2 array values - TODO: remove in future
-		if(is_array($navigation)) {
-			$navigation = implode('-', $navigation);
-		}
 
 		if(strpos($navigation, 'dots') !== false) {
 			$this->render_carousel_dots();

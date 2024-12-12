@@ -58,7 +58,7 @@ class AdvancedPostCarousel extends UiCoreWidget
     }
     public function get_scripts()
     {
-        return $this->TRAIT_get_scripts();
+        return $this->TRAIT_get_carousel_scripts();
     }
 
     private function filter_missing_taxonomies($settings)

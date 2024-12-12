@@ -4,7 +4,7 @@ Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
 Tested up to: 6.7.1
-Stable tag: 1.0.13
+Stable tag: 1.0.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,9 +49,14 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 
 == Changelog ==
 
+= 1.0.14 =
+* NEW - Added three new widgets: Gallery Grid, Gallery Carousel and Gallery Slider
+* FIX - Fixed Carousel dots navigation position bug, where dots started above widgets by default
+* FIX - Logged-in issues with latest Elementor Pro
+
 = 1.0.13 =
-* FIX - Fixed APG bug where Portfolio posts worked only by setting a taxonomy.
-* FIX - Fixed Contact Form bug where forms without required checkboxes failed on submitting.
+* FIX - Fixed APG bug where Portfolio posts worked only by setting a taxonomy
+* FIX - Fixed Contact Form bug where forms without required checkboxes failed on submitting
 
 = 1.0.12 =
 * NEW - Added 'required' option to Checkbox field on Contact Form
@@ -100,7 +105,7 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 * NEW - Added new animation to Testimonial Slider: Circular Avatar
 * NEW - Added Mailchimp Integration to form widgets
 * FIX - Fixed Slider Widget's Stacked animation bug
-* FIX - Fixed Counter icon color bug with Inline Font Icon experiment.
+* FIX - Fixed Counter icon color bug with Inline Font Icon experiment
 * FIX - Fixed Icon List numbers bug that outputted only odd values
 * FIX - Fixed Testimonial Grid masonry bug where desktop columns overcome mobile values
 * FIX - Fixed Icon Box bug where title spacing, with inline icon, was also applied to the media

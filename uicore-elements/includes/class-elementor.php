@@ -24,36 +24,52 @@ class Elementor
 
     public function init_widgets()
     {
-        //Only working with UiCore Framework
-        if(defined('UICORE_ASSETS')){
-            require_once UICORE_ELEMENTS_INCLUDES . '/widgets/post-grid.php';
-        }
-
+        // Generic widgets
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/highlighted-text.php';
-        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/advanced-post-grid.php';
-        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/advanced-product-grid.php';
-        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/advanced-post-carousel.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/icon-list.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/counter.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/icon-box.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/accordion.php';
-        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/tabs.php';
-        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/custom-carousel.php';
-        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/custom-slider.php';
-        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/icon-list.php';
+
+        // Gallery Widgets
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/gallery-grid.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/gallery-carousel.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/gallery-slider.php';
+
+        // Post Widgets
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/advanced-post-grid.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/advanced-post-carousel.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/advanced-product-grid.php';
+
+        // Testimonial widgets
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/testimonial-grid.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/testimonial-carousel.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/testimonial-slider.php';
+
+        // Logo widgets
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/logo-grid.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/logo-carousel.php';
+
+        // Form widgets
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/contact-form.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/newsletter.php';
 
+        // Nested feature widgets
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/tabs.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/custom-carousel.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/custom-slider.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/custom-table.php';
 
+        // Theme Builder widgets
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/the-content.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/the-title.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/post-meta.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/page-description.php';
+
+        // Dependent on Uicore Framework
+        if(defined('UICORE_ASSETS')){
+            require_once UICORE_ELEMENTS_INCLUDES . '/widgets/post-grid.php';
+        }
     }
 
 
@@ -71,6 +87,7 @@ class Elementor
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/carousel-component.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/testimonial-component.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/logo-component.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/utils/gallery-component.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/animation-component.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/meta-component.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/pagination-component.php';

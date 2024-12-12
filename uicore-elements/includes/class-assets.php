@@ -130,7 +130,6 @@ class Assets {
             'ui-e-carousel' => [
                 'src'       => UICORE_ELEMENTS_ASSETS . '/js/utils/global-carousel.js',
                 'version'   => UICORE_ELEMENTS_VERSION,
-                'deps'      => ['elementor-frontend'],
                 'in_footer' => true
             ],
         ];
