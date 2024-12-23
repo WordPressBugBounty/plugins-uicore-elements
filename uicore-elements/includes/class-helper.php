@@ -174,8 +174,6 @@ class Helper
     {
         global $post;
 
-        // TODO: problems related to the lack of ID on posts object should be treated here.
-
         return wc_get_related_products($post->ID, $limit);
     }
 

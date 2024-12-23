@@ -46,6 +46,13 @@ class AdvancedPostCarousel extends UiCoreWidget
     {
         $styles = [
             'advanced-post-carousel',
+            'carousel',
+            'post-meta',
+            'filters' => [
+                'condition' => [
+                    'post_filtering' => 'yes',
+                ]
+            ],
             'animation', // hover animations
             'entrance', // entrance basic style
         ];

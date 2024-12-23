@@ -48,7 +48,9 @@ class AdvancedProductGrid extends AdvancedPostGrid
         // remove parent AdvancedPostGrid widget main style. OBS: the IDE complains because get_styles doc
         // says it returns obj, but we're extending a widget that returns the array, so the parent
         // is not widget base, but the AdvancedPostGrid widget
-        $styles = array_diff($styles, ['advanced-post-grid']);
+        if ( ($key = array_search('advanced-post-grid', $styles)) !== false)  {
+            unset($styles[$key]);
+        }
 
         // Add the product grid style
         $styles[] = 'advanced-product-grid';

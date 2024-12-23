@@ -50,6 +50,13 @@ class AdvancedPostGrid extends UiCoreWidget
     {
         $styles = [
             'advanced-post-grid',
+            'legacy-grid',
+            'post-meta',
+            'filters' => [
+				'condition' => [
+					'post_filtering' => 'yes',
+				],
+			],
             'animation', // hover animations
             'entrance', // entrance basic style
         ];
@@ -252,6 +259,9 @@ class AdvancedPostGrid extends UiCoreWidget
         $items = $settings['item_limit']['size'];
         $loops = 0;
 
+        // Set masonry class
+        $masonry = $settings['masonry'] === 'yes' ? 'ui-e-maso' : '';
+
         $this->TRAIT_render_filters($settings);
 
         // No posts found
@@ -260,7 +270,7 @@ class AdvancedPostGrid extends UiCoreWidget
         } else {
 
             ?>
-                <div class="ui-e-adv-grid">
+                <div class="ui-e-adv-grid <?php echo esc_attr($masonry);?>">
                     <?php
                     while ($wp_query->have_posts()) {
 

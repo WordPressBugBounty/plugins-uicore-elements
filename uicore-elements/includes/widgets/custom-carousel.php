@@ -45,7 +45,10 @@ class CustomCarousel extends UiCoreNestedWidget {
     }
     public function get_styles()
     {
-        $styles = ['custom-carousel'];
+        $styles = [
+            'custom-carousel',
+            'carousel'
+        ];
         return $styles;
     }
     public function get_scripts()
@@ -220,7 +223,7 @@ class CustomCarousel extends UiCoreNestedWidget {
 
     public function render_item( $index ) {
         ?>
-            <div class="ui-e-wrp swiper-slide">
+            <div class="ui-e-wrp swiper-slide" data-hash="<?php echo esc_html($index);?>">
                 <?php $this->print_child( $index ); ?>
             </div>
         <?php

@@ -48,6 +48,7 @@ class LogoCarousel extends UiCoreWidget
     {
         $styles = [
             'logo-carousel',
+            'carousel',
             'animation', // hover animations
             'entrance', // entrance basic style
         ];

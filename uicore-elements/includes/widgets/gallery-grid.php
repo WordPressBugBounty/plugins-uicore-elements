@@ -50,6 +50,12 @@ class GalleryGrid extends UiCoreWidget
     {
         $styles = [
             'gallery-grid',
+            'grid',
+            'filters' => [
+                'condition' => [
+                    'filters' => 'yes',
+                ]
+            ],
             'animation', // hover animations
             'entrance', // entrance basic style
         ];
@@ -229,11 +235,12 @@ class GalleryGrid extends UiCoreWidget
     public function render()
     {
         $settings = $this->get_settings_for_display();
+        $masonry = ( isset($settings['masonry']) && $settings['masonry'] === 'yes' ) ? 'ui-e-maso' : '';
 
         $this->TRAIT_render_gallery_filters($settings);
 
         ?>
-            <div class='ui-e-grid ui-e-items-wrp'>
+            <div class='ui-e-grid ui-e-items-wrp <?php echo esc_attr($masonry) ;?>'>
                 <?php $this->TRAIT_render_gallery($settings); ?>
             </div>
         <?php

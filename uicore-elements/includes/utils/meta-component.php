@@ -25,6 +25,7 @@ trait Meta_Trait {
             'comment'      => __( 'Comments Count', 'uicore-elements' ),
             'reading time' => __( 'Reading Time', 'uicore-elements' ),
             'category'     => __( 'Category', 'uicore-elements' ),
+            'tag'          => __( 'Tag', 'uicore-elements' ),
         ];
         $products = [
             'product price'     => __( 'Product Price', 'uicore-elements' ),
@@ -381,6 +382,9 @@ trait Meta_Trait {
                 break;
             case 'category':
                 $content .= Helper::get_taxonomy('category');
+                break;
+            case 'tag':
+                $content .= Helper::get_taxonomy('post_tag');
                 break;
             case 'portfolio category':
                 $content .= Helper::get_taxonomy('portfolio_category');

@@ -49,6 +49,7 @@ class TestimonialGrid extends UiCoreWidget
     {
         $styles = [
             'testimonial-grid',
+            'grid',
             'animation', // hover animations
             'entrance', // entrance basic style
         ];
@@ -62,7 +63,7 @@ class TestimonialGrid extends UiCoreWidget
     public function get_scripts()
     {
         return [
-            'utils/global-testimonial' => [
+            'testimonial' => [
                 'condition' => [
                     'layout' => 'layout_5'
                 ],
@@ -123,8 +124,9 @@ class TestimonialGrid extends UiCoreWidget
     {
         $settings = $this->get_settings_for_display();
         $layout   = $settings['layout'];
+        $masonry  = $settings['masonry'] === 'yes' ? 'ui-e-maso' : '';
 
-        $this->add_render_attribute('review-card', 'class', 'ui-e-grid');
+        $this->add_render_attribute('review-card', 'class', ['ui-e-grid', $masonry]);
         ?>
         <div <?php $this->print_render_attribute_string('review-card'); ?>>
             <?php foreach ( $settings['review_items'] as $index => $item ) : ?>

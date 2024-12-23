@@ -39,6 +39,7 @@ class Logo_Grid extends UiCoreWidget {
     {
         $styles = [
             'logo-grid',
+            'grid',
             'animation', // hover animations
             'entrance', // entrance basic style
         ];

@@ -27,7 +27,7 @@ class Query extends Control_Select2
 
         // Add extra settings
         $defaults = [
-            $control_id . '_post_type' => $post_type, // TODO: test without, maybe is not needed anymore.
+            $control_id . '_post_type' => $post_type,
             $control_id . '_posts_ids' => [],
             'orderby' => 'date',
             'order' => 'desc',

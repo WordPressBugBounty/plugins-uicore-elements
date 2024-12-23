@@ -34,17 +34,22 @@ trait Product_Trait {
 
         switch ($post_type){
             case 'current' :
-                $query_args = $default_query;
+                // Makes sure widget will render some products at editor screen
+                if( $this->is_edit_mode() ){
+                    $query_args['post_type'] = 'product';
 
-                // Set pagination
-                $query_args['paged'] = Query::get_queried_page($settings);
+                } else {
+                    $query_args = $default_query;
 
-                // Set tax filters for filter component, if enabled
-                $queried_filters = Query::get_queried_filters($settings, 'product', 'product-filter');
-                $query_args['tax_query'] = empty($queried_filters['tax_query']) ? [] : $queried_filters['tax_query'];
+                    // Set pagination
+                    $query_args['paged'] = Query::get_queried_page($settings);
+
+                    // Set tax filters for filter component, if enabled
+                    $queried_filters = Query::get_queried_filters($settings, 'product', 'product-filter');
+                    $query_args['tax_query'] = empty($queried_filters['tax_query']) ? [] : $queried_filters['tax_query'];
+                }
                 break;
 
-            //
             case 'related' :
                 return Helper::get_product_related($settings['item_limit']['size']);
                 break;

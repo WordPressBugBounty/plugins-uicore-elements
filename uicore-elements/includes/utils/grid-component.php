@@ -71,11 +71,11 @@ trait Grid_Trait {
             [
                 'label'   => __('Masonry', 'uicore-elements'),
                 'type'    => Controls_Manager::SWITCHER,
-                'prefix_class' => 'ui-e-maso-',
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-grid' => 'column-count: var(--ui-e-column-count); column-gap: {{gap.SIZE}}{{gap.UNIT}};',
                     '{{WRAPPER}} .ui-e-wrp' => 'margin-bottom: {{gap.SIZE}}{{gap.UNIT}};'
                 ],
+                'render_type' => 'template',
                 'condition' => $conditions
             ]
         );

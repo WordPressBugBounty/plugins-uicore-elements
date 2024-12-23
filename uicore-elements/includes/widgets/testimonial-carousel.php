@@ -48,6 +48,7 @@ class TestimonialCarousel extends UiCoreWidget
     {
         $styles = [
             'testimonial-carousel',
+            'carousel',
             'animation', // hover animations
             'entrance', // entrance basic style
         ];
@@ -61,7 +62,7 @@ class TestimonialCarousel extends UiCoreWidget
     public function get_scripts()
     {
         $scripts = [
-            'utils/global-testimonial' => [
+            'testimonial' => [
                 'condition' => [
                     'layout' => 'layout_5'
                 ]

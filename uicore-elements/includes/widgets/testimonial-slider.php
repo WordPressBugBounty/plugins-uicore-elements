@@ -32,16 +32,12 @@ class TestimonialSlider extends TestimonialCarousel
     }
     public function get_styles()
     {
-        $styles = [
-            'testimonial-slider',
-            'animation', // hover animations
-            'entrance', // entrance basic style
-        ];
-        if(!class_exists('\UiCore\Core') && !class_exists('\UiCoreAnimate\Base')){
-            $styles['e-animations'] = [ // entrance animations
-                'external' => true,
-            ];
-        }
+        $styles = parent::get_styles();
+
+        // replace 'testimonial-carousel' for 'testimonial-slider'
+        unset($styles['testimonial-carousel']);
+        $styles[] = 'testimonial-slider';
+
         return $styles;
     }
     protected function register_controls() {

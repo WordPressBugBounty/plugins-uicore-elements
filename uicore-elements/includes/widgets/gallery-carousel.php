@@ -50,6 +50,7 @@ class GalleryCarousel extends UiCoreWidget
     {
         $styles = [
             'gallery-carousel',
+            'carousel',
             'animation', // hover animations
             'entrance', // entrance basic style
         ];

@@ -44,7 +44,14 @@ class Counter extends UiCoreWidget
 	}
 	public function get_styles()
 	{
-		return [ 'counter' ];
+		return [
+            'counter',
+            'counter-motion' => [
+                'condition' => [
+                    'counter_animation' => 'motion',
+                ],
+            ],
+        ];
 	}
     public function get_scripts()
 	{

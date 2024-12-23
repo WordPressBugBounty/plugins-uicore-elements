@@ -85,13 +85,13 @@ trait Carousel_Trait {
         // Specific Slider scripts
         if( strpos($this->get_name(), 'slide') !== false ){
             $type = [
-                'utils/carousel-effects/stacked' => [
+                'stacked-carousel' => [
                     'condition' => [
                         'animation_style' => 'stacked',
                     ]
                 ],
                 // TODO: move out and pass as extra
-                'utils/carousel-effects/circular_avatar' => [
+                'circular-avatar-carousel' => [
                     'condition' => [
                         'animation_style' => 'circular_avatar',
                     ]
@@ -101,12 +101,12 @@ trait Carousel_Trait {
         // Specific Carousel scripts - if is not slider, is Carousel :)
         } else {
             $type = [
-                'utils/carousel-effects/circular' => [
+                'circular-carousel' => [
                     'condition' => [
                         'animation_style' => 'circular',
                     ]
                 ],
-                'utils/carousel-effects/fade-and-blur' => [
+                'fade-blur-carousel' => [
                     'condition' => [
                         'animation_style' => 'fade_blur',
                     ]
@@ -934,6 +934,7 @@ trait Carousel_Trait {
 				'type'  => Controls_Manager::SWITCHER,
 				'return_value' => 'true',
 				'frontend_available' => true,
+                'separator' => 'after',
 				'condition' => [
 					'autoplay' => 'yes',
 				]
@@ -1673,6 +1674,11 @@ trait Carousel_Trait {
 	function TRAIT_render_carousel_navigations()
 	{
 		$navigation = $this->get_settings_for_display('navigation');
+
+		// Migration code from old navigation select2 array values - TODO: removed to soon apparently, keep it for more releases.
+		if(is_array($navigation)) {
+			$navigation = implode('-', $navigation);
+		}
 
 		if(strpos($navigation, 'dots') !== false) {
 			$this->render_carousel_dots();

@@ -182,6 +182,36 @@
             <field type="Readmore: text" editor_type="LINE">text</field>
         </fields>
     </widget>
+    <widget name="uicore-advanced-product-grid">
+        <conditions>
+            <condition key="widgetType">uicore-advanced-product-grid</condition>
+        </conditions>
+        <!-- meta fields -->
+        <fields-in-item items_of="top_meta">
+            <field type="Meta: text before" editor_type="LINE">before</field>
+            <field type="Meta: text after" editor_type="LINE">after</field>
+            <field type="Meta: custom text" editor_type="LINE">html_custom</field>
+        </fields-in-item>
+        <fields-in-item items_of="before_title_meta">
+            <field type="Meta: text before" editor_type="LINE">before</field>
+            <field type="Meta: text after" editor_type="LINE">after</field>
+            <field type="Meta: custom text" editor_type="LINE">html_custom</field>
+        </fields-in-item>
+        <fields-in-item items_of="after_title_meta">
+            <field type="Meta: text before" editor_type="LINE">before</field>
+            <field type="Meta: text after" editor_type="LINE">after</field>
+            <field type="Meta: custom text" editor_type="LINE">html_custom</field>
+        </fields-in-item>
+        <fields-in-item items_of="bottom_meta">
+            <field type="Meta: text before" editor_type="LINE">before</field>
+            <field type="Meta: text after" editor_type="LINE">after</field>
+            <field type="Meta: custom text" editor_type="LINE">html_custom</field>
+        </fields-in-item>
+        <!-- basic fields -->
+        <fields>
+            <field type="Readmore: text" editor_type="LINE">text</field>
+        </fields>
+    </widget>
     <widget name="uicore-advanced-post-carousel">
         <conditions>
             <condition key="widgetType">uicore-advanced-post-carousel</condition>
@@ -211,6 +241,41 @@
         <fields>
             <field type="Readmore: text" editor_type="LINE">text</field>
         </fields>
+    </widget>
+
+    <!-- Gallery Widgets -->
+    <widget name="uicore-gallery-grid">
+        <conditions>
+            <condition key="widgetType">uicore-gallery-grid</condition>
+        </conditions>
+        <fields-in-item items_of="gallery_items">
+            <field type="Title" editor_type="LINE">item_title</field>
+            <field type="Description" editor_type="LINE">item_description</field>
+            <field type="Badge" editor_type="LINE">item_badge</field>
+            <field type="Tags" editor_type="LINE">item_tags</field>
+        </fields-in-item>
+    </widget>
+    <widget name="uicore-gallery-carousel">
+        <conditions>
+            <condition key="widgetType">uicore-gallery-carousel</condition>
+        </conditions>
+        <fields-in-item items_of="gallery_items">
+            <field type="Title" editor_type="LINE">item_title</field>
+            <field type="Description" editor_type="LINE">item_description</field>
+            <field type="Badge" editor_type="LINE">item_badge</field>
+            <field type="Tags" editor_type="LINE">item_tags</field>
+        </fields-in-item>
+    </widget>
+    <widget name="uicore-gallery-slider">
+        <conditions>
+            <condition key="widgetType">uicore-gallery-slider</condition>
+        </conditions>
+        <fields-in-item items_of="gallery_items">
+            <field type="Title" editor_type="LINE">item_title</field>
+            <field type="Description" editor_type="LINE">item_description</field>
+            <field type="Badge" editor_type="LINE">item_badge</field>
+            <field type="Tags" editor_type="LINE">item_tags</field>
+        </fields-in-item>
     </widget>
 
   </elementor-widgets>

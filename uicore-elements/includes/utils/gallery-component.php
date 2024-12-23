@@ -942,7 +942,7 @@ trait Gallery_Trait {
                 }
 
                 ?>
-                    <div <? $this->print_render_attribute_string('item_wrapper'); ?> data-ui-e-tags="<?php echo sanitize_title( $item['item_tags'] ); ?>">
+                    <div <?php $this->print_render_attribute_string('item_wrapper'); ?> data-ui-e-tags="<?php echo sanitize_title( $item['item_tags'] ); ?>">
 
                         <?php if($has_animation) : ?>
                             <div class='ui-e-animations-wrp <?php echo esc_attr($animations);?>'>

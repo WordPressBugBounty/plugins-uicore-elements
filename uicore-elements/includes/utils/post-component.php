@@ -924,21 +924,28 @@ trait Post_Trait {
             $query_args = Query::get_query_args('posts-filter', $settings);
 
             if ($post_type === 'current') {
-                $query_args = $default_query;
 
-                // Post type fallback for APG
-                if( isset($default_query['post_type']) || isset($default_query['query']['post_type']) ){
-                    $post_type = $default_query['post_type'] ?? $default_query['query']['post_type'];
+                // Makes sure widget will render some posts at editor screen
+                if( $this->is_edit_mode() ){
+                    $query_args['post_type'] = 'post';
+
                 } else {
-                    $post_type = 'post';
+                    $query_args = $default_query;
+
+                    // Post type fallback for APG
+                    if( isset($default_query['post_type']) || isset($default_query['query']['post_type']) ){
+                        $post_type = $default_query['post_type'] ?? $default_query['query']['post_type'];
+                    } else {
+                        $post_type = 'post';
+                    }
+
+                    // Set pagination
+                    $query_args['paged'] = Query::get_queried_page($settings);
+
+                    // Set tax filters for filter component, if enabled
+                    $queried_filters = Query::get_queried_filters($settings, get_post_type(), 'posts-filter');
+                    $query_args['tax_query'] = empty($queried_filters['tax_query']) ? [] : $queried_filters['tax_query'];
                 }
-
-                // Set pagination
-                $query_args['paged'] = Query::get_queried_page($settings);
-
-                // Set tax filters for filter component, if enabled
-                $queried_filters = Query::get_queried_filters($settings, get_post_type(), 'posts-filter');
-                $query_args['tax_query'] = empty($queried_filters['tax_query']) ? [] : $queried_filters['tax_query'];
             }
 
             if ($post_type === 'portfolio') {

@@ -4,7 +4,7 @@ Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
 Tested up to: 6.7.1
-Stable tag: 1.0.14
+Stable tag: 1.0.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,16 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 
 == Changelog ==
 
+= 1.0.15 =
+* NEW - Added 'Pause on Hover' option to Carousel widgets
+* NEW - Added `tag` to meta options for Advanced Post Widgets
+* UPD - Major assets update. Improved file organization; decreased some widget's required assets; added extra enqueue conditions and more
+* UPD - Adjusted compatibility issues and some other updates required by the Elementor 3.26 release
+* FIX - Fixed carousel undefined key error log
+* FIX - Fixed Custom Carousel dots navigation bug where dragging wouldn't update the active dot
+* FIX - Fixed Advanced Post Grid and Advanced Product Grid bug where you couldn't preview posts/products with 'current' query
+* FIX - Fixed incorrect php tag on Gallery widgets.
+
 = 1.0.14 =
 * NEW - Added three new widgets: Gallery Grid, Gallery Carousel and Gallery Slider
 * FIX - Fixed Carousel dots navigation position bug, where dots started above widgets by default
@@ -68,7 +78,7 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 * NEW - Added new widget: Advanced Product Grid
 * NEW - Added new widget: Custom Table (with Nested capabilities)
 * NEW - Added suffix/prefix style options and motion animation transition options to Counter widget
-* UPD - Improved the Andvanced Post Grid widget core
+* UPD - Improved the Advanced Post Grid widget core
 * FIX - Removed unnecessary bottom spacing from multiple widgets
 * FIX - Fixed Advanced Product Grid and Carousel widgets bug where ‘current’ query ignored taxonomy on archive pages
 * FIX - Fixed Post Grid width bug on Masonry layout

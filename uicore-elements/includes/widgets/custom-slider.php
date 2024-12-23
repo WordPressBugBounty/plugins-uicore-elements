@@ -37,6 +37,7 @@ class CustomSlider extends CustomCarousel {
     {
         $styles = [
             'custom-slider',
+            'carousel',
             'animation', // hover animations
             'entrance', // entrance basic style
         ];
