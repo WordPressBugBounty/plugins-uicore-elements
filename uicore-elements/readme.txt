@@ -4,7 +4,7 @@ Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
 Tested up to: 6.7.1
-Stable tag: 1.0.15
+Stable tag: 1.0.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,9 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+= 1.0.16 = 
+* FIX - PHP 8.x warnings
+* FIX - Minor small bugs fixes
 
 = 1.0.15 =
 * NEW - Added 'Pause on Hover' option to Carousel widgets
