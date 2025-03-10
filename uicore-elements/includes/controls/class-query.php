@@ -120,11 +120,11 @@ class Query extends Control_Select2
             'tax_query' => [],
         ];
 
-        if (isset($settings['post_filtering']) && $settings['post_filtering'] && isset($_GET['tax']) && isset($_GET['term'])) {
+        if (isset($settings['post_filtering']) && $settings['post_filtering'] && isset($_GET['tax']) && isset($_GET['term'])) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
             $args['tax_query'][] = [
-                'taxonomy' => sanitize_text_field($_GET['tax']),
+                'taxonomy' => sanitize_text_field( wp_unslash($_GET['tax'])), //phpcs:ignore WordPress.Security.NonceVerification.Recommended
                 'field'    => 'term_id',
-                'terms'    => intval($_GET['term']),
+                'terms'    => intval($_GET['term']), //phpcs:ignore WordPress.Security.NonceVerification.Recommended
             ];
 
         } else {
@@ -160,7 +160,8 @@ class Query extends Control_Select2
     /**
      * Get all products from a given product query and return the total amount of pages for it. Only for woo product queries.
      *
-     * TODO: investigate more performatic approaches, since this runs a query for the second time.
+     * TODO: investigate more performatic approaches, not only we're running a query for the second time,
+     * but we're using -1, wich means a big CPU and memory usage.
      */
     public static function get_total_pages($default_query)
     {

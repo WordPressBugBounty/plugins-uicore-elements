@@ -36,13 +36,14 @@ abstract class UiCoreNestedWidget extends UiCoreWidget {
 	 * [
 	 *      'elType' => 'container',
 	 *      'settings' => [
-	 *          '_title' => __( 'Tab #1', 'elementor' ),
+	 *          '_title' => __( 'Tab #1', 'uicore-elements' ),
 	 *      ],
 	 * ],
 	 * @return string
 	 */
 	protected function get_default_children_title() {
-		return esc_html__( 'Item #%d', 'elementor' );
+        /* translators: item number */
+		return esc_html__( 'Item #%d', 'uicore-elements' );
 	}
 
 	/**
@@ -118,9 +119,9 @@ abstract class UiCoreNestedWidget extends UiCoreWidget {
 	 */
 	public function print_child( $index ) {
 		$children = $this->get_children();
-		\error_log('print_child');
-		\error_log( print_r( $children, true ) );
-		\error_log( print_r( $index, true ) );
+		// \error_log('print_child');
+		// \error_log( print_r( $children, true ) );
+		// \error_log( print_r( $index, true ) );
 		if ( ! empty( $children[ $index ] ) ) {
 			$children[ $index ]->print_element();
 		}
@@ -148,8 +149,10 @@ abstract class UiCoreNestedWidget extends UiCoreWidget {
 	 */
     public function nesting_fallback(string $type = 'text') {
 
+        /* translators: 1: Opening anchor tag, 2: Closing anchor tag for the link to the Elementor settings page. */
         $warning = sprintf(
-            __('Please, %s click here %s and enable the Nested Elements experiment in Elementor settings', 'uicore-elements'),
+            /* translators: 1: opening url tags 2: closing url tag */
+            __('Please, %1$s click here %2$s and enable the Nested Elements experiment in Elementor settings', 'uicore-elements'),
             '<a href="' . esc_attr( Settings::get_settings_tab_url('experiments') ) . '" target="_blank">',
             '</a>'
         );

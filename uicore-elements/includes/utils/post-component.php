@@ -351,9 +351,17 @@ trait Post_Trait {
                 $this->start_controls_tab(
                     'item_bs_normal_tab',
                     [
-                        'label' => esc_html__('Normal', 'plugin-name'),
+                        'label' => esc_html__('Normal', 'uicore-elements'),
                     ]
                 );
+                    $this->add_group_control(
+                        Group_Control_Background::get_type(),
+                        [
+                            'name' => 'content_bg',
+                            'types' => [ 'classic', 'gradient' ],
+                            'selector' => '{{WRAPPER}} .ui-e-item article',
+                        ]
+                    );
                     $this->add_group_control(
                         Group_Control_Border::get_type(),
                         [
@@ -373,9 +381,17 @@ trait Post_Trait {
                 $this->start_controls_tab(
                     'item_bs_hover_tab',
                     [
-                        'label' => esc_html__('Hover', 'plugin-name'),
+                        'label' => esc_html__('Hover', 'uicore-elements'),
                     ]
                 );
+                    $this->add_group_control(
+                        Group_Control_Background::get_type(),
+                        [
+                            'name' => 'content_bg_hover',
+                            'types' => [ 'classic', 'gradient' ],
+                            'selector' => '{{WRAPPER}} .ui-e-item article',
+                        ]
+                    );
                     $this->add_group_control(
                         Group_Control_Border::get_type(),
                         [
@@ -396,7 +412,7 @@ trait Post_Trait {
                     $this->start_controls_tab(
                         'item_bs_active_tab',
                         [
-                            'label' => esc_html__('Active', 'plugin-name'),
+                            'label' => esc_html__('Active', 'uicore-elements'),
                         ]
                     );
                         $this->add_group_control(
@@ -419,11 +435,26 @@ trait Post_Trait {
             $this->end_controls_tabs();
 
             $this->add_control(
+                'item_padding',
+                [
+                    'label'       => esc_html__('Padding', 'uicore-elements'),
+                    'type'        => Controls_Manager::DIMENSIONS,
+                    'size_units' => ['px', 'em', 'rem', '%'],
+                    'separator' => 'before',
+                    'selectors'   => [
+                        '{{WRAPPER}} .ui-e-item article' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
+                    ],
+                    'condition' => array(
+                        'box_style!' => 'overlay',
+                    ),
+                ]
+
+            );
+            $this->add_control(
                 'item_radius',
                 [
                     'label'       => esc_html__('Border Radius', 'uicore-elements'),
                     'type'        => Controls_Manager::DIMENSIONS,
-                    'separator' => 'before',
                     'selectors'   => [
                         '{{WRAPPER}} ' => '--ui-e-border-radius: {{TOP}}px {{RIGHT}}px {{BOTTOM}}px {{LEFT}}px;'
                     ],
@@ -463,27 +494,16 @@ trait Post_Trait {
                 ]
             );
             $this->add_control(
-                'image_overflow',
-                [
-                    'label' => __('Independent Border Radius and Shadow', 'uicore-elements'),
-                    'type' => Controls_Manager::SWITCHER,
-                    'default' => 'no',
-                    'prefix_class' => 'ui-e-post-ovf-',
-                    'condition' => array(
-                        'box_style!' => 'overlay',
-                    ),
-                ]
-            );
-            $this->add_control(
                 'image_radius',
                 [
                     'label'       => esc_html__('Border Radius', 'uicore-elements'),
                     'type'        => Controls_Manager::DIMENSIONS,
+                    'size_units' => ['px', 'em', '%'],
                     'selectors'   => [
-                        '{{WRAPPER}} .ui-e-post-top' => 'border-radius: {{TOP}}px {{RIGHT}}px {{BOTTOM}}px {{LEFT}}px;'
+                        '{{WRAPPER}} .ui-e-post-top' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}px {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
                     ],
                     'condition' => array(
-                        'image_overflow' => 'yes',
+                        'box_style!' => 'overlay',
                     ),
                 ]
             );
@@ -494,7 +514,7 @@ trait Post_Trait {
                     'label' => esc_html__('Box Shadow', 'uicore-elements'),
                     'selector' => '{{WRAPPER}} .ui-e-post-top',
                     'condition' => array(
-                        'image_overflow' => 'yes',
+                        'box_style!' => 'overlay',
                     ),
                 ]
             );
@@ -618,6 +638,13 @@ trait Post_Trait {
                     ],
                 ]
             );
+            $this->add_group_control(
+                Group_Control_Background::get_type(),
+                [
+                    'name' => 'content_background',
+                    'selector' => '{{WRAPPER}} .ui-e-post-content',
+                ]
+            );
             $this->add_responsive_control(
                 'content_padding',
                 [
@@ -627,6 +654,19 @@ trait Post_Trait {
                     'selectors'  => [
                         '{{WRAPPER}} .ui-e-post-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
                     ]
+                ]
+            );
+            $this->add_control(
+                'content_radius',
+                [
+                    'label'       => esc_html__('Content Border Radius', 'uicore-elements'),
+                    'type'        => Controls_Manager::DIMENSIONS,
+                    'selectors'   => [
+                        '{{WRAPPER}} .ui-e-post-content' => 'border-radius: {{TOP}}px {{RIGHT}}px {{BOTTOM}}px {{LEFT}}px;'
+                    ],
+                    'condition' => array(
+                        'box_style!' => 'overlay',
+                    ),
                 ]
             );
             $this->add_control(
@@ -650,13 +690,9 @@ trait Post_Trait {
                     'selectors' => [
                         '{{WRAPPER}} ' => '--ui-e-content-space: {{SIZE}}em;',
                     ],
-                ]
-            );
-            $this->add_group_control(
-                Group_Control_Background::get_type(),
-                [
-                    'name' => 'content_bg',
-                    'selector' => '{{WRAPPER}} .ui-e-post-content',
+                    'condition' => array(
+                        'box_style!' => 'overlay',
+                    ),
                 ]
             );
 
@@ -681,23 +717,23 @@ trait Post_Trait {
             $this->add_responsive_control(
                 'button_align',
                 [
-                    'label' => esc_html__( 'Alignment', 'elementor' ),
+                    'label' => esc_html__( 'Alignment', 'uicore-elements' ),
                     'type' => Controls_Manager::CHOOSE,
                     'options' => [
                         'start'    => [
-                            'title' => esc_html__( 'Left', 'elementor' ),
+                            'title' => esc_html__( 'Left', 'uicore-elements' ),
                             'icon' => 'eicon-text-align-left',
                         ],
                         'center' => [
-                            'title' => esc_html__( 'Center', 'elementor' ),
+                            'title' => esc_html__( 'Center', 'uicore-elements' ),
                             'icon' => 'eicon-text-align-center',
                         ],
                         'end' => [
-                            'title' => esc_html__( 'Right', 'elementor' ),
+                            'title' => esc_html__( 'Right', 'uicore-elements' ),
                             'icon' => 'eicon-text-align-right',
                         ],
                         'normal' => [
-                            'title' => esc_html__( 'Justified', 'elementor' ),
+                            'title' => esc_html__( 'Justified', 'uicore-elements' ),
                             'icon' => 'eicon-text-align-justify',
                         ],
                     ],
@@ -1017,7 +1053,7 @@ trait Post_Trait {
                 <?php if ($this->get_settings_for_display('masonry') === 'ui-e-maso') { ?>
                     <?php the_post_thumbnail($size, ['class' => 'ui-e-post-img']); ?>
                 <?php } else { ?>
-                    <div class="ui-e-post-img" style="background-image:url(<?php echo wp_get_attachment_image_url($pic_id, $size) ?>)"></div>
+                    <div class="ui-e-post-img" style="background-image:url(<?php echo esc_url( wp_get_attachment_image_url($pic_id, $size)); ?>)"></div>
                 <?php } ?>
             </a>
         <?php
@@ -1125,16 +1161,17 @@ trait Post_Trait {
         // WooCommerce add to cart button
         if ($is_product) {
             if ($product) {
+                //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo Helper::esc_svg(apply_filters(
                     'woocommerce_loop_add_to_cart_link', // WPCS: XSS ok.
                     sprintf(
-                        '<a href="%s" data-quantity="%s" %s>%s</a>',
+                        '<a href="%1$s" data-quantity="1" %2$s> %3$s </a>',
                         esc_url($product->add_to_cart_url()),
-                        esc_attr(1),
+                        //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                         $this->get_render_attribute_string('button'),
-                        $tbn_content
+                        wp_kses_post($tbn_content)
                     ),
-                    $product
+                    wp_kses_post($product)
                 ));
             }
 
@@ -1142,7 +1179,10 @@ trait Post_Trait {
         } else {
             ?>
                 <a href="<?php echo esc_url(get_permalink()); ?>" <?php $this->print_render_attribute_string('button'); ?>>
-                    <?php echo Helper::esc_svg( $tbn_content ); ?>
+                    <?php
+                        //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        echo Helper::esc_svg( $tbn_content );
+                    ?>
                 </a>
             <?php
         }

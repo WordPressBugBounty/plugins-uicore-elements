@@ -34,7 +34,11 @@ class Animate
 				[
 					'label' => esc_html__( 'UiCore Animate required', 'uicore-elements' ),
 					'type' => \Elementor\Controls_Manager::RAW_HTML,
-					'raw' => __( '<p style="line-height:1.3;margin-top:1em;">Download and instal <a href="https://wordpress.org/plugins/uicore-animate/advanced/" target="_blank">UiCore Animate</a> for more advanced animations control</p>', 'uicore-elements' ),
+					'raw' => '<p style="line-height:1.3;margin-top:1em;">'
+                             . sprintf(
+                                /* translators: %s: link to Uicore Animate */
+                                __('Download and instal %s for more advanced animations control', 'uicore-elements'), '<a href="https://wordpress.org/plugins/uicore-animate/advanced/" target="_blank"> Uicore Animate</a>')
+                             . '</p>',
 				]
 			);
 			$widget->end_controls_section();

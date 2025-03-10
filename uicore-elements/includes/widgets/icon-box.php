@@ -372,29 +372,30 @@ class IconBox extends UiCoreWidget
 			]
 		);
 
-		$this->add_control(
-			'onclick',
-			[
-				'label'     => esc_html__('OnClick', 'uicore-elements'),
-				'type'      => Controls_Manager::SWITCHER,
-				'condition' => [
-					'readmore'       => 'yes',
-				]
-			]
-		);
+        // TODO: disabled due to a security complain from Wordfence team in name of Wordpress.
+		// $this->add_control(
+		// 	'onclick',
+		// 	[
+		// 		'label'     => esc_html__('OnClick', 'uicore-elements'),
+		// 		'type'      => Controls_Manager::SWITCHER,
+		// 		'condition' => [
+		// 			'readmore'       => 'yes',
+		// 		]
+		// 	]
+		// );
 
-		$this->add_control(
-			'onclick_event',
-			[
-				'label'       => esc_html__('OnClick Event', 'uicore-elements'),
-				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'myFunction()',
-				'condition' => [
-					'readmore'       => 'yes',
-					'onclick'        => 'yes'
-				]
-			]
-		);
+		// $this->add_control(
+		// 	'onclick_event',
+		// 	[
+		// 		'label'       => esc_html__('OnClick Event', 'uicore-elements'),
+		// 		'type'        => Controls_Manager::TEXT,
+		// 		'placeholder' => 'myFunction()',
+		// 		'condition' => [
+		// 			'readmore'       => 'yes',
+		// 			'onclick'        => 'yes'
+		// 		]
+		// 	]
+		// );
 
 		$this->add_control(
 			'readmore_icon',
@@ -1072,6 +1073,7 @@ class IconBox extends UiCoreWidget
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}}:hover .ui-e-icon-wrp' => 'color: {{VALUE}};',
+                    '{{WRAPPER}}:hover .ui-e-icon-wrp i' => 'color: {{VALUE}};',
 					'{{WRAPPER}}:hover .ui-e-icon-wrp svg' => 'fill: {{VALUE}};',
 				],
 				'condition' => [
@@ -2214,9 +2216,9 @@ class IconBox extends UiCoreWidget
 				$this->add_render_attribute( 'rm_atts', 'id', esc_attr($settings['button_css_id']) );
 			}
 
-			if ($settings['onclick']) {
-				$this->add_render_attribute( 'rm_atts', 'onclick', esc_js($settings['onclick_event']) );
-			}
+			// if ($settings['onclick']) {
+			// 	$this->add_render_attribute( 'rm_atts', 'onclick', esc_js($settings['onclick_event']) );
+			// }
 		}
 
 		// Check the icon position and sets the inline (true puts title/subtitlte inside flex wrapper, false puts inside content)

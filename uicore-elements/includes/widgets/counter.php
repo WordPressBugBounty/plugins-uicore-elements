@@ -64,6 +64,10 @@ class Counter extends UiCoreWidget
 			]
 		];
 	}
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+		return true;
+	}
 	protected function register_controls()
 	{
 
@@ -560,7 +564,7 @@ class Counter extends UiCoreWidget
                 [
                     'label' => esc_html__( 'Counter Prefix', 'uicore-elements' ),
                     'type' => Controls_Manager::TEXT,
-                    'default' => esc_html__( '', 'uicore-elements' ),
+                    'default' => '',
                     'placeholder' => esc_html__( '$', 'uicore-elements' ),
                     'ai' => [
                         'active' => false,
@@ -573,7 +577,7 @@ class Counter extends UiCoreWidget
                 [
                     'label' => esc_html__( 'Counter Suffix', 'uicore-elements' ),
                     'type' => Controls_Manager::TEXT,
-                    'default' => esc_html__( '', 'uicore-elements' ),
+                    'default' => '',
                     'placeholder' => esc_html__( '+', 'uicore-elements' ),
                     'ai' => [
                         'active' => false,
@@ -1250,7 +1254,7 @@ class Counter extends UiCoreWidget
             $this->add_control(
                 'motion_heading',
                 [
-                    'label' => esc_html__( 'Motion Durations (in ms)', 'textdomain' ),
+                    'label' => esc_html__( 'Motion Durations (in ms)', 'uicore-elements' ),
                     'type' => Controls_Manager::HEADING,
                     'condition' => [
                         'counter_animation' => 'motion',

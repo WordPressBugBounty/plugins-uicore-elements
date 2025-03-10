@@ -501,8 +501,10 @@ trait Form_Component {
             [
                 'label' => esc_html__( 'Submit', 'uicore-elements' ),
                 'type' => Controls_Manager::TEXT,
-                'default' => esc_html__( $submit_text, 'uicore-elements' ),
-                'placeholder' => esc_html__( $submit_text, 'uicore-elements' ),
+                /* translators: %s: Submit text */
+                'default' => esc_html( sprintf('%s', $submit_text), 'uicore-elements'),
+                /* translators: %s: Submit text */
+                'placeholder' => esc_html( sprintf('%s', $submit_text), 'uicore-elements'),
                 'dynamic' => [
                     'active' => true,
                 ],
@@ -1214,7 +1216,7 @@ trait Form_Component {
     {
         ?>
         <script>
-            window.uicore_elements_recaptcha = '<?php echo get_option('uicore_elements_recaptcha_site_key'); ?>';
+            window.uicore_elements_recaptcha = '<?php echo esc_html(get_option('uicore_elements_recaptcha_site_key')); ?>';
         </script>
         <?php
     }

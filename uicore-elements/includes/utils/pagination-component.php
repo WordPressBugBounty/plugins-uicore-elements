@@ -268,7 +268,7 @@ trait Pagination_Trait {
                 $this->start_controls_tab(
                     'pagination_normal_tab',
                     [
-                        'label' => esc_html__( 'Normal', 'plugin-name' ),
+                        'label' => esc_html__( 'Normal', 'uicore-elements' ),
                     ]
                 );
                     $this->add_control(
@@ -316,7 +316,7 @@ trait Pagination_Trait {
                 $this->start_controls_tab(
                     'pagination_hover_tab',
                     [
-                        'label' => esc_html__( 'Hover', 'plugin-name' ),
+                        'label' => esc_html__( 'Hover', 'uicore-elements' ),
                     ]
                 );
                     $this->add_control(
@@ -362,7 +362,7 @@ trait Pagination_Trait {
                 $this->start_controls_tab(
                     'pagination_active_tab',
                     [
-                        'label' => esc_html__( 'Active', 'plugin-name' ),
+                        'label' => esc_html__( 'Active', 'uicore-elements' ),
                         'condition' => [
                             'pagination_type' => 'numbers',
                         ]
@@ -438,7 +438,7 @@ trait Pagination_Trait {
 
             //
             $total_items = $query['limit'] ?? get_option('posts_per_page'); // TODO: using products quantity from framework maybe better
-            $total_count = wc_get_products( array_merge($query, ['limit' => -1, 'return' => 'ids']) );  // Fetch all products
+            $total_count = wc_get_products( array_merge($query, ['limit' => -1, 'return' => 'ids']) );  // Fetch all products - TODO: -1 is very bad for performance
             $total = ceil( count($total_count) / $total_items );
             $current_page = max(1, get_query_var('paged'));
 
@@ -487,7 +487,7 @@ trait Pagination_Trait {
         $class .= !defined('UICORE_ASSETS') ? ' ui-e-pagination' : '';
 
         if (is_array($links) || is_object($links)) { ?>
-            <nav aria-label="<?php echo $args['screen_reader_text']; ?>" class="<?php echo esc_attr($class);?>">
+            <nav aria-label="<?php echo esc_attr($args['screen_reader_text']); ?>" class="<?php echo esc_attr($class);?>">
                 <ul>
                     <?php foreach ($links as $key => $link) :
                         // If next/prev buttons and Uicore Framework is not active, get arrow icon and append it
@@ -497,7 +497,7 @@ trait Pagination_Trait {
                         }
                         ?>
                         <li class="uicore-page-item <?php echo strpos($link, 'current') ? 'uicore-active' : ''; ?>">
-                            <?php echo str_replace('page-numbers', 'uicore-page-link', $link); ?>
+                            <?php echo wp_kses_post( str_replace('page-numbers', 'uicore-page-link', $link)); ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>

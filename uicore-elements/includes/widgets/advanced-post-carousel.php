@@ -81,8 +81,8 @@ class AdvancedPostCarousel extends UiCoreWidget
 
         foreach ($taxonomies as $taxonomy => $object) {
             $controll_id = 'posts-filter_' . $taxonomy . '_ids';
-            \error_log($controll_id);
-            \error_log(print_r($settings[$controll_id], true));
+            //error_log($controll_id);
+            //error_log(print_r($settings[$controll_id], true));
 
             if (!isset($settings[$controll_id]) || empty($settings[$controll_id])) {
                 continue;
@@ -195,20 +195,28 @@ class AdvancedPostCarousel extends UiCoreWidget
         $default_query = $wp_query;
         $settings = $this->get_settings();
 
-        $this->TRAIT_query_posts( $settings, $wp_query->query );
-        $wp_query = $this->get_query();
-
-        $this->TRAIT_set_meta_font_size_to_svg($settings); // SVG icon experiment font-size adjustment
-
         // Get the quantity of items and creates a loop control
         $items = $settings['item_limit']['size'];
         $loops = 0;
+
+        // Check if should duplicate slides and update settings
+        if ( $this->TRAIT_should_duplicate_slides($items) ) {
+            $diff = abs($this->TRAIT_get_duplication_diff($items) + 1); // +1 to fix zero based index
+            $settings['item_limit']['size'] = $items + $diff;
+        }
+
+        // Build query
+        $this->TRAIT_query_posts( $settings, $wp_query->query );
+        $wp_query = $this->get_query();
+
+        // SVG icon experiment font-size adjustment
+        $this->TRAIT_set_meta_font_size_to_svg($settings);
 
         $this->TRAIT_render_filters($settings);
 
         // No posts found
         if (!$wp_query->have_posts()) {
-            echo '<p style="text-align:center">' . __('No posts found.', 'uicore-elements') . '</p>';
+            echo '<p style="text-align:center">' . esc_html__('No posts found.', 'uicore-elements') . '</p>';
         } else {
 
             ?>
@@ -218,9 +226,9 @@ class AdvancedPostCarousel extends UiCoreWidget
                         while ($wp_query->have_posts()) {
 
                             // sticky posts disregards posts per page, so ending the loop if $items == $loop forces the query respects the users item limit
-                            if ($settings['sticky'] && $items == $loops) {
-                                break;
-                            }
+                            // if ($settings['sticky'] && $items == $loops) {
+                            //     break;
+                            // }
 
                             $wp_query->the_post();
                             $this->TRAIT_render_item(true);
@@ -229,13 +237,13 @@ class AdvancedPostCarousel extends UiCoreWidget
                         }
                         ?>
                     </div>
-                    <?php $this->TRAIT_render_carousel_navigations(); ?>
                 </div>
+                <?php $this->TRAIT_render_carousel_navigations(); ?>
             <?php
         }
 
         //reset query
-        wp_reset_query();
+        wp_reset_postdata();
         $wp_query = $default_query;
     }
 }

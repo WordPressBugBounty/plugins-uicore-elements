@@ -89,13 +89,13 @@ class Assets {
                 'version'   => UICORE_ELEMENTS_VERSION,
                 'in_footer' => true
             ],
-            'ui-e-circular-carousel' => [
-                'src' => UICORE_ELEMENTS_ASSETS . '/js/lib/carousel-effects/circular.js',
-                'version'   => UICORE_ELEMENTS_VERSION,
+            'ui-e-swiper' => [
+                'src'       => UICORE_ELEMENTS_ASSETS . '/js/lib/swiper.js',
+                'version'   => '11.2.1',
                 'in_footer' => true
             ],
-            'ui-e-fade-blur-carousel' => [
-                'src' => UICORE_ELEMENTS_ASSETS . '/js/lib/carousel-effects/fade-and-blur.js',
+            'ui-e-special-effects' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/js/lib/carousel-effects/special-effects.js',
                 'version'   => UICORE_ELEMENTS_VERSION,
                 'in_footer' => true
             ],
@@ -147,7 +147,7 @@ class Assets {
             'ui-e-carousel' => [
                 'src'       => UICORE_ELEMENTS_ASSETS . '/js/components/global-carousel.js',
                 'version'   => UICORE_ELEMENTS_VERSION,
-                //'deps'      => ['elementor-frontend'], TODO: not required yet, but maybe soon
+                'deps'      => ['ui-e-swiper'],
                 'in_footer' => true
             ],
             'ui-e-repeater-custom-key' => [

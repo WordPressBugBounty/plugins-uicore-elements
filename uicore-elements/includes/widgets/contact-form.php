@@ -1637,7 +1637,7 @@ class ContactForm extends UiCoreWidget {
 						Group_Control_Typography::get_type(),
 						[
 							'name' => 'field_typography',
-							'selector' => '{{WRAPPER}} .ui-e-field-group .ui-e-field, {{WRAPPER}} .ui-e-field-subgroup label',
+							'selector' => '{{WRAPPER}} .ui-e-field-group .ui-e-field, {{WRAPPER}} .ui-e-field-subgroup label, {{WRAPPER}} .ui-e-field-group .ui-e-field-select select',
 							'global' => [
 								'default' => Global_Typography::TYPOGRAPHY_TEXT,
 							],
@@ -1649,7 +1649,7 @@ class ContactForm extends UiCoreWidget {
 							'label' => esc_html__( 'Text Color', 'uicore-elements' ),
 							'type' => Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ui-e-field-group .ui-e-field' => 'color: {{VALUE}};',
+								'{{WRAPPER}} .ui-e-field-group .ui-e-field, {{WRAPPER}} .ui-e-field-group .ui-e-field-select select' => 'color: {{VALUE}};',
 							],
 							'global' => [
 								'default' => Global_Colors::COLOR_TEXT,
@@ -1706,7 +1706,7 @@ class ContactForm extends UiCoreWidget {
 							'label' => esc_html__( 'Text Color', 'uicore-elements' ),
 							'type' => Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ui-e-field-group:hover .ui-e-field' => 'color: {{VALUE}};',
+								'{{WRAPPER}} .ui-e-field-group:hover .ui-e-field, {{WRAPPER}} .ui-e-field-group:hover .ui-e-field-select select' => 'color: {{VALUE}};',
 							],
 							'global' => [
 								'default' => Global_Colors::COLOR_TEXT,
@@ -1763,7 +1763,7 @@ class ContactForm extends UiCoreWidget {
 							'label' => esc_html__( 'Text Color', 'uicore-elements' ),
 							'type' => Controls_Manager::COLOR,
 							'selectors' => [
-								'{{WRAPPER}} .ui-e-field-group .ui-e-field:focus' => 'color: {{VALUE}};',
+								'{{WRAPPER}} .ui-e-field-group .ui-e-field:focus, {{WRAPPER}} .ui-e-field-group .ui-e-field-select select:focus' => 'color: {{VALUE}};',
 							],
 							'global' => [
 								'default' => Global_Colors::COLOR_TEXT,
@@ -2066,7 +2066,7 @@ class ContactForm extends UiCoreWidget {
     {
         ?>
         <script>
-            window.uicore_elements_recaptcha = '<?php echo get_option('uicore_elements_recaptcha_site_key'); ?>';
+            window.uicore_elements_recaptcha = '<?php echo esc_html( get_option('uicore_elements_recaptcha_site_key')); ?>';
         </script>
         <?php
     }

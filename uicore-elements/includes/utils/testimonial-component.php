@@ -25,7 +25,8 @@ trait Testimonial_Trait {
         $this->start_controls_section(
             'section_reviewer_content',
             [
-                'label' => __($logo, 'uicore-elements'),
+                /* translators: %s: Control title  */
+                'label' => esc_html( sprintf('%s', $logo), 'uicore-elements'),
                 'tab'   => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -355,7 +356,7 @@ trait Testimonial_Trait {
                 'default' => 'center',
                 'options'   => [
                     'start'    => [
-                        'title' => __('Left', 'uicore-elements'),
+                        'title' => __('Top', 'uicore-elements'),
                         'icon'  => 'eicon-align-start-v',
                     ],
                     'center'  => [
@@ -363,7 +364,7 @@ trait Testimonial_Trait {
                         'icon'  => 'eicon-align-center-v',
                     ],
                     'end'   => [
-                        'title' => __('Right', 'uicore-elements'),
+                        'title' => __('Bottom', 'uicore-elements'),
                         'icon'  => 'eicon-align-end-v',
                     ],
                 ],
@@ -1203,11 +1204,11 @@ trait Testimonial_Trait {
 		}
 
         ?>
-        <div class="ui-e-testimonial-avatar <?php esc_attr_e($settings['avatar_animations']); echo esc_attr($fit_avatar);?>">
+        <div class="ui-e-testimonial-avatar <?php echo esc_attr($settings['avatar_animations']);?> <?php echo esc_attr($fit_avatar);?>">
             <?php
             $avatar_url = Group_Control_Image_Size::get_attachment_image_src($item['avatar']['id'], 'avatar_media_size', $settings);
             if (!$avatar_url) {
-                printf('<img src="%1$s" alt="%2$s">', $item['avatar']['url'], esc_html($item['reviewer_name']));
+                printf('<img src="%1$s" alt="%2$s">', esc_url($item['avatar']['url']), esc_html($item['reviewer_name']));
             } else {
                 print(wp_get_attachment_image(
                     $item['avatar']['id'],
@@ -1233,7 +1234,7 @@ trait Testimonial_Trait {
 		}
 
         ?>
-        <div class="ui-e-testimonial-image <?php esc_attr_e($settings['image_animations']);?>">
+        <div class="ui-e-testimonial-image <?php echo esc_attr($settings['image_animations']);?>">
             <?php
             if ($thumb_url) {
                 print(wp_get_attachment_image(
@@ -1257,9 +1258,9 @@ trait Testimonial_Trait {
 
         ?>
         <?php if ( $item['reviewer_name'] ) : ?>
-            <<?php esc_html_e($settings['review_name_tag']); ?> class="ui-e-testimonial-name <?php esc_attr_e($settings['name_animations']);?>">
+            <<?php echo esc_html($settings['review_name_tag']); ?> class="ui-e-testimonial-name <?php echo esc_attr($settings['name_animations']);?>">
                 <span><?php echo wp_kses_post($item['reviewer_name']);?></span>
-            </<?php esc_html_e($settings['review_name_tag']); ?>>
+            </<?php echo esc_html($settings['review_name_tag']); ?>>
         <?php endif; ?>
         <?php
     }
@@ -1273,8 +1274,8 @@ trait Testimonial_Trait {
 
         ?>
         <?php if ( $item['reviewer_job_title'] ) : ?>
-            <div class="ui-e-testimonial-job-title <?php esc_attr_e($settings['job_animations']);?>">
-                <span><?php esc_html_e($item['reviewer_job_title']); ?></span>
+            <div class="ui-e-testimonial-job-title <?php echo esc_attr($settings['job_animations']);?>">
+                <span><?php echo esc_html($item['reviewer_job_title']); ?></span>
             </div>
         <?php endif; ?>
         <?php
@@ -1289,7 +1290,7 @@ trait Testimonial_Trait {
 
         ?>
         <?php if ( $item['review_text'] ) : ?>
-            <div class="ui-e-testimonial-text <?php esc_attr_e($settings['text_animations']);?>">
+            <div class="ui-e-testimonial-text <?php echo esc_attr($settings['text_animations']);?>">
                 <?php echo wp_kses_post( $item['review_text'] ); ?>
             </div>
         <?php endif; ?>
@@ -1310,7 +1311,7 @@ trait Testimonial_Trait {
         if ($settings['rating_type'] == 'star') {
 
             ?>
-                <div class="ui-e-testimonial-rating <?php esc_attr_e($settings['rating_animations']);?>">
+                <div class="ui-e-testimonial-rating <?php echo esc_attr($settings['rating_animations']);?>">
                 <?php
 
                 $rating_scale  = 5;
@@ -1330,9 +1331,9 @@ trait Testimonial_Trait {
                         <div class="ui-e-icon">
                             <?php
                                 if ( $rating_value >= $index ) {
-                                    echo Icons_Manager::try_get_icon_html( ['value' =>  'fas fa-star', 'library' => 'fa-solid'], [ 'aria-hidden' => 'true' ] );
+                                    echo Icons_Manager::try_get_icon_html( ['value' =>  'fas fa-star', 'library' => 'fa-solid'], [ 'aria-hidden' => 'true' ] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                 } elseif ( intval( ceil( $rating_value ) ) === $index ) {
-                                    echo Icons_Manager::try_get_icon_html( ['value' => 'fas fa-star-half', 'library' => 'fa-solid'], ['aria-hidden' => 'true'] );
+                                    echo Icons_Manager::try_get_icon_html( ['value' => 'fas fa-star-half', 'library' => 'fa-solid'], ['aria-hidden' => 'true'] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                 }
                             ?>
                         </div>
@@ -1361,10 +1362,10 @@ trait Testimonial_Trait {
                         ?>
                             <div class="ui-e-icon">
                                 <div <?php $this->print_render_attribute_string( "icon_marked_$ID" . "_$index",); ?>>
-                                    <?php echo Icons_Manager::try_get_icon_html( ['value' => 'eicon-star','library' => 'eicons'], [ 'aria-hidden' => 'true' ] );?>
+                                    <?php echo Icons_Manager::try_get_icon_html( ['value' => 'eicon-star','library' => 'eicons'], [ 'aria-hidden' => 'true' ] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
                                 </div>
                                 <div class="ui-e-unmarked">
-                                    <?php echo Icons_Manager::try_get_icon_html( ['value' => 'eicon-star','library' => 'eicons'], [ 'aria-hidden' => 'true' ] );?>
+                                    <?php echo Icons_Manager::try_get_icon_html( ['value' => 'eicon-star','library' => 'eicons'], [ 'aria-hidden' => 'true' ] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
                                 </div>
                             </div>
                         <?php
@@ -1377,7 +1378,7 @@ trait Testimonial_Trait {
         } else { // number type rating
             ?>
                 <div class="ui-e-testimonial-rating number">
-                    <span><?php esc_html_e($rating_value);?></span>
+                    <span><?php echo esc_html($rating_value);?></span>
                 </div>
             <?php
         }

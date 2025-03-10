@@ -22,13 +22,16 @@ trait Animation_Trait {
     function TRAIT_register_hover_animation_control($name, $conditions = [], $filter = [], $custom_slug = null, $use_new = false)
     {
         // Custom slug or name converted to slug
-        // TODO: use sanitize_title() instead of the 3 functions combined above
-        $slug  = isset($custom_slug) ? $custom_slug : strtolower(preg_replace('/\s+/', '_', preg_replace('/[^a-zA-Z0-9\s]/', '', $name)));
+        $slug  = isset($custom_slug)
+            ? $custom_slug
+            // using sanitize_title() would create incompatible problems since it uses hyphens, not underscores
+            : strtolower(preg_replace('/\s+/', '_', preg_replace('/[^a-zA-Z0-9\s]/', '', $name)));
 
         $this->add_control(
             $slug,
             [
-                'label' => esc_html__( $name, 'uicore-elements' ),
+                /* translators: %s: control title */
+                'label' => esc_html( sprintf('%s', $name), 'uicore-elements'),
                 'type' => Controls_Manager::SELECT,
                 'default' => '',
                 'label_block' => true,
@@ -193,7 +196,7 @@ trait Animation_Trait {
         // Format the list of animations, with translated strings, to be used as elementor option's array
         foreach ($animation_list as $key => $value) {
             $slug = $key !== '' ? "ui-e-item-anim-$key" : '';
-            $list[$slug] = esc_html__($value, 'uicore-elements');
+            $list[$slug] = esc_html( sprintf('%s', $value), 'uicore-elements');
         }
 
         return $list;

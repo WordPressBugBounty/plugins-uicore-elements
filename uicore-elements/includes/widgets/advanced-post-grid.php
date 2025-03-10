@@ -106,8 +106,8 @@ class AdvancedPostGrid extends UiCoreWidget
 
         foreach ($taxonomies as $taxonomy => $object) {
             $controll_id = 'posts-filter_' . $taxonomy . '_ids';
-            \error_log($controll_id);
-            \error_log(print_r($settings[$controll_id], true));
+            //error_log($controll_id);
+            //error_log(print_r($settings[$controll_id], true));
 
             if (!isset($settings[$controll_id]) || empty($settings[$controll_id])) {
                 continue;
@@ -266,7 +266,7 @@ class AdvancedPostGrid extends UiCoreWidget
 
         // No posts found
         if (!$wp_query->have_posts()) {
-            echo '<p style="text-align:center">' . __('No posts found.', 'uicore-elements') . '</p>';
+            echo '<p style="text-align:center">' . esc_html__('No posts found.', 'uicore-elements') . '</p>';
         } else {
 
             ?>
@@ -291,16 +291,15 @@ class AdvancedPostGrid extends UiCoreWidget
                 $this->TRAIT_render_pagination($settings);
 
                 if( $settings['pagination'] == 'yes' && $settings['pagination_type'] == 'load_more' && $settings['posts-filter_post_type'] == 'current' ) {
-
                     echo '<script>';
                         echo 'window.ui_total_pages_' . esc_html($ID) . ' = "none";'; // add none to avoid ajax errors for lack of value, but posts don't need it
-                        echo 'window.ui_query_' . esc_html($ID) . ' = ' . \json_encode($wp_query) . ';';
+                        echo 'window.ui_query_' . esc_html($ID) . ' = ' . \json_encode($wp_query->query_vars) . ';';
                     echo '</script>';
                 }
         }
 
         //reset query
-        wp_reset_query();
+        wp_reset_postdata();
         $wp_query = $default_query;
     }
 }

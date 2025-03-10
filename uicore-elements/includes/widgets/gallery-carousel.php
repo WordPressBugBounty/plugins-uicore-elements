@@ -158,31 +158,31 @@ class GalleryCarousel extends UiCoreWidget
         $this->remove_control('item_background_gradient');
 
         // Inject new controls
-        // TODO: release this feature after fixing compatibility issues with `fade_blur` and `circular`
-        // $this->start_injection([
-        //     'of' => 'animation_style',
-        //     'at' => 'after',
-        // ]);
+        $this->start_injection([
+            'of' => 'animation_style',
+            'at' => 'after',
+        ]);
 
-        //     $this->add_control(
-        //         'main_image',
-        //         [
-        //             'label'        => __('Main image', 'uicore-elements'),
-        //             'type'         => Controls_Manager::SELECT,
-        //             'default'      => '',
-        //             'options' => [
-        //                 '' => esc_html__('Default', 'uicore-elements'),
-        //                 'ui-e-main-image-scale' => esc_html__('Scale', 'uicore-elements'),
-        //                 'ui-e-main-image-show' => esc_html__('Show Info', 'uicore-elements'),
-        //                 'ui-e-main-image-show_scale' => esc_html__('Show Info & Scale', 'uicore-elements'),
-        //             ],
-        //             'prefix_class' => '',
-        //             'render_type'  => 'template',
-        //             'frontend_available' => true,
-        //         ]
-        //     );
+            $this->add_control(
+                'main_image',
+                [
+                    'label'        => __('Main image', 'uicore-elements'),
+                    'type'         => Controls_Manager::SELECT,
+                    'default'      => '',
+                    'options' => [
+                        '' => esc_html__('Default', 'uicore-elements'),
+                        'ui-e-main-image-scale' => esc_html__('Scale', 'uicore-elements'),
+                        'ui-e-main-image-show' => esc_html__('Show Info', 'uicore-elements'),
+                        'ui-e-main-image-show_scale' => esc_html__('Show Info & Scale', 'uicore-elements'),
+                    ],
+                    'description' => __('Works best with centered slides.', 'uicore-elements'),
+                    'prefix_class' => '',
+                    'render_type'  => 'template',
+                    'frontend_available' => true,
+                ]
+            );
 
-        // $this->end_injection();
+        $this->end_injection();
 
         $this->start_injection([
             'of' => 'item_border_border',
@@ -251,8 +251,8 @@ class GalleryCarousel extends UiCoreWidget
                 <div class='swiper-wrapper'>
                     <?php $this->TRAIT_render_gallery($settings, true); ?>
                 </div>
-                <?php $this->TRAIT_render_carousel_navigations(); ?>
             </div>
+            <?php $this->TRAIT_render_carousel_navigations(); ?>
         <?php
     }
 

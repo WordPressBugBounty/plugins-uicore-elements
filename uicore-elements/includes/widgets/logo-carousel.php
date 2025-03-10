@@ -162,8 +162,8 @@ class LogoCarousel extends UiCoreWidget
                 <div class='swiper-wrapper'>
                     <?php $this->TRAIT_render_logo_item(); ?>
                 </div>
-                <?php $this->TRAIT_render_carousel_navigations(); ?>
             </div>
+            <?php $this->TRAIT_render_carousel_navigations(); ?>
         <?php
     }
 }

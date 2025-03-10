@@ -83,7 +83,7 @@ class GallerySlider extends GalleryCarousel
         $this->remove_control('fade_edges_alert');
         $this->remove_control('match_height');
         $this->remove_control('carousel_gap');
-        //$this->remove_control('main_image'); TODO: remove this control after releasing it on carousel
+        $this->remove_control('main_image');
 
         // Add vertical content alignment control
         $this->start_injection([

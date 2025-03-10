@@ -8,17 +8,22 @@ use Elementor\Group_Control_Image_Size;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Css_Filter;
 
+use UiCoreElements\Utils\Carousel_Trait;
+
 defined('ABSPATH') || exit();
 
 trait Logo_Trait {
 
+    use Carousel_Trait;
+
     // Settings
-    function TRAIT_register_logo_repeater_controls($logo)
+    protected function TRAIT_register_logo_repeater_controls($logo)
     {
         $this->start_controls_section(
             'section_logo',
             [
-                'label' => __( $logo, 'uicore-elements' ),
+                /* translators: %s: logo name */
+                'label' => esc_html( sprintf('%s', $logo), 'uicore-elements'),
                 'tab'   => Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -27,14 +32,14 @@ trait Logo_Trait {
             $repeater->add_control(
                 'title',
                 [
-                    'label'   => __( 'Title', 'uicore-elements' ),
+                    'label'   => esc_html__( 'Title', 'uicore-elements' ),
                     'type'    => Controls_Manager::TEXT,
                 ]
             );
             $repeater->add_control(
                 'image',
                 [
-                    'label'   => __( 'Logo Image', 'uicore-elements' ),
+                    'label'   => esc_html__( 'Logo Image', 'uicore-elements' ),
                     'type'    => Controls_Manager::MEDIA,
                     'default' => [
                         'url' => Utils::get_placeholder_image_src(),
@@ -44,7 +49,7 @@ trait Logo_Trait {
             $repeater->add_control(
                 'link',
                 [
-                    'label'         => __( 'Website URL', 'uicore-elements' ),
+                    'label'         => esc_html__( 'Website URL', 'uicore-elements' ),
                     'type'          => Controls_Manager::URL,
                     'show_external' => false,
                     'label_block'   => false,
@@ -59,35 +64,35 @@ trait Logo_Trait {
                     'title_field' => "{{{ title }}}",
                     'default'     => [
                         [
-                            'title' => __( 'Item 1', 'uicore-elements' ),
+                            'title' => esc_html__( 'Item 1', 'uicore-elements' ),
                             'image' => [ 'url' => Utils::get_placeholder_image_src() ]
                         ],
                         [
-                            'title' => __( 'Item 2', 'uicore-elements' ),
+                            'title' => esc_html__( 'Item 2', 'uicore-elements' ),
                             'image' => [ 'url' => Utils::get_placeholder_image_src() ]
                         ],
                         [
-                            'title' => __( 'Item 3', 'uicore-elements' ),
+                            'title' => esc_html__( 'Item 3', 'uicore-elements' ),
                             'image' => [ 'url' => Utils::get_placeholder_image_src() ]
                         ],
                         [
-                            'title' => __( 'Item 4', 'uicore-elements' ),
+                            'title' => esc_html__( 'Item 4', 'uicore-elements' ),
                             'image' => [ 'url' => Utils::get_placeholder_image_src() ]
                         ],
                         [
-                            'title' => __( 'Item 5', 'uicore-elements' ),
+                            'title' => esc_html__( 'Item 5', 'uicore-elements' ),
                             'image' => [ 'url' => Utils::get_placeholder_image_src() ]
                         ],
                         [
-                            'title' => __( 'Item 6', 'uicore-elements' ),
+                            'title' => esc_html__( 'Item 6', 'uicore-elements' ),
                             'image' => [ 'url' => Utils::get_placeholder_image_src() ]
                         ],
                         [
-                            'title' => __( 'Item 7', 'uicore-elements' ),
+                            'title' => esc_html__( 'Item 7', 'uicore-elements' ),
                             'image' => [ 'url' => Utils::get_placeholder_image_src() ]
                         ],
                         [
-                            'title' => __( 'Item 8', 'uicore-elements' ),
+                            'title' => esc_html__( 'Item 8', 'uicore-elements' ),
                             'image' => [ 'url' => Utils::get_placeholder_image_src() ]
                         ],
                     ]
@@ -95,7 +100,7 @@ trait Logo_Trait {
             );
         $this->end_controls_section();
     }
-    function TRAIT_register_logo_adittional_controls()
+    protected function TRAIT_register_logo_adittional_controls()
     {
         $this->add_group_control(
             Group_Control_Image_Size::get_type(),
@@ -111,7 +116,7 @@ trait Logo_Trait {
         $this->add_responsive_control(
             'height',
             [
-                'label'      => __( 'Item Height', 'uicore-elements' ),
+                'label'      => esc_html__( 'Item Height', 'uicore-elements' ),
                 'type'       => Controls_Manager::SLIDER,
                 'size_units' => [ 'px' ],
                 'range'      => [
@@ -128,21 +133,21 @@ trait Logo_Trait {
     }
 
     // Grid Styles
-    function TRAIT_register_logos_grid_style_controls()
+    protected function TRAIT_register_logos_grid_style_controls()
     {
         $this->start_controls_tabs( 'logos_style' );
 
             $this->start_controls_tab(
                 'tab_logos_style_normal',
                 [
-                    'label' => __( 'Normal', 'uicore-elements' ),
+                    'label' => esc_html__( 'Normal', 'uicore-elements' ),
                 ]
             );
 
                 $this->add_control(
                     'item_bg_color',
                     [
-                        'label'     => __( 'Background Color', 'uicore-elements' ),
+                        'label'     => esc_html__( 'Background Color', 'uicore-elements' ),
                         'type'      => Controls_Manager::COLOR,
                         'selectors' => [
                             '{{WRAPPER}} figure' => 'background-color: {{VALUE}};',
@@ -153,15 +158,15 @@ trait Logo_Trait {
                 $this->add_control(
                     'item_border_type',
                     [
-                        'label'     => __( 'Border Type', 'bdthemes-element-pack' ),
+                        'label'     => esc_html__( 'Border Type', 'uicore-elements' ),
                         'type'      => Controls_Manager::SELECT,
                         'options'   => [
-                            'none'   => __( 'None', 'bdthemes-element-pack' ),
-                            'solid'  => __( 'Solid', 'bdthemes-element-pack' ),
-                            'double' => __( 'Double', 'bdthemes-element-pack' ),
-                            'dotted' => __( 'Dotted', 'bdthemes-element-pack' ),
-                            'dashed' => __( 'Dashed', 'bdthemes-element-pack' ),
-                            'groove' => __( 'Groove', 'bdthemes-element-pack' ),
+                            'none'   => esc_html__( 'None', 'uicore-elements' ),
+                            'solid'  => esc_html__( 'Solid', 'uicore-elements' ),
+                            'double' => esc_html__( 'Double', 'uicore-elements' ),
+                            'dotted' => esc_html__( 'Dotted', 'uicore-elements' ),
+                            'dashed' => esc_html__( 'Dashed', 'uicore-elements' ),
+                            'groove' => esc_html__( 'Groove', 'uicore-elements' ),
                         ],
                         'default'   => 'solid',
                         'selectors' => [
@@ -172,7 +177,7 @@ trait Logo_Trait {
                 $this->add_responsive_control(
                     'item_border_width',
                     [
-                        'label'          => __( 'Border Width', 'bdthemes-element-pack' ),
+                        'label'          => esc_html__( 'Border Width', 'uicore-elements' ),
                         'type'           => Controls_Manager::SLIDER,
                         'default'        => [
                             'size' => 2,
@@ -200,7 +205,7 @@ trait Logo_Trait {
                 $this->add_control(
                     'item_border_color',
                     [
-                        'label'     => __( 'Border Color', 'bdthemes-element-pack' ),
+                        'label'     => esc_html__( 'Border Color', 'uicore-elements' ),
                         'type'      => Controls_Manager::COLOR,
                         'selectors' => [
                             '{{WRAPPER}} .ui-e-item' => 'border-color: {{VALUE}};',
@@ -214,7 +219,7 @@ trait Logo_Trait {
                 $this->add_responsive_control(
                     'item_border_radius',
                     [
-                        'label'      => __( 'Border Radius', 'uicore-elements' ),
+                        'label'      => esc_html__( 'Border Radius', 'uicore-elements' ),
                         'type'       => Controls_Manager::DIMENSIONS,
                         'size_units' => [ 'px', '%' ],
                         'default' => [
@@ -238,7 +243,7 @@ trait Logo_Trait {
                 $this->add_responsive_control(
                     'item_padding',
                     [
-                        'label'      => __( 'Padding', 'uicore-elements' ),
+                        'label'      => esc_html__( 'Padding', 'uicore-elements' ),
                         'type'       => Controls_Manager::DIMENSIONS,
                         'size_units' => [ 'px', 'em', '%' ],
                         'default' => [
@@ -286,13 +291,13 @@ trait Logo_Trait {
             $this->start_controls_tab(
                 'tab_logos_style_hover',
                 [
-                    'label' => __( 'Hover', 'uicore-elements' ),
+                    'label' => esc_html__( 'Hover', 'uicore-elements' ),
                 ]
             );
                 $this->add_control(
                     'item_bg_hover_color',
                     [
-                        'label'     => __( 'Background Color', 'uicore-elements' ),
+                        'label'     => esc_html__( 'Background Color', 'uicore-elements' ),
                         'type'      => Controls_Manager::COLOR,
                         'selectors' => [
                             '{{WRAPPER}} .ui-e-item:hover figure' => 'background-color: {{VALUE}};',
@@ -302,7 +307,7 @@ trait Logo_Trait {
                 $this->add_control(
                     'grid_border_hover_color',
                     [
-                        'label'     => __( 'Border Color', 'uicore-elements' ),
+                        'label'     => esc_html__( 'Border Color', 'uicore-elements' ),
                         'type'      => Controls_Manager::COLOR,
                         'selectors' => [
                             '{{WRAPPER}} .ui-e-item:hover' => 'border-color: {{VALUE}};',
@@ -319,7 +324,7 @@ trait Logo_Trait {
         $this->end_controls_tabs();
     }
     // Logo Image Styles
-    function TRAIT_register_logos_image_style_controls($state)
+    protected function TRAIT_register_logos_image_style_controls($state)
     {
         if($state == 'normal'){
             $this->add_group_control(
@@ -332,7 +337,7 @@ trait Logo_Trait {
             $this->add_responsive_control(
                 'image_size',
                 [
-                    'label'      => __( 'Image Size', 'uicore-elements' ),
+                    'label'      => esc_html__( 'Image Size', 'uicore-elements' ),
                     'type'       => Controls_Manager::SLIDER,
                     'size_units' => [ 'px', '%' ],
                     'range'      => [
@@ -361,7 +366,7 @@ trait Logo_Trait {
             $this->add_control(
                 'image_bg_hover_transition',
                 [
-                    'label'     => __( 'Transition Duration', 'uicore-elements' ),
+                    'label'     => esc_html__( 'Transition Duration', 'uicore-elements' ),
                     'type'      => Controls_Manager::SLIDER,
                     'range'     => [
                         'px' => [
@@ -386,7 +391,7 @@ trait Logo_Trait {
     }
 
     // Rendering
-    function render_logo_figure($data, $size)
+    protected function render_logo_figure($data, $size)
     {
         $image  = wp_get_attachment_image_url($data['id'], $size);
         $name   = isset($data['name']) ? $data['name'] : '';
@@ -405,7 +410,7 @@ trait Logo_Trait {
                 } else {
                     printf(
                         '<img src="%s" alt="%s">',
-                        Utils::get_placeholder_image_src(),
+                        esc_url( Utils::get_placeholder_image_src()),
                         esc_attr( $alt )
                     );
                 }
@@ -413,7 +418,7 @@ trait Logo_Trait {
         </figure>
         <?php
     }
-    function TRAIT_render_logo_item()
+    protected function TRAIT_render_logo_item()
     {
         $settings   = $this->get_settings_for_display();
 
@@ -434,30 +439,47 @@ trait Logo_Trait {
         ]);
 
         foreach ( $settings['logo_list'] as $index => $item ) {
-
-            // Params
-            $key = 'logo_'.$index;
-            $tag = 'div ';
-            $this->add_render_attribute($key, 'class', 'ui-e-item' );
-
-            // Build URL
-            if (!empty($item['link']['url'])) {
-                $tag = 'a ';
-                $this->add_link_attributes($key, $item['link'] );
-            }
-            ?>
-            <div <?php $this->print_render_attribute_string('wrapper'); ?>>
-                <?php if($has_animation) : ?>
-                    <div class='ui-e-animations-wrp <?php echo esc_attr($animations);?>'>
-                <?php endif; ?>
-                    <<?php echo esc_html($tag);?> <?php $this->print_render_attribute_string($key); ?>>
-                        <?php $this->render_logo_figure($item['image'], $settings['thumbnail_size']); ?>
-                    </<?php echo esc_html($tag);?>>
-                <?php if($has_animation) : ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-            <?php
+            $this->render_logo($index, $item, $settings, $has_animation, $animations);
         }
+
+        if( $is_carousel ){
+
+            $total_slides = count($settings['logo_list']);
+
+            // Most recent swiper versions requires, if loop, at least one extra slide compared to visible slides
+            if( $this->TRAIT_should_duplicate_slides($total_slides)) {
+                $diff = $this->TRAIT_get_duplication_diff($total_slides);
+                for($i = 0; $i <= $diff; $i++){
+                    $this->render_logo($index, $item, $settings, $has_animation, $animations);
+                }
+            }
+        }
+    }
+
+    protected function render_logo($index, $item, $settings, $has_animation, $animations)
+    {
+        // Params
+        $key = 'logo_'.$index;
+        $tag = 'div ';
+        $this->add_render_attribute($key, 'class', 'ui-e-item' );
+
+        // Build URL
+        if (!empty($item['link']['url'])) {
+            $tag = 'a ';
+            $this->add_link_attributes($key, $item['link'] );
+        }
+        ?>
+        <div <?php $this->print_render_attribute_string('wrapper'); ?>>
+            <?php if($has_animation) : ?>
+                <div class='ui-e-animations-wrp <?php echo esc_attr($animations);?>'>
+            <?php endif; ?>
+                <<?php echo esc_html($tag);?> <?php $this->print_render_attribute_string($key); ?>>
+                    <?php $this->render_logo_figure($item['image'], $settings['thumbnail_size']); ?>
+                </<?php echo esc_html($tag);?>>
+            <?php if($has_animation) : ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
     }
 }

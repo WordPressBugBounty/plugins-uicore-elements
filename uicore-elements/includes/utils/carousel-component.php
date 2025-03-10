@@ -26,32 +26,40 @@ trait Carousel_Trait {
 	 * @param string|null $relation (Optional) Accepts 'or' & 'and' values. Default is 'and'
 	 * @return array Elementor API Conditions
      */
-	function nav_conditions($type, $extras = false, $relation = 'and')
-	{
-		if ($type == 'arrows') {
-			$options = ['arrows', 'arrows-dots', 'arrows-fraction'];
-		} elseif ($type == 'dots') {
-			$options = ['dots', 'arrows-dots'];
-		} elseif ($type == 'fraction') {
-			$options = ['fraction', 'arrows-fraction'];
-		}
+    function nav_conditions($type, $extras = false, $relation = 'and')
+    {
+        if ($type == 'arrows') {
+            $options = ['arrows', 'arrows-dots', 'arrows-fraction'];
+        } elseif ($type == 'dots') {
+            $options = ['dots', 'arrows-dots'];
+        } elseif ($type == 'fraction') {
+            $options = ['fraction', 'arrows-fraction'];
+        }
 
-		$conditions['terms'][] = [
-			'name' => 'navigation',
-			'operator' => 'in',
-			'value' => $options,
-		];
-		$conditions['relation'] = $relation;
+        $conditions['terms'][] = [
+            'name' => 'navigation',
+            'operator' => 'in',
+            'value' => $options,
+        ];
 
-		// Check for extra conditions
-		if($extras != false){
-			foreach ($extras as $extra){
-				$conditions['terms'][] = $extra;
-			}
-		}
+        // Marquee animation style does not support navigation
+        $conditions['terms'][] = [
+            'name' => 'animation_style',
+            'operator' => '!=',
+            'value' => 'marquee',
+        ];
 
-		return $conditions;
-	}
+        $conditions['relation'] = $relation;
+
+        // Check for extra conditions
+        if($extras != false){
+            foreach ($extras as $extra){
+                $conditions['terms'][] = $extra;
+            }
+        }
+
+        return $conditions;
+    }
 
     /**
      * Returns the Carousel/Slider widget scripts.
@@ -101,14 +109,9 @@ trait Carousel_Trait {
         // Specific Carousel scripts - if is not slider, is Carousel :)
         } else {
             $type = [
-                'circular-carousel' => [
+                'special-effects' => [
                     'condition' => [
-                        'animation_style' => 'circular',
-                    ]
-                ],
-                'fade-blur-carousel' => [
-                    'condition' => [
-                        'animation_style' => 'fade_blur',
+                        'animation_style' => ['fade_blur', 'circular']
                     ]
                 ]
             ];
@@ -146,6 +149,20 @@ trait Carousel_Trait {
 					'label_block' => true,
 					'render_type'  => 'template',
 					'frontend_available' => true,
+                    'condition' => [
+                        'animation_style!' => 'marquee',
+                    ],
+				]
+			);
+            $this->add_control(
+                'marquee_warning',
+                [
+                    'type' => Controls_Manager::RAW_HTML,
+                    'raw' => esc_html__( 'Marquee animation does not support navigation.', 'uicore-elements' ),
+                    'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning',
+                    'condition' => [
+                        'animation_style' => 'marquee',
+                    ],
 				]
 			);
 			$this->add_control(
@@ -698,7 +715,7 @@ trait Carousel_Trait {
 					'label'   => __('Vertical Orientation', 'uicore-elements'),
 					'type'    => Controls_Manager::CHOOSE,
 					'options' => [
-						'top: -25px; bottom: auto;' => [
+						'top: 0px; bottom: auto;' => [
 							'title' => __('Top', 'uicore-elements'),
 							'icon'  => 'eicon-v-align-top',
 						],
@@ -706,7 +723,7 @@ trait Carousel_Trait {
 							'title' => __('Center', 'uicore-elements'),
 							'icon'  => 'eicon-v-align-middle',
 						],
-						'top: auto; bottom: -25px !important;' => [
+						'top: auto; bottom: 0px;' => [
 							'title' => __('Bottom', 'uicore-elements'),
 							'icon'  => 'eicon-v-align-bottom',
 						],
@@ -714,7 +731,7 @@ trait Carousel_Trait {
 					'selectors' => [
 						'{{WRAPPER}} .ui-e-dots' => '{{VALUE}}'
 					],
-					'default' => 'top: auto; bottom: -25px !important;',
+					'default' => 'top: auto; bottom: 0px;',
 					'conditions' =>  $this->nav_conditions('dots'),
 				]
 			);
@@ -816,6 +833,8 @@ trait Carousel_Trait {
 				'options'      => [
 					'circular' 	  => esc_html__('Circular', 'uicore-elements'),
 					'fade_blur'   => esc_html__('Fade Blur', 'uicore-elements'),
+                    'marquee'     => esc_html__('Marquee', 'uicore-elements'),
+                    'default'     => esc_html__('Default', 'uicore-elements'),
 				],
 				'prefix_class' => 'ui-e-animation-',
 				'render_type'  => 'template',
@@ -864,6 +883,33 @@ trait Carousel_Trait {
 				'frontend_available' => true,
 			]
 		);
+        $this->add_control(
+			'center_slides',
+			[
+				'label' => esc_html__('Center Slides', 'uicore-elements'),
+				'type'  => Controls_Manager::SWITCHER,
+				'return_value' => 'true',
+				'condition' => [
+                    'animation_style!' => 'marquee',
+                ],
+                'frontend_available' => true,
+			]
+		);
+        $this->add_control(
+			'marquee_speed',
+			[
+				'label'     => esc_html__('Marquee Speed', 'uicore-elements'),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => 5000,
+                'min' => 100,
+                'max' => 10000,
+                'step' => 100,
+				'condition' => [
+					'animation_style' => 'marquee',
+                ],
+                'frontend_available' => true,
+			]
+		);
 		$this->add_control(
 			'fade_edges',
 			[
@@ -872,47 +918,50 @@ trait Carousel_Trait {
 				'prefix_class' => 'ui-e-fade-edges-',
 			]
 		);
-		// Add warning control with 'warning' type
-		$this->add_control(
-			'fade_edges_alert',
-			[
-				'type' => Controls_Manager::ALERT,
-				'alert_type' => 'warning',
-				'heading' => esc_html__( 'Careful', 'uicore-elements'),
-				'content' => esc_html__( 'Fade edges will hide your navigation if outside the carousel wrapper', 'uicore-elements' ),
-				'condition' => [
-					'fade_edges' => 'yes',
-				],
-			]
-		);
-		// Kept for now to see if users will request it
-		// $this->add_responsive_control(
-		// 	'slide_position',
-		// 	[
-		// 		'label'   => __('Active Slide Alignment', 'uicore-elements'),
-		// 		'type'    => Controls_Manager::CHOOSE,
-		// 		'options' => [
-		// 			'left' => [
-		// 				'title' => __('Left', 'uicore-elements'),
-		// 				'icon'  => 'eicon-h-align-left',
-		// 			],
-		// 			'center' => [
-		// 				'title' => __('Center', 'uicore-elements'),
-		// 				'icon'  => 'eicon-h-align-center',
-		// 			],
-		// 			// right alingment not supported by swiper
-		// 		],
-		// 		'default' => 'center',
-		// 		'frontend_available' => true,
-		// 	]
-		// );
+        $this->add_control(
+            'fade_edge_opacity',
+            [
+                'label' => esc_html__( 'Fade opacity', 'uicore-elements' ),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 0.35,
+                'min' => 0,
+                'max' => 1,
+                'step' => 0.05,
+                'condition' => [
+                    'fade_edges' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}}' => '--ui-e-fade-edge-alpha: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'fade_edge_deep',
+            [
+                'label' => esc_html__( 'Fade deepening', 'uicore-elements' ),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 30,
+                'min' => 0,
+                'max' => 50,
+                'step' => 5,
+                'condition' => [
+                    'fade_edges' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}}' => '--ui-e-fade-edge-deep: {{VALUE}}%;',
+                ],
+            ]
+        );
 		$this->add_control(
 			'autoplay',
 			[
 				'label'   => __('Autoplay', 'uicore-elements'),
 				'type'    => Controls_Manager::SWITCHER,
 				'return_value' => 'yes',
-				'frontend_available' => true,
+                'condition' => [
+                    'animation_style!' => 'marquee',
+				],
+                'frontend_available' => true,
 			]
 		);
 		$this->add_control(
@@ -921,10 +970,14 @@ trait Carousel_Trait {
 				'label'     => esc_html__('Autoplay Speed', 'uicore-elements'),
 				'type'      => Controls_Manager::NUMBER,
 				'default'   => 5000,
-				'frontend_available' => true,
+                'min' => 100,
+                'max' => 10000,
+                'step' => 100,
 				'condition' => [
 					'autoplay' => 'yes',
-				]
+                    'animation_style!' => 'marquee',
+                ],
+                'frontend_available' => true,
 			]
 		);
 		$this->add_control(
@@ -933,11 +986,12 @@ trait Carousel_Trait {
 				'label' => esc_html__('Pause on Hover', 'uicore-elements'),
 				'type'  => Controls_Manager::SWITCHER,
 				'return_value' => 'true',
-				'frontend_available' => true,
                 'separator' => 'after',
 				'condition' => [
 					'autoplay' => 'yes',
-				]
+                    'animation_style!' => 'marquee',
+                ],
+                'frontend_available' => true,
 			]
 		);
 		$this->add_control(
@@ -946,7 +1000,10 @@ trait Carousel_Trait {
 				'label' => __('Grab Cursor', 'uicore-elements'),
 				'type'  => Controls_Manager::SWITCHER,
 				'default' => 'yes',
-				'frontend_available' => true,
+                'condition' => [
+                    'animation_style!' => 'marquee',
+				],
+                'frontend_available' => true,
 			]
 		);
 		$this->add_control(
@@ -956,7 +1013,10 @@ trait Carousel_Trait {
 				'type'    => Controls_Manager::SWITCHER,
 				'default' => 'true',
 				'return_value' => 'true',
-				'frontend_available' => true,
+                'condition' => [
+                    'animation_style!' => 'marquee',
+				],
+                'frontend_available' => true,
 			]
 		);
 		$this->add_control(
@@ -1590,7 +1650,7 @@ trait Carousel_Trait {
      */
 	function TRAIT_register_carousel_additional_controls($is_slider = false)
 	{
-		$this->add_control(
+		$this->add_responsive_control(
 			'carousel_gap',
 			[
 				'label'   => __('Item Gap', 'uicore-elements'),
@@ -1645,49 +1705,73 @@ trait Carousel_Trait {
 	// Navigation rendering
 	function render_carousel_dots()
 	{
+        // TODO: fully replace `ui-e-dots` for `ui-e-carousel-dots`, after, at least, 3 releases from 1.2.0
 		?>
-			<div class="swiper-pagination ui-e-dots"></div>
+			<div class="swiper-pagination ui-e-dots ui-e-carousel-dots"></div>
 		<?php
 	}
 	function render_carousel_arrows()
 	{
 		$settings = $this->get_settings_for_display();
+        // TODO: fully replace `ui-e-button` for `ui-e-carousel-button`, after, at least, 3 releases from 1.2.0
 		?>
-			<div class="ui-e-button ui-e-previous" role="button" aria-label="Previous slide">
+			<div class="ui-e-button ui-e-carousel-button ui-e-previous" role="button" aria-label="Previous slide">
 				<?php Icons_Manager::render_icon( $settings['previous_arrow'], [ 'aria-hidden' => 'true' ] ); ?>
 			</div>
-			<div class="ui-e-button ui-e-next" role="button" aria-label="Next slide">
+			<div class="ui-e-button ui-e-carousel-button ui-e-next" role="button" aria-label="Next slide">
 				<?php Icons_Manager::render_icon( $settings['next_arrow'], [ 'aria-hidden' => 'true' ] ); ?>
 			</div>
 		<?php
 	}
 	function render_carousel_fraction()
 	{
+        // TODO: fully replace `ui-e-fraction` for `ui-e-carousel-fraction`, after, at least, 3 releases from 1.2.0
 		?>
-			<div class="ui-e-fraction">
+			<div class="ui-e-fraction ui-e-carousel-fraction">
 				<span class="ui-e-current"></span>
 				/
 				<span class="ui-e-total"></span>
 			</div>
 		<?php
 	}
+    // TODO: this compatibily functions have been generating debug log errors, such as `Passing null to parameter #1 ($haystack) of type string is deprecated..`
 	function TRAIT_render_carousel_navigations()
 	{
 		$navigation = $this->get_settings_for_display('navigation');
 
-		// Migration code from old navigation select2 array values - TODO: removed to soon apparently, keep it for more releases.
-		if(is_array($navigation)) {
-			$navigation = implode('-', $navigation);
-		}
-
-		if(strpos($navigation, 'dots') !== false) {
+		if( strpos($navigation, 'dots') !== false ) {
 			$this->render_carousel_dots();
 		}
-		if(strpos($navigation, 'arrows') !== false) {
+		if( strpos($navigation, 'arrows') !== false ) {
 			$this->render_carousel_arrows();
 		}
-		if(strpos($navigation, 'fraction') !== false) {
+		if( strpos($navigation, 'fraction') !== false ) {
 			$this->render_carousel_fraction();
 		}
 	}
+
+    /**
+     * Calculates how much slides should be duplicated so loop can work
+     * TODO: move to class helper OR find a way of traits being able to use it without usin carousel trait
+     *
+     * @param int $total_slides
+     *
+     * @return int Number of slides to duplicate
+     */
+    function TRAIT_get_duplication_diff($total_slides){
+        $visible = $this->get_settings('slides_per_view');
+        return abs($total_slides - $visible);
+    }
+
+    /**
+     * Check if slides should be duplicated so loop can work
+     * TODO: move to class helper OR find a way of traits being able to use it without usin carousel trait
+     */
+    function TRAIT_should_duplicate_slides( $total_slides ){
+        if( $this->get_settings('loop') === 'true' && $total_slides <= $this->get_settings('slides_per_view') ){
+            return true;
+        }
+
+        return false;
+    }
 }

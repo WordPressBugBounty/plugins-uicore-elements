@@ -58,8 +58,8 @@ class Helper
     static function get_taxonomy($name)
     {
         global $post;
-
         $categories = get_the_terms( $post->ID, $name );
+
         if ( ! $categories || is_wp_error( $categories ) ) {
             return false;
         }
@@ -72,6 +72,20 @@ class Helper
         $category = implode(', ', $term_name);
 
         return $category;
+    }
+
+    static function get_custom_meta($name)
+    {
+        global $post;
+
+        $meta = get_post_meta( $post->ID, $name, true );
+
+        // If is an array means meta is not valid since we are expecting a single value string
+        if ( ! $meta || is_array($meta) ) {
+            return false;
+        }
+
+        return $meta;
     }
 
     static function get_reading_time()

@@ -3,27 +3,103 @@ Contributors: uicore
 Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
-Tested up to: 6.7.1
-Stable tag: 1.0.16
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Tested up to: 6.7.2
+Stable tag: 1.2.0
+License: GPLv3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Enhance your website with UiCore Elements – a free plugin offering diverse widgets for effortless design enrichment.
 
 == Description ==
 
-<strong>Unlock Creative Possibilities with UiCore Elements</strong>
-
-[Explore All Widgets](https://elements.uicore.co/)
-
-
-UiCore Elements is a versatile plugin designed to extend the capabilities of Elementor Page Builder. Elevate your website's design with an array of widgets, each crafted to bring innovation and interactivity to your pages.
+[UiCore Elements](https://elements.uicore.co/) is a versatile plugin designed to extend the capabilities of Elementor Page Builder. Elevate your website's design with an array of widgets, each crafted to bring innovation and interactivity to your pages.
 
 - **Diverse Range of Widgets:** From dynamic sliders to interactive forms, UiCore Elements provides a collection of widgets that seamlessly integrate with Elementor, empowering you to create captivating layouts.
 
 - **Intuitive Widget Customization:** Effortlessly customize each widget to match your design preferences. Adjust colors, styles, and content with ease, ensuring your website reflects your unique brand identity.
 
 - **Seamless Elementor Integration:** UiCore Elements seamlessly integrates with Elementor, allowing you to enhance your page-building experience without any compatibility issues.
+
+## 📌 Free Widgets
+
+### Content & Design
+- **Highlighted Text** – Make your text stand out by adding **highlights, gradients, and background images**.
+- **Icon List** – Create visually engaging lists with customizable icons.
+- **Counter** – Display animated number counters for stats and milestones.
+- **Icon Box** – Combine icons, titles, and descriptions in a stylish format.
+- **Accordion** – Organize content with collapsible sections for better readability.
+
+### Galleries & Media
+- **Gallery Grid** – Showcase images in a **responsive, customizable grid layout**.
+- **Gallery Carousel** – Display an **auto-scrolling image carousel** with smooth transitions.
+- **Gallery Slider** – Create a **modern image slider** with easy navigation.
+
+### Post & Content Layouts
+- **Advanced Post Grid** – Display blog posts in a **dynamic grid format**.
+- **Advanced Post Carousel** – Feature posts in an **auto-scrolling carousel**.
+- **Advanced Product Grid** – Create **highly customizable WooCommerce product grids**.
+
+### Testimonials & Logos
+- **Testimonial Grid** – Showcase testimonials in an **organized grid layout**.
+- **Testimonial Carousel** – Rotate client feedback in a **modern carousel**.
+- **Testimonial Slider** – Display **testimonials in a sleek slider** format.
+- **Logo Grid** – Showcase brand logos in a **clean, structured layout**.
+- **Logo Carousel** – Feature logos in a **scrolling carousel for brand credibility**.
+
+### Forms & Interactive Elements
+- **Contact Form** – Add **customizable contact forms** for better user engagement.
+- **Newsletter** – Integrate an **email subscription form** effortlessly.
+
+### Navigation & Custom Layouts
+- **Tabs** – Organize content into **interactive tabbed sections**.
+- **Custom Carousel** – Create a **fully customizable content carousel**.
+- **Custom Slider** – Build **interactive sliders** for images, text, and media.
+- **Custom Table** – Display structured data in a **customizable table format**.
+
+### Post & Page Content
+- **Post Content** – Dynamically display **post content in custom layouts**.
+- **The Title** – Show post or page titles with **custom styling options**.
+- **Post Meta** – Display **post metadata** like date, author, and categories.
+- **Page Description** – Automatically show a **page’s meta description**.
+
+---
+
+## 🚀 PRO Widgets
+
+**All PRO widgets are available with [UiCore PRO](https://uicore.pro/) theme, unlocking powerful WooCommerce functionalities.**
+
+### WooCommerce Product Widgets (PRO)
+- **Product Grid** – Display **WooCommerce products in a customizable grid layout**.
+- **Product Gallery** – Showcase **product images** in an elegant gallery.
+- **Product Price** – Display **WooCommerce product prices** with custom styling.
+- **Product Stock** – Show **stock availability** in a visually engaging way.
+- **Product Meta** – Display **WooCommerce metadata** like SKU and categories.
+- **Product Content** – Automatically show **detailed product descriptions**.
+- **Short Description** – Feature **concise product descriptions** with modern styling.
+- **Product Tabs** – Organize product details into **interactive tabbed sections**.
+- **Add To Cart** – Add a **custom "Add to Cart" button anywhere**.
+- **Breadcrumbs** – Improve navigation with **SEO-friendly breadcrumbs**.
+- **Product Rating** – Show **star ratings for WooCommerce products**.
+- **Sale Badge** – Highlight **discounted products with eye-catching badges**.
+
+---
+
+## More Tools to Enhance Your WordPress Website
+
+If you love **UiCore Elements**, you’ll love our other products too:
+
+- **[UiCore Animate](https://wordpress.org/plugins/uicore-animate/)** – Add **page transitions, smooth scrolling, and engaging animations** to Elementor and Gutenberg blocks for a seamless, interactive experience.
+
+- **[UiCore Blocks](https://wordpress.org/plugins/uicore-blocks/)** – Extend the WordPress Gutenberg editor with **flexible and high-performance blocks**, enabling you to build modern, visually stunning websites effortlessly.
+
+- **[UiCore PRO](https://uicore.pro/)** – Unlock **unlimited website creation, full theme customization, and exclusive pro features** at an affordable yearly subscription.
+
+## 🚀 Support That Cares!
+
+We understand the need for a **quality product backed by dedicated support**. Our team is here to **listen to your queries** and help you **get the most out of our plugin**.
+
+[Contact Us](https://uicore.pro/contact/)
+
 
 == Installation ==
 
@@ -48,7 +124,32 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
-= 1.0.16 = 
+= 1.2.0 =
+* NEW - Added new `marquee` and `default` animation style to Carousel widgets
+* NEW - Added `center slides` option, allowing new and exciting designs for Carousel widgets
+* NEW - Added new controls for the `fade edges` feature to Carousel widgets
+* NEW - Added new `main image` animations for the Gallery Carousel widget
+* UPD - Merged and improved `circular` and `fade-blur` animation scripts into one modular script
+* UPD - Prepared widgets to handle the Inner Wrapper deprecation on the future Elementor 3.30 release
+* UPD - Promoted Carousel widget's `gap` control to responsive type
+* UPD - Improved APG and APrG style control options, giving more design freedom
+* UPD - Replaced some widget's hardcoded text properties for inheriting
+* UPD - Removed unused media query from Icon Box styles
+* UPD - Improved Carousel widget's navigation markup so they are not hidden anymore by the `fade edges` option
+* FIX - Fixed some security issues and improved several functions, following WordPress's latest code standards
+* FIX - Fixed Gallery Carousel bug where slide animations were slowed by filter transitions
+* FIX - Fixed Slider widget's bug where slides wouldn't work due to lack of gap option
+* FIX - Fixed APrG `summary` bug that would return the wrong content
+* FIX - Fixed APG bug where setting `current` query with `load more` pagination could expose the query variables as text in the frontend
+* FIX - Fixed Highlighted Text line break bug where texts didn't respect it
+* FIX - Fixed some widget's icons lack of transition for color and similar properties
+* FIX - Fixed Tabs `pill style` bug on frontend
+* FIX - Removed undesired accordion paragraph's bottom spacing
+* FIX - Fixed Carousel widget's 'vertical alignment' editor control label
+* FIX - Fixed Custom Table bug where the table columns would break after reloading the page
+* FIX - Removed debug system on a Nested widget's mechanism, which was creating large debug.log files
+
+= 1.0.16 =
 * FIX - PHP 8.x warnings
 * FIX - Minor small bugs fixes
 

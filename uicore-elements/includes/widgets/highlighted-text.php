@@ -194,7 +194,7 @@ class HighlightedText extends UiCoreWidget
 				'label' => esc_html__( 'Stroke Color', 'uicore-elements' ),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}}  {{CURRENT_ITEM}} svg path' => 'stroke: {{VALUE}}', 
+					'{{WRAPPER}}  {{CURRENT_ITEM}} svg path' => 'stroke: {{VALUE}}',
 
 				],
 				'condition' => [ 'headline_style!' => ['none','color'] ],
@@ -535,11 +535,22 @@ class HighlightedText extends UiCoreWidget
 			switch ($item['type']) {
 				case 'text':
 					if($item['headline_style'] === 'none'){
-						echo '<span class="ui-e-headline-text elementor-repeater-item-' . esc_attr($item['_id']) . '">' . Helper::esc_string($item['text']) . '</span>';
+						echo '<span class="ui-e-headline-text elementor-repeater-item-'
+                              . esc_attr($item['_id']) . '">'
+                                . Helper::esc_string($item['text']) //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                              . '</span>';
 					}else{
 						$svg_markup = $this->get_svg('single',$item['headline_style']);
-						echo 	'<span class="ui-e-headline-text elementor-repeater-item-' . esc_attr($item['_id']) . ' ui-e-headline-'.esc_attr($item['headline_style']).'">
-									<span class="whitespace"> </span><span><span class="ui-e-headline-text ui-e-headline-highlighted">'.Helper::esc_string($item['text']) .'</span>' . Helper::esc_svg($svg_markup) .'</span><span class="whitespace"> </span></span>';
+						echo '<span class="ui-e-headline-text elementor-repeater-item-'
+                              . esc_attr($item['_id'])
+                              . ' ui-e-headline-'.esc_attr($item['headline_style']).'">
+									<span class="whitespace"></span>
+                                    <span>
+                                        <span class="ui-e-headline-text ui-e-headline-highlighted">'
+                                        . Helper::esc_string($item['text']) //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                        .'</span>'
+                                        . Helper::esc_svg($svg_markup) //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                    .'</span> <span class="whitespace"> </span></span>';
 					}
 					break;
 				case 'icon':

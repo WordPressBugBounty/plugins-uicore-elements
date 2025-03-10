@@ -46,6 +46,7 @@ class CustomTable extends UiCoreNestedWidget {
 		return [
 			'elType' => 'container',
 			'settings' => [
+                /* translators: %s: Item index */
 				'_title' => sprintf( __( 'Cel #%s', 'uicore-elements' ), $index ),
 				'content_width' => 'full',
                 // 'flex_justify_content' => 'center',
@@ -68,6 +69,7 @@ class CustomTable extends UiCoreNestedWidget {
 	}
 
 	protected function get_default_children_title() {
+         /* translators: %d: Item index */
 		return esc_html__( 'Cell #%d', 'uicore-elements' );
 	}
 	protected function get_default_children_placeholder_selector() {
@@ -199,16 +201,23 @@ class CustomTable extends UiCoreNestedWidget {
 
         // Build the grid columns css
         if ($cols) {
-
             $grid_css = '';
             $grid_columns = [];
             $breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
 
+            $fallback = [
+                'size' => 2,
+                'unit' => 'fr',
+            ];
+
             // Columns loop
             foreach ($cols as $index => $item) {
-
-                // Register default desktop size
-                $grid_columns['desktop'][] = $item['col_size']['size'] . $item['col_size']['unit'];
+                // Set desktop column size if we have both size and unit
+                if (isset($item['col_size']['size']) && isset($item['col_size']['unit'])) {
+                    $grid_columns['desktop'][] = $item['col_size']['size'] . $item['col_size']['unit'];
+                } else {
+                    $grid_columns['desktop'][] = $fallback['size'] . $fallback['unit'];
+                }
 
                 // Check for the current column responsive sizes
                 foreach ($breakpoints as $breakpoint => $object) {
@@ -216,12 +225,10 @@ class CustomTable extends UiCoreNestedWidget {
 
                     // Register the current column responsive size if it exists and
                     // the value is not empty, because empty values will break the table design
-                    if ( isset($item[$size_slug]) && !empty($item[$size_slug]['size']) ) {
+                    if (isset($item[$size_slug]['size']) && isset($item[$size_slug]['unit'])) {
                         $grid_columns[$breakpoint][] = $item[$size_slug]['size'] . $item[$size_slug]['unit'];
-
-                    // Use the default size from desktop otherwhise
                     } else {
-                        $grid_columns[$breakpoint][] = $item['col_size']['size'] . $item['col_size']['unit'];
+                        $grid_columns[$breakpoint][] = $grid_columns['desktop'][$index];
                     }
                 }
             }
@@ -229,7 +236,7 @@ class CustomTable extends UiCoreNestedWidget {
             // Generate the css variables
             foreach ($grid_columns as $device => $values) {
                 $breakpoint = $device === 'desktop' ? '' : '-' . $device;
-                $grid_css  .= '--ui-e-table-cols' . $breakpoint . ':' . implode(' ', $values) . ';';
+                $grid_css .= '--ui-e-table-cols' . $breakpoint . ':' . implode(' ', $values) . ';';
             }
 
             // Add it to the widget wrapper

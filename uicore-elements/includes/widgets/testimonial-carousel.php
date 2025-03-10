@@ -183,6 +183,8 @@ class TestimonialCarousel extends UiCoreWidget
     public function render()
     {
         $settings = $this->get_settings_for_display();
+        $total_slides = count($settings['review_items']);
+
         ?>
             <div class="ui-e-carousel swiper">
                 <div class='swiper-wrapper'>
@@ -190,10 +192,18 @@ class TestimonialCarousel extends UiCoreWidget
                         foreach ( $settings['review_items'] as $index => $item ) :
                             $this->TRAIT_render_review_item($item, $settings['layout']);
                         endforeach;
+
+                        // Most recent swiper versions requires, if loop, at least one extra slide compared to visible slides
+                        if( $this->TRAIT_should_duplicate_slides($total_slides)) {
+                            $diff = $this->TRAIT_get_duplication_diff($total_slides);
+                            for($i = 0; $i <= $diff; $i++){
+                                $this->TRAIT_render_review_item($settings['review_items'][$i], $settings['layout']);
+                            }
+                        }
                     ?>
                 </div>
-                <?php $this->TRAIT_render_carousel_navigations(); ?>
             </div>
+            <?php $this->TRAIT_render_carousel_navigations(); ?>
         <?php
     }
 }

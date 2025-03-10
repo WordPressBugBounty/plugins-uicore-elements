@@ -48,12 +48,16 @@ class Tabs extends UiCoreNestedWidget {
     {
 		return ['tabs'];
     }
+    public function has_widget_inner_wrapper(): bool {
+		return false;
+	}
 
     // Nested required functions
     protected function tab_content_container( int $index ) {
 		return [
 			'elType' => 'container',
 			'settings' => [
+                /* translators: %s: Tab index */
 				'_title' => sprintf( __( 'Tab #%s', 'uicore-elements' ), $index ),
 				'content_width' => 'full',
 			],
@@ -70,6 +74,7 @@ class Tabs extends UiCoreNestedWidget {
 		return 'tab_title';
 	}
 	protected function get_default_children_title() {
+        /* translators: %d: Tab index */
 		return esc_html__( 'Tab #%d', 'uicore-elements' );
 	}
 	protected function get_default_children_placeholder_selector() {
@@ -88,8 +93,8 @@ class Tabs extends UiCoreNestedWidget {
 		$end = is_rtl() ? 'left' : 'right';
 		$start_logical = is_rtl() ? 'end' : 'start';
 		$end_logical = is_rtl() ? 'start' : 'end';
-		$heading_selector = '{{WRAPPER}} > .elementor-widget-container > .ui-e-tabs > .ui-e-tabs-heading';
-		$content_selector = ':where( {{WRAPPER}} > .elementor-widget-container > .ui-e-tabs > .ui-e-tabs-content ) > .e-con';
+		$heading_selector = '{{WRAPPER}} > .ui-e-tabs > .ui-e-tabs-heading';
+		$content_selector = ':where( {{WRAPPER}} > .ui-e-tabs > .ui-e-tabs-content ) > .e-con';
 
         $this->start_controls_section(
 			'section_tabs',
@@ -747,13 +752,24 @@ class Tabs extends UiCoreNestedWidget {
 					'type' => Controls_Manager::SWITCHER,
 					'return_value' => 'yes',
 					'prefix_class' => 'ui-e-pill-tabs-',
-					'condition' => [
-						'tabs_direction' => [
-							'block-start',
-							'block-end',
-						]
-					],
-					'separator' => 'before',
+                    'separator' => 'before',
+                    'device_args' => [
+                        'desktop' => [
+                            'condition' => [
+                                'tabs_direction' => ['block-start', 'block-end'],
+                            ],
+                        ],
+                        'mobile' => [
+                            'condition' => [
+                                'tabs_direction' => ['block-start', 'block-end'],
+                            ]
+                        ],
+                        'tablet' => [
+                            'condition' => [
+                                'tabs_direction' => ['block-start', 'block-end'],
+                            ]
+                        ]
+                    ],
 				]
 			);
 

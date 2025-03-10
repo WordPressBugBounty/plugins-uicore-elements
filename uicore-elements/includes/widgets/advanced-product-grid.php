@@ -277,7 +277,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
             'text',
             [
                 'label'       => esc_html__('Custom Text', 'uicore-elements'),
-                'default'     => esc_html__('', 'uicore-elements'),
+                'default'     => '',
                 'description' => esc_html__('If left blank, the default add to cart button text will be used.', 'uicore-elements')
             ]
         );
@@ -350,8 +350,6 @@ class AdvancedProductGrid extends AdvancedPostGrid
             return false;
         }
 
-        // TODO: check related render method
-
         \ob_start();
         foreach ($products as $product) {
             $post_object = get_post($product->get_id());
@@ -373,7 +371,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
     {
         if( !class_exists('WooCommerce') ) {
             if ( $this->is_edit_mode() ) {
-                echo '<p>' . __('Please enable WooCommerce to use this widget.', 'uicore-elements') . '</p>';
+                echo '<p>' . esc_html__('Please enable WooCommerce to use this widget.', 'uicore-elements') . '</p>';
             }
             return;
         }
@@ -384,7 +382,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
         // Related products, on save page action at editor, triggers an fata error upon post object handle.
         // Prevent it for now by disabling the widget on edit mode. TODO: remove it after fixing the issue
         if ( 'related' === $settings['product-filter_post_type'] && $this->is_edit_mode() ) {
-            echo '<p>' . __('This widget is set to display related products. To see the results, please preview the page, or customize your widget before setting "current" query.', 'uicore-elements') . '</p>';
+            echo '<p>' . esc_html__('This widget is set to display related products. To see the results, please preview the page, or customize your widget before setting "current" query.', 'uicore-elements') . '</p>';
             return;
         }
 
@@ -406,7 +404,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
 
         // No posts found
         if ( empty($products) ) {
-            echo '<p style="text-align:center">' . __('No products found.', 'uicore-elements') . '</p>';
+            echo '<p style="text-align:center">' . esc_html__('No products found.', 'uicore-elements') . '</p>';
 
         } else {
             ?>

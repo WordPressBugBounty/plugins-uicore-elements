@@ -310,7 +310,8 @@ trait Post_Filters_Trait {
         if (!$is_product && !taxonomy_exists($taxonomy)) {
             if (!in_array($taxonomy, $taxonomy_list)) {
                 if (\Elementor\Plugin::instance()->editor->is_edit_mode()) {
-                    echo sprintf(__('<i>%s</i> is not a valid taxonomy.', 'uicore-elements'), esc_html($taxonomy));
+                    /* translators: %s: taxonomy name */
+                    echo esc_html( sprintf('<i>%s</i> is not a valid taxonomy.', $taxonomy), 'uicore-elements');
                 }
                 return;
             }
@@ -360,10 +361,10 @@ trait Post_Filters_Trait {
 
             <?php if(!$ajax) : ?>
                 <a href="<?php echo esc_url($archive); ?>">
-                    <button class="ui-e-filter-item" data-ui-e-action="clear"> <?php _e('All', 'uicore-elements'); ?> </button>
+                    <button class="ui-e-filter-item" data-ui-e-action="clear"> <?php echo esc_html__('All', 'uicore-elements'); ?> </button>
                 </a>
             <?php else: ?>
-                    <button class="ui-e-filter-item" data-ui-e-action="clear"> <?php _e('All', 'uicore-elements'); ?> </button>
+                    <button class="ui-e-filter-item" data-ui-e-action="clear"> <?php echo esc_html__('All', 'uicore-elements'); ?> </button>
             <?php endif; ?>
 
             <?php foreach ($terms as $term) :
@@ -374,7 +375,7 @@ trait Post_Filters_Trait {
                         $active_class = 'ui-e-active';
                     }
                 } else {
-                    $active_class = !$ajax && isset($_GET['term']) && $term->term_id == $_GET['term'] ? 'ui-e-active' : '';
+                    $active_class = !$ajax && isset($_GET['term']) && $term->term_id == $_GET['term'] ? 'ui-e-active' : ''; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
                 }
                 ?>
 

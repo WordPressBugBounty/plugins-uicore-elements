@@ -304,7 +304,8 @@ trait Meta_Trait {
         }
     }
 
-    function get_meta_the_author($mode){
+    function get_meta_the_author($mode)
+    {
         global $post;
         $author_id = $post->post_author;
 
@@ -317,6 +318,7 @@ trait Meta_Trait {
             $display = esc_html(\get_the_author_meta('display_name', $author_id));
         }
         $link = sprintf(
+            /* translators: 1: Author archive url, 2: Author meta title, 3: Author display name */
             '<a href="%1$s" title="%2$s" rel="author">%3$s</a>',
             esc_url( get_author_posts_url( $author_id) ),
             /* translators: %s: Author's display name. */
@@ -326,7 +328,8 @@ trait Meta_Trait {
         return $link;
     }
 
-    function get_woo_meta($type) {
+    function get_woo_meta($type)
+    {
         global $product;
 
         if (empty($product)) {
@@ -353,10 +356,10 @@ trait Meta_Trait {
         }
     }
 
+    function display_meta($meta)
+    {
 
-    function display_meta($meta){
-
-        if($meta['type'] === 'none')
+        if( $meta['type'] === 'none' )
             return;
 
         $content = '';
@@ -375,10 +378,10 @@ trait Meta_Trait {
                 $content .= $this->get_meta_the_author($meta['autor_display']);  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 break;
             case 'date':
-                $content .= Helper::format_date(get_the_date('U'), $meta['date_format'], $meta['custom_format']); // 'U' param returns the date in timestamp, necessary for format_date()
+                $content .= Helper::format_date( get_the_date('U'), $meta['date_format'], $meta['custom_format']); // 'U' param returns the date in timestamp, necessary for format_date()
                 break;
             case 'updated date':
-                $content .= Helper::format_date(get_the_modified_date('U'), $meta['date_format'], $meta['custom_format']); // 'U' param returns the date in timestamp, necessary for format_date()
+                $content .= Helper::format_date( get_the_modified_date('U'), $meta['date_format'], $meta['custom_format']); // 'U' param returns the date in timestamp, necessary for format_date()
                 break;
             case 'category':
                 $content .= Helper::get_taxonomy('category');
@@ -390,10 +393,10 @@ trait Meta_Trait {
                 $content .= Helper::get_taxonomy('portfolio_category');
                 break;
             case 'comment':
-                $content .= esc_html(get_comments_number());
+                $content .= esc_html( get_comments_number() );
                 break;
             case 'custom meta':
-                $content .= esc_html(get_post_meta( get_the_ID(), $meta['type_custom'], true ));
+                $content .= Helper::get_custom_meta($meta['type_custom']);
                 break;
             case 'custom taxonomy':
                 $content .= Helper::get_taxonomy($meta['type_custom']);
@@ -402,7 +405,7 @@ trait Meta_Trait {
                 $content .= wp_kses_post($meta['html_custom']);
                 break;
             case 'reading time':
-                $content .= esc_html(Helper::get_reading_time());
+                $content .= esc_html( Helper::get_reading_time() );
                 break;
             default:
                 if (strpos($type, 'product') === 0) {

@@ -13,6 +13,8 @@ use Elementor\Group_Control_Background;
 use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
 use UiCoreElements\Helper;
 
+use UiCoreElements\Utils\Carousel_Trait;
+
 
 defined('ABSPATH') || exit();
 
@@ -25,13 +27,16 @@ defined('ABSPATH') || exit();
 
 trait Gallery_Trait {
 
+    use Carousel_Trait;
+
     // Controls Registration
         function TRAIT_register_gallery_repeater_controls($title)
         {
             $this->start_controls_section(
                 'content_section',
                 [
-                    'label' => __($title, 'uicore-elements'),
+                    /* translators: %s: Control title */
+                    'label' => esc_html( sprintf('%s', $title), 'uicore-elements'),
                     'tab'   => Controls_Manager::TAB_CONTENT,
                 ]
             );
@@ -105,6 +110,15 @@ trait Gallery_Trait {
                             ],
                             [
                                 'item_title' => esc_html__('Item #3', 'uicore-elements'),
+                            ],
+                            [
+                                'item_title' => esc_html__('Item #4', 'uicore-elements'),
+                            ],
+                            [
+                                'item_title' => esc_html__('Item #5', 'uicore-elements'),
+                            ],
+                            [
+                                'item_title' => esc_html__('Item #6', 'uicore-elements'),
                             ],
                         ],
                         'title_field' => '{{{ item_title }}}',
@@ -923,44 +937,62 @@ trait Gallery_Trait {
             $has_animation = $entrance !== '' ? true : $has_animation;
 
             //
-            $item_classes = $is_carousel ? 'ui-e-wrp swiper-slide' : 'ui-e-wrp';
+            $item_classes = $is_carousel
+                ? 'ui-e-wrp swiper-slide'
+                : 'ui-e-wrp ui-e-filtered';
             $this->add_render_attribute('item_wrapper', 'class', $item_classes );
 
             // Render items
             foreach ( $settings['gallery_items'] as $index => $item ) {
+               $this->render_item($index, $item, $settings, $has_animation, $animations);
+            }
 
-                // Params
-                $key = 'item_'.$index;
-                $tag = 'div ';
+            if($is_carousel) {
+                $total_slides = count($settings['gallery_items']);
 
-                $this->add_render_attribute($key, 'class', 'ui-e-item' );
-
-                // Build URL
-                if ( !empty($item['item_url']['url']) ) {
-                    $tag = 'a ';
-                    $this->add_link_attributes($key, $item['item_url'] );
+                // Most recent swiper versions requires, if loop, at least one extra slide compared to visible slides
+                if( $this->TRAIT_should_duplicate_slides($total_slides)) {
+                    $diff = $this->TRAIT_get_duplication_diff($total_slides);
+                    for($i = 0; $i <= $diff; $i++){
+                        $this->render_item($index, $item, $settings, $has_animation, $animations);
+                    }
                 }
-
-                ?>
-                    <div <?php $this->print_render_attribute_string('item_wrapper'); ?> data-ui-e-tags="<?php echo sanitize_title( $item['item_tags'] ); ?>">
-
-                        <?php if($has_animation) : ?>
-                            <div class='ui-e-animations-wrp <?php echo esc_attr($animations);?>'>
-                        <?php endif; ?>
-
-                            <<?php echo esc_html($tag);?> <?php $this->print_render_attribute_string($key); ?>>
-                                <?php $this->render_item($index, $item, $settings); ?>
-                            </<?php echo esc_html($tag);?>>
-
-                        <?php if($has_animation) : ?>
-                            </div>
-                        <?php endif; ?>
-
-                    </div>
-                <?php
             }
         }
-        protected function render_item($index, $instance, $settings)
+
+        protected function render_item($index, $item, $settings, $has_animation, $animations)
+        {
+            // Params
+            $key = 'item_'.$index;
+            $tag = 'div ';
+
+            $this->add_render_attribute($key, 'class', 'ui-e-item' );
+
+            // Build URL
+            if ( !empty($item['item_url']['url']) ) {
+                $tag = 'a ';
+                $this->add_link_attributes($key, $item['item_url'] );
+            }
+
+            ?>
+                <div <?php $this->print_render_attribute_string('item_wrapper'); ?> data-ui-e-tags="<?php echo esc_attr( sanitize_title( $item['item_tags'] )); ?>">
+
+                    <?php if($has_animation) : ?>
+                        <div class='ui-e-animations-wrp <?php echo esc_attr($animations);?>'>
+                    <?php endif; ?>
+
+                        <<?php echo esc_html($tag);?> <?php $this->print_render_attribute_string($key); ?>>
+                            <?php $this->render_layout($index, $item, $settings); ?>
+                        </<?php echo esc_html($tag);?>>
+
+                    <?php if($has_animation) : ?>
+                        </div>
+                    <?php endif; ?>
+
+                </div>
+            <?php
+        }
+        protected function render_layout($index, $instance, $settings)
         {
 
             switch( $settings['layout'] ){
@@ -1062,7 +1094,7 @@ trait Gallery_Trait {
                                 $this->render_badge($instance, $settings['badge_animation']);
                             }
                         ?>
-                        <?php echo Group_Control_Image_Size::get_attachment_image_html( $instance, 'item_image', ); ?>
+                        <?php echo wp_kses_post( Group_Control_Image_Size::get_attachment_image_html( $instance, 'item_image', )); ?>
                     </div>
                 <?php
             }
@@ -1075,7 +1107,7 @@ trait Gallery_Trait {
 
             ?>
                 <<?php echo esc_html($settings['title_tag']);?> class="ui-e-title <?php echo esc_attr($settings['title_animation'])?>">
-                    <span> <?php echo Helper::esc_string( $instance['item_title'] ); ?> </span>
+                    <span> <?php echo Helper::esc_string( $instance['item_title'] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> </span>
                 </<?php echo esc_html($settings['title_tag']);?>>
             <?php
         }
@@ -1087,7 +1119,7 @@ trait Gallery_Trait {
 
             ?>
                 <p class="ui-e-description <?php echo esc_attr($animation);?>">
-                    <?php echo Helper::esc_string( $instance['item_description'] ) ;?>
+                    <?php echo Helper::esc_string( $instance['item_description'] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                 </p>
             <?php
         }
@@ -1156,7 +1188,7 @@ trait Gallery_Trait {
                     </button>
 
                     <?php foreach($filters as $filter) : ?>
-                        <button class="ui-e-filter-item" data-filter="<?php echo sanitize_title($filter); ?>">
+                        <button class="ui-e-filter-item" data-filter="<?php echo esc_attr( sanitize_title($filter)); ?>">
                             <?php echo esc_html($filter); ?>
                         </button>
                     <?php endforeach; ?>

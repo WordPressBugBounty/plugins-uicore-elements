@@ -48,7 +48,7 @@ class Post_Filter extends Group_Control_Base
         $fields = [];
 
         $fields['post_type'] = [
-            'label' => _x('Source', 'uicore-elements'),
+            'label' => __('Source', 'uicore-elements'),
             'type' => Controls_Manager::SELECT,
         ];
 
@@ -124,9 +124,9 @@ class Post_Filter extends Group_Control_Base
 
         if($only_products){
             return [
-                'product' => esc_html__( 'Custom', 'uicore-framework' ),
-                'current' => esc_html__( 'Current', 'uicore-framework' ),
-                'related' => esc_html__( 'Related', 'uicore-framework' )
+                'product' => esc_html__( 'Custom', 'uicore-elements' ),
+                'current' => esc_html__( 'Current', 'uicore-elements' ),
+                'related' => esc_html__( 'Related', 'uicore-elements' )
             ];
         }
 

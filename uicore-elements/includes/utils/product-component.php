@@ -118,7 +118,7 @@ trait Product_Trait {
                         echo $sec_img ? wp_kses_post($sec_img) : '';
                     ?>
                     <div class="ui-e-post-img <?php echo $sec_img ? 'ui-e-hover-hide' : ''; ?>"
-                        style="background-image:url(<?php echo wp_get_attachment_image_url($pic_id, $size); ?>)">
+                        style="background-image:url(<?php echo esc_url( wp_get_attachment_image_url($pic_id, $size)); ?>)">
                     </div>
                 <?php } ?>
             </a>
@@ -169,6 +169,31 @@ trait Product_Trait {
         <?php
     }
 
+    function get_product_summary($product, $length = 55)
+    {
+        if ( ! $this->get_settings_for_display('excerpt') ) {
+            return;
+        }
+
+        $summary = $product->get_short_description();
+
+        // Get product description if no summary
+        if( empty($summary) ) {
+            $summary = $product->get_description();
+        }
+
+        // returns if no description also
+        if( empty($summary) ) {
+            return;
+        }
+
+        ?>
+        <div class="ui-e-post-text">
+            <?php echo wp_kses_post(wp_trim_words($summary, $length)); ?>
+        </div>
+        <?php
+    }
+
     /**
      * Renders a product item with various settings and options.
      * Important: any changes here should also be considered to `TRAIT_render_item()` from Post Component.
@@ -183,7 +208,6 @@ trait Product_Trait {
     function TRAIT_render_product($product, $carousel = false, $legacy = false, $is_ajax = false)
     {
         $settings       = $this->get_settings_for_display();
-        $excerpt_length = $settings['excerpt_trim'];
 
         // Classnames but checking if we the widget is APG (legacy version)
         $item_classes     = $legacy ? ['ui-e-post-item', 'ui-e-item'] : ['ui-e-item'] ; // Single item lower wrap class receptor
@@ -231,10 +255,7 @@ trait Product_Trait {
                             $this->get_product_title($product);
                         ?>
                         <?php $this->get_post_meta('after_title'); ?>
-                        <?php
-                        if ($this->get_settings_for_display('excerpt'))
-                            echo wp_kses_post('<div class="ui-e-post-text">' . wp_trim_words(get_the_excerpt(), $excerpt_length) . '</div>');
-                        ?>
+                        <?php $this->get_product_summary($product, $settings['excerpt_trim']); ?>
                         <?php $this->get_post_meta('bottom');  // button
                         ?>
                         <?php
@@ -273,7 +294,6 @@ trait Product_Trait {
         <?php }
     }
 
-    // TODO: discover why using Post_Trait here forces us to have
-    // this public content_template() to avoid fatal error
+    // keep it to avoid fatal error
     public function content_template() {}
 }

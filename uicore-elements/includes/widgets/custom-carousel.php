@@ -61,7 +61,8 @@ class CustomCarousel extends UiCoreNestedWidget {
 		return [
 			'elType' => 'container',
 			'settings' => [
-				'_title' => sprintf( __( 'Item #%s', 'uicore-elements' ), $index ),
+                /* translators: %s: Item number */
+				'_title' => sprintf( esc_html__( 'Item #%s', 'uicore-elements' ), $index ),
 				'content_width' => 'full',
                 'flex_justify_content' => 'center',
                 'flex_align_items' => 'center',
@@ -79,6 +80,7 @@ class CustomCarousel extends UiCoreNestedWidget {
 		return 'carousel_item_title';
 	}
 	protected function get_default_children_title() {
+        /* translators: %d: Item number */
 		return esc_html__( 'Item #%d', 'uicore-elements' );
 	}
 	protected function get_default_children_placeholder_selector() {
@@ -204,11 +206,30 @@ class CustomCarousel extends UiCoreNestedWidget {
         $items  = $this->get_settings_for_display('carousel_items');
         $carousel_items = '';
 
+        $total_slides = count($items);
+        $should_duplicate = $this->TRAIT_should_duplicate_slides($total_slides);
+        $duplicated_slides = [];
+
         foreach ( $items as $index => $item ) {
             ob_start();
             $this->render_item($index);
-            $carousel_items .= ob_get_clean();
+            $current_slide = ob_get_clean();
+
+            if($should_duplicate){
+                $duplicated_slides[$index] = $current_slide;
+            }
+
+            $carousel_items .= $current_slide;
         }
+
+        // Most recent swiper versions requires, if loop, at least one extra slide compared to visible slides
+        if($should_duplicate) {
+            $diff = $this->TRAIT_get_duplication_diff($total_slides);
+            for($i = 0; $i <= $diff; $i++){
+                $carousel_items .= $duplicated_slides[$i];
+            }
+        }
+
         ?>
             <div class="ui-e-carousel swiper">
 
@@ -216,8 +237,9 @@ class CustomCarousel extends UiCoreNestedWidget {
                     <?php echo $carousel_items; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</div>
 
-                <?php $this->TRAIT_render_carousel_navigations(); ?>
             </div>
+
+            <?php $this->TRAIT_render_carousel_navigations(); ?>
         <?php
     }
 
@@ -277,36 +299,37 @@ class CustomCarousel extends UiCoreNestedWidget {
         ?>
             <#
             var carouselItems = settings.carousel_items,
-                navigationDots = settings.navigation.includes('dots'),
-                navigationArrows = settings.navigation.includes('arrows'),
-                navigationFraction = settings.navigation.includes('fraction');
+                hideNavigation = settings.animation_style.includes('marquee'),
+                navigationDots = settings.navigation.includes('dots') && !hideNavigation,
+                navigationArrows = settings.navigation.includes('arrows') && !hideNavigation,
+                navigationFraction = settings.navigation.includes('fraction') && !hideNavigation;
 
             var	prev = elementor.helpers.renderIcon( view, settings.previous_arrow, { 'aria-hidden': true }, 'i' , 'object' ),
 				next = elementor.helpers.renderIcon( view, settings.next_arrow, { 'aria-hidden': true }, 'i' , 'object' );
             #>
+
             <div class="ui-e-carousel swiper {{ elementorFrontend.config.swiperClass }}">
-
                 <div class='swiper-wrapper'> </div>
+            </div>
 
-                <# if ( navigationDots ) { #>
-                    <div class="swiper-pagination ui-e-dots"></div>
+            <# if ( navigationDots ) { #>
+                    <div class="swiper-pagination ui-e-dots ui-e-carousel-dots"></div>
                 <# } #>
                 <# if ( navigationArrows ) { #>
-                    <div class="ui-e-button ui-e-previous" role="button" aria-label="Previous slide">
+                    <div class="ui-e-button ui-e-carousel-button ui-e-previous" role="button" aria-label="Previous slide">
                         {{{ prev.value }}}
                     </div>
-                    <div class="ui-e-button ui-e-next" role="button" aria-label="Next slide">
+                    <div class="ui-e-button ui-e-carousel-button ui-e-next" role="button" aria-label="Next slide">
                         {{{ next.value }}}
                     </div>
                 <# } #>
                 <# if ( navigationFraction ) { #>
-                    <div class="ui-e-fraction">
+                    <div class="ui-e-fraction ui-e-carousel-fraction">
                         <span class="ui-e-current"></span>
                         /
                         <span class="ui-e-total"></span>
                     </div>
-                <# } #>
-            </div>
+            <# } #>
         <?php
     }
 

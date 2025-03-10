@@ -1,8 +1,6 @@
 <?php
 namespace UiCoreElements\Controls;
 
-use Elementor\Controls_Manager;
-
 use UiCoreElements\Controls\Post_Filter;
 
 defined('ABSPATH') || exit();
@@ -10,8 +8,8 @@ defined('ABSPATH') || exit();
 /**
  * Widgets Control Extender.
  *
- * Post_Filter class has pretty much everything we need. We only need to change the type name and
- * also makes sure prepare_fields(), from Post_Filter, will print only specific post types, usefull for Woo.
+ * Post_Filter class has pretty much everything we need. We only need to change the type name and also makes
+ * sure prepare_fields(), from Post_Filter, will only print specific post types that are usefull for Woo.
  *
  * @since 1.0.11
  */

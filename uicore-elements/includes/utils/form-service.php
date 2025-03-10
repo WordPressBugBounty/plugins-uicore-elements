@@ -311,23 +311,29 @@ class Contact_Form_Service {
         foreach ($metadada as $meta) {
             switch($meta){
                 case 'date':
-                    $content .= sprintf( '%s: %s', 'Date', date('Y-m-d') . $line_break);
+                    $content .= sprintf( '%s: %s', 'Date', gmdate('Y-m-d') . $line_break);
                     break;
 
                 case 'time' :
-                    $content .= sprintf( '%s: %s', 'Time', date('H:i:s') . $line_break);
+                    $content .= sprintf( '%s: %s', 'Time', gmdate('H:i:s') . $line_break);
                     break;
 
                 case 'remote_ip':
-                    $content .= sprintf( '%s: %s', 'IP', $_SERVER['REMOTE_ADDR'] . $line_break);
+                    $content .= isset($_SERVER['REMOTE_ADDR'])
+                        ? sprintf( '%s: %s', 'IP', sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])). $line_break)
+                        : '';
                     break;
 
                 case 'user_agent':
-                    $content .= sprintf( '%s: %s', 'User Agent', $_SERVER['HTTP_USER_AGENT'] . $line_break);
+                    $content .= isset($_SERVER['HTTP_USER_AGENT'])
+                        ?  sprintf( '%s: %s', 'User Agent', sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) . $line_break)
+                        : '';
                     break;
 
                 case 'page_url':
-                    $content .= sprintf( '%s: %s', 'Page URL', $_SERVER['HTTP_REFERER'] . $line_break);
+                    $content .= isset($_SERVER['HTTP_REFERER'])
+                        ?  sprintf( '%s: %s', 'Page URL', sanitize_text_field(wp_unslash($_SERVER['HTTP_REFERER'])) . $line_break)
+                        : '';
                     break;
             }
         }
@@ -391,27 +397,26 @@ class Contact_Form_Service {
             "merge_fields" => $merge_fields
         ];
 
-
-        $request = curl_init();
-        curl_setopt($request, CURLOPT_URL, $url);
-        curl_setopt($request, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'Authorization: Basic ' . base64_encode('anystring:' . $key)
+        $response = wp_remote_post($url, [
+            'headers' => [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Basic ' . base64_encode('anystring:' . $key)
+            ],
+            'body' => json_encode($data),
+            'timeout' => 15,
         ]);
-        curl_setopt($request, CURLOPT_POST, true);
-        curl_setopt($request, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        $res = curl_exec($request);
 
-        if(curl_errno($request)) {
-            $res = curl_error($request);
-        } else {
-            $res = json_decode($res, true);
+        if ( is_wp_error($response) ) {
+            return [
+                'status' => 'error',
+                'message' => $response->get_error_message()
+            ];
         }
 
-        curl_close($request);
+        $body = wp_remote_retrieve_body($response);
+        $result = json_decode($body, true);
 
-        return $res;
+        return $result;
     }
 
     /**
@@ -432,23 +437,26 @@ class Contact_Form_Service {
             'response' => sanitize_text_field($token)
         ];
 
-        $verify = curl_init();
-        curl_setopt($verify, CURLOPT_URL, "https://www.google.com/recaptcha/api/siteverify");
-        curl_setopt($verify, CURLOPT_POST, true);
-        curl_setopt($verify, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($verify, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($verify, CURLOPT_RETURNTRANSFER, true);
-        $res = curl_exec($verify);
+        $response = wp_remote_post("https://www.google.com/recaptcha/api/siteverify", [
+            'body' => $data,
+            'timeout' => 15,
+        ]);
 
-        $captcha = json_decode($res);
+        if ( is_wp_error($response) ) {
+            return [
+                'success' => false,
+                'message' => $response->get_error_message()
+            ];
+        }
 
-        if($version === 'V3') {
+        $captcha = json_decode( wp_remote_retrieve_body($response));
+
+        if ($version === 'V3') {
             return ['success' => ($captcha->success && $captcha->score >= 0.5) ? true : false];
         }
 
         // V2 default
         return ['success' => $captcha->success];
-
     }
     protected function validate_spam() {
         // `ui-e-h-p` is the key for the honeypot
@@ -456,7 +464,7 @@ class Contact_Form_Service {
     }
     protected function validate_url(string $url) {
         if (empty($url)) {
-            throw new Redirect_Exception( $this->get_response_message('redirect_no_url') );
+            throw new Redirect_Exception( esc_html( $this->get_response_message('redirect_no_url')));
         }
 
         return [
@@ -466,9 +474,9 @@ class Contact_Form_Service {
     }
     protected function validate_field(string $field, string $label) {
         if (empty($field)) {
-            throw new Submit_Exception( $this->get_response_message('empty_field', $label) );
+            throw new Submit_Exception( esc_html( $this->get_response_message('empty_field', esc_html($label))));
         }
-        return $field;
+        return esc_html($field);
     }
     protected function validate_mailchimp(string $key, string $list_id) {
         if (empty($key)) {
@@ -538,10 +546,10 @@ class Contact_Form_Service {
 
         if($this->settings['custom_messages'] === 'yes') {
             $messages = [
-                'success' => $this->settings['success_message'],
-                'error' => $this->settings['error_message'],
-                'mail_error' => $this->settings['mail_error_message'],
-                'redirect' => $this->settings['redirect_message'],
+                'success' => esc_html($this->settings['success_message']),
+                'error' => esc_html($this->settings['error_message']),
+                'mail_error' => esc_html($this->settings['mail_error_message']),
+                'redirect' =>esc_html( $this->settings['redirect_message']),
             ];
         } else {
             $messages = self::get_default_messages();
@@ -572,7 +580,8 @@ class Contact_Form_Service {
             if( is_int($responses['mailchimp']['status'])){
                 $data['mailchimp'] = [
                     'status' => 'error',
-                    'message' => sprintf( esc_html__('Mailchimp HTTP "%s" - "%s."', 'uicore-elements'), $responses['mailchimp']['status'], $responses['mailchimp']['detail'])
+                    /* translators: 1: Mailchimp HTTP status code, 2: Mailchimp status response */
+                    'message' => sprintf( esc_html__('Mailchimp HTTP "%1$s," - "%2$s,."', 'uicore-elements'), $responses['mailchimp']['status'], $responses['mailchimp']['detail'])
                 ];
 
             // If error is from our validation
