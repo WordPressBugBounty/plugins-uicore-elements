@@ -3,7 +3,7 @@
 Plugin Name: UiCore Elements
 Plugin URI: https://elements.uicore.co
 Description: Elementor Widgets and Theme Builder Elements
-Version: 1.2.0
+Version: 1.2.1
 Author: UiCore
 Author URI: https://uicore.co
 License: GPL3
@@ -29,7 +29,7 @@ final class Base {
      *
      * @var string
      */
-    public $version = '1.2.0';
+    public $version = '1.2.1';
 
     /**
      * Holds various class instances

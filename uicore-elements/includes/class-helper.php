@@ -91,14 +91,11 @@ class Helper
     static function get_reading_time()
     {
         global $post;
-        // get the content
-        $the_content = $post->post_content;
-        // count the number of words
-        $words = str_word_count( wp_strip_all_tags( $the_content ) );
-        // rounding off and deviding per 200 words per minute
-        $minute = floor( $words / 200 );
 
-        // calculate the amount of time needed to read
+        $the_content = $post->post_content;
+        $words = str_word_count( wp_strip_all_tags( $the_content ) ); // count the number of words
+        $minute = floor( $words / 200 ); // rounding off and deviding per 200 words per minute
+
         return $minute;
     }
 
@@ -110,11 +107,14 @@ class Helper
      * Returns the Uicore Elements settings page URL. You may pass a message so it'll be wrapped under a <a> tag.
      *
      * @param string $message Optional. A clickable message to be displayed that'll redirect, in a new tab, to settings page.
+     *
      * @return string Uicore Elements settings page URL or an <a> tag HTML with the url and the passed message.
      */
     static function get_admin_settings_url(string $message = '') {
         $url = admin_url( 'options-general.php?page=uicore-elements' );
-        return !empty($message) ? '<a href="'.esc_url($url).'" target="_blank">' . esc_html($message) . '</a>' : $url;
+        return !empty($message)
+            ? '<a href="'.esc_url($url).'" target="_blank">' . esc_html($message) . '</a>'
+            : $url;
     }
 
     static function register_widget_style($name,$deps=[],$external=false)
@@ -210,8 +210,7 @@ class Helper
     /**
      * Return a list of textual html tags for Elementor Controls Options
      */
-
-     public static function get_title_tags($type = null) {
+    public static function get_title_tags() {
 
         $tags = [
             'h1'   => 'H1',
@@ -254,7 +253,8 @@ class Helper
     }
 
     /**
-     * Sanitizes SVG content, also allowing `post` tags and atts.
+     * Sanitizes SVG content, also allowing `post` tags and atts. Since is a custom sanitizer, require us,
+     * by wp plugin repo security standards, to add `//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped` comment.
      *
      * @param string $svg The raw SVG content to be sanitized.
      * @return string The sanitized SVG content, with only allowed tags and attributes.
@@ -290,7 +290,8 @@ class Helper
     }
 
     /**
-     * Sanitizes text strings, but allowing some html tags usefull for styling and manipulating texts.
+     * Sanitizes text strings, but allowing some html tags usefull for styling and manipulating texts. Since is a custom sanitizer,
+     * require us, by wp plugin repo security standards, to add `//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped` comment.
      *
      * @param string $content The content to be sanitized
      * @return string The sanitized string content.
@@ -309,7 +310,13 @@ class Helper
             'sub' => array(),
             'sup' => array(),
             'span' => array(),
-            'br' => array()
+            'br' => array(),
+            'a' => [
+                'href' => true,
+                'title' => true,
+                'target' => true,
+                'rel' => true
+            ]
         ];
 
         return wp_kses( $content, $allowed_tags );
@@ -388,6 +395,39 @@ class Helper
         }
 
         return $settings;
+    }
+
+    /**
+     * Get the `posts per page` value from Framework or WordPress settings last case scenario.
+     * Usefull if we're using `current` post type and don't have posts per page option.
+     *
+     * @param string $post_type The post type slug.
+     *
+     * @since 1.2.1
+     * @return int The number of posts per page.
+     */
+    public static function get_framework_visible_posts( string $post_type )
+    {
+        // Get from Uicore Framework, if available
+        if(defined('UICORE_ASSETS')){
+
+            switch($post_type){
+                case 'product':
+                    return \Uicore\Helper::get_option('woocommerce_posts_number');
+
+                case 'post':
+                    return \Uicore\Helper::get_option('blog_posts_number');
+
+                case 'portfolio':
+                    return \Uicore\Helper::get_option('portfolio_posts_number');
+
+                default:
+                    return get_option('posts_per_page');
+
+            }
+        }
+
+        return get_option('posts_per_page');
     }
 
 }

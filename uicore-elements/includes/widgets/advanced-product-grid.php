@@ -194,6 +194,32 @@ class AdvancedProductGrid extends AdvancedPostGrid
             );
 		$this->end_injection();
 
+        //
+        $this->start_injection( [
+			'of' => 'text',
+			'at' => 'after',
+		] );
+            $this->add_control(
+                'variations_text',
+                [
+                    'label'       => esc_html__('Select Options Text', 'uicore-elements'),
+                    'label_block' => true,
+                    'default'     => '',
+                    'description' => esc_html__('Variable product purchase text.', 'uicore-elements'),
+                    'placeholder' => esc_html__('Select Options', 'uicore-elements'),
+                ]
+            );
+            $this->add_control(
+                'unavailable_text',
+                [
+                    'label'       => esc_html__('Unavailable Text', 'uicore-elements'),
+                    'label_block' => true,
+                    'default'     => '',
+                    'description' => esc_html__('Out of stock or not available purchase text.', 'uicore-elements'),
+                    'placeholder' => esc_html__('Read more', 'uicore-elements'),
+                ]
+            );
+		$this->end_injection();
 
         // Update controls that uses 'posts_filter' to 'product_filter'
         $this->update_control(
@@ -276,9 +302,10 @@ class AdvancedProductGrid extends AdvancedPostGrid
         $this->update_control(
             'text',
             [
-                'label'       => esc_html__('Custom Text', 'uicore-elements'),
+                'label'       => esc_html__('Add to Cart Text', 'uicore-elements'),
+                'label_block' => true,
                 'default'     => '',
-                'description' => esc_html__('If left blank, the default add to cart button text will be used.', 'uicore-elements')
+                'placeholder' => esc_html__('Add to cart', 'uicore-elements'),
             ]
         );
         $this->update_control(
@@ -351,11 +378,11 @@ class AdvancedProductGrid extends AdvancedPostGrid
         }
 
         \ob_start();
-        foreach ($products as $product) {
+        foreach ($products as $index => $product) {
             $post_object = get_post($product->get_id());
             setup_postdata($post_object);
 
-            $this->TRAIT_render_product($product, false, true, true);
+            $this->TRAIT_render_product($product, $index, false, true, true);
 
             wp_reset_postdata();
         }
@@ -410,7 +437,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
             ?>
                 <div class="ui-e-adv-grid">
                     <?php
-                    foreach ($products as $product) {
+                    foreach ($products as $index => $product) {
 
                         // sticky posts disregards posts per page, so ending the loop if $items == $loop forces the query respects the users item limit
                         if ($settings['sticky'] && $items == $loops) {
@@ -425,7 +452,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
                         $post_object = get_post($product->get_id());
                         setup_postdata($post_object);
 
-                        $this->TRAIT_render_product($product, false, true);
+                        $this->TRAIT_render_product($product, $index, false, true);
 
                         wp_reset_postdata(); // Reset post data after rendering each product
                         $loops++;

@@ -92,6 +92,11 @@ class PageDescription extends Widget_Base {
 		return [ 'description', 'page', 'text' ];
 	}
 
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+        return true;
+    }
+
 	/**
 	 * Register heading widget controls.
 	 *
@@ -268,19 +273,22 @@ class PageDescription extends Widget_Base {
 			if($settings['fallabck_text']){
 				$title = $settings['fallabck_text'];
 			}else{
-				$title = 'This is the page description. You can change this text by editing the page using the default WordPress editor.';
+				$title = __('This is the page description. You can change this text by editing the page using the default WordPress editor.', 'uicore-elements');
 			}
         }
 		if(!$title && $settings['fallabck_text']){
 			$title = $settings['fallabck_text'];
 		}
 
-		$title_html = sprintf( '<%1$s %2$s>%3$s</%1$s>', Utils::validate_html_tag($settings['header_size']), $this->get_render_attribute_string( 'title' ), \esc_html($title) );
+		$title_html = sprintf(
+            '<%1$s %2$s>%3$s</%1$s>',
+            Utils::validate_html_tag($settings['header_size']),
+            $this->get_render_attribute_string( 'title' ),
+            Helper::esc_string($title) //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        );
 
 		// PHPCS - the variable $title_html holds safe data.
 		echo $title_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-
 	}
 
 	/**

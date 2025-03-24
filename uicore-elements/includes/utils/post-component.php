@@ -968,6 +968,7 @@ trait Post_Trait {
                 } else {
                     $query_args = $default_query;
 
+                    /// TODO: very likely commit `38c618c` on Elements repo make this fallback useless. Test it
                     // Post type fallback for APG
                     if( isset($default_query['post_type']) || isset($default_query['query']['post_type']) ){
                         $post_type = $default_query['post_type'] ?? $default_query['query']['post_type'];
@@ -978,10 +979,18 @@ trait Post_Trait {
                     // Set pagination
                     $query_args['paged'] = Query::get_queried_page($settings);
 
+
+                    // current bug: clicking `all` on `portfolio` archive post type brings `post` type posts
+
                     // Set tax filters for filter component, if enabled
-                    $queried_filters = Query::get_queried_filters($settings, get_post_type(), 'posts-filter');
-                    $query_args['tax_query'] = empty($queried_filters['tax_query']) ? [] : $queried_filters['tax_query'];
+                    $queried_filters = Query::get_queried_filters($settings, $post_type, 'posts-filter');
+                    $query_args['tax_query'] = empty($queried_filters['tax_query'])
+                        ? []
+                        : $queried_filters['tax_query'];
                 }
+
+                // Set products per page
+                $query_args['posts_per_page'] = Helper::get_framework_visible_posts($post_type);
             }
 
             if ($post_type === 'portfolio') {
@@ -1094,109 +1103,91 @@ trait Post_Trait {
     /**
      * Render the post read more button.
      *
-     * @param bool $is_product. If true, will render an add to cart button.
+     * @param int $index The loop index.
      *
      * @return void
      */
-    function TRAIT_get_button($is_product = false)
+    function TRAIT_get_button($index)
     {
-        $settings   = $this->get_settings_for_display();
+        $settings = $this->get_settings_for_display();
 
-        if( $is_product ){
-            global $product;
+        // Render att slugs
+        $button_slug = 'button_'.$index;
+        $content_slug = 'content-wrapper_'.$index;
+        $icon_slug = 'icon-align_'.$index;
+        $text_slug = 'text_'.$index;
 
-            // Get default add to cart text as fallback
-            $settings['text'] = empty($settings['text']) ? $product->add_to_cart_text() : $settings['text'];
-        }
-
-        $this->add_render_attribute('button', [
+        $this->add_render_attribute($button_slug, [
             'class' => ['elementor-button-link', 'elementor-button', 'ui-e-readmore'],
             'role'  => 'button',
         ]);
-        $this->add_render_attribute('content-wrapper', 'class', 'elementor-button-content-wrapper');
+
+        $this->add_render_attribute($content_slug, 'class', 'elementor-button-content-wrapper');
 
         if (!empty($settings['button_css_id'])) {
-            $this->add_render_attribute('button', 'id', $settings['button_css_id']);
+            $this->add_render_attribute($button_slug, 'id', $settings['button_css_id']);
         }
 
         if (!empty($settings['size'])) {
-            $this->add_render_attribute('button', 'class', 'elementor-size-' . $settings['size']);
+            $this->add_render_attribute($button_slug, 'class', 'elementor-size-' . $settings['size']);
         }
 
         if (!empty($settings['hover_animation'])) {
-            $this->add_render_attribute('button', 'class', 'elementor-animation-' . $settings['hover_animation']);
+            $this->add_render_attribute($button_slug, 'class', 'elementor-animation-' . $settings['hover_animation']);
         }
 
         $btn_classes = isset($settings['icon_align'])
-                        ? ['elementor-button-icon', 'elementor-align-icon-' . $settings['icon_align'] ]
-                        : 'elementor-button-icon';
+            ? ['elementor-button-icon', 'elementor-align-icon-' . $settings['icon_align'] ]
+            : 'elementor-button-icon';
 
         $this->add_render_attribute([
-            'icon-align' => [
+            $icon_slug => [
                 'class' => $btn_classes
             ],
-            'text' => [
+            $text_slug => [
                 'class' => 'elementor-button-text',
             ],
         ]);
 
         if( isset($settings['icon_align']) ){
-            $this->add_render_attribute('content-wrapper', 'class', 'elementor-button-content');
+            $this->add_render_attribute($content_slug, 'class', 'elementor-button-content');
         }
 
-        $tbn_content = '<span ' . $this->get_render_attribute_string('content-wrapper') . '>';
+        $tbn_content = '<span ' . $this->get_render_attribute_string($content_slug) . '>';
 
         if (!empty($settings['icon']) || !empty($settings['selected_icon']['value'])) {
-            $tbn_content .= '<span ' . $this->get_render_attribute_string('icon-align') . '>';
+            $tbn_content .= '<span ' . $this->get_render_attribute_string($icon_slug) . '>';
             \ob_start();
             Icons_Manager::render_icon($settings['selected_icon'], ['aria-hidden' => 'true']);
             $tbn_content .= \ob_get_clean();
             $tbn_content .= '</span>';
         }
 
-        $tbn_content .= '<span ' . $this->get_render_attribute_string('text') . '>';
+        $tbn_content .= '<span ' . $this->get_render_attribute_string($text_slug) . '>';
         $tbn_content .= $settings['text'];
         $tbn_content .= '</span> </span>';
 
-        // WooCommerce add to cart button
-        if ($is_product) {
-            if ($product) {
-                //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                echo Helper::esc_svg(apply_filters(
-                    'woocommerce_loop_add_to_cart_link', // WPCS: XSS ok.
-                    sprintf(
-                        '<a href="%1$s" data-quantity="1" %2$s> %3$s </a>',
-                        esc_url($product->add_to_cart_url()),
-                        //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        $this->get_render_attribute_string('button'),
-                        wp_kses_post($tbn_content)
-                    ),
-                    wp_kses_post($product)
-                ));
-            }
-
-        // Default button
-        } else {
-            ?>
-                <a href="<?php echo esc_url(get_permalink()); ?>" <?php $this->print_render_attribute_string('button'); ?>>
-                    <?php
-                        //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        echo Helper::esc_svg( $tbn_content );
-                    ?>
-                </a>
-            <?php
-        }
+        ?>
+            <a href="<?php echo esc_url(get_permalink()); ?>" <?php $this->print_render_attribute_string($button_slug); ?>>
+                <?php
+                    //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    echo Helper::esc_svg( $tbn_content );
+                ?>
+            </a>
+        <?php
     }
+
     /**
      * Renders a post item with various settings and options.
      * Important: any changes here should also be considered to `TRAIT_render_product()` from Product Component.
      *
+     * @param int $index The loop index.
      * @param bool $carousel Indicates if the item needs carousel classnames.
      * @param bool $legacy Indicates if the item is using legacy classnames.
      *
      * @return void
      */
-    function TRAIT_render_item($carousel = false, $legacy = false)
+    function TRAIT_render_item($index, $carousel = false, $legacy = false)
     {
         $settings       = $this->get_settings_for_display();
         $excerpt_length = $settings['excerpt_trim'];
@@ -1259,7 +1250,7 @@ trait Post_Trait {
                             }
 
                             if( !isset($settings['button_position']) || empty($settings['button_position']) ) {
-                                $this->TRAIT_get_button();
+                                $this->TRAIT_get_button($index);
                             }
                         }
                         ?>

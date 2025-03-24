@@ -89,6 +89,7 @@ class Assets {
                 'version'   => UICORE_ELEMENTS_VERSION,
                 'in_footer' => true
             ],
+            // TODO: update swiper version when loop bug is fixed (last checked on 11.2.6)
             'ui-e-swiper' => [
                 'src'       => UICORE_ELEMENTS_ASSETS . '/js/lib/swiper.js',
                 'version'   => '11.2.1',

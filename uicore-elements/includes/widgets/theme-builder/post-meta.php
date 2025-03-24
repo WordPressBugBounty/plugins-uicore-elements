@@ -36,6 +36,10 @@ class PostMeta extends Widget_Base {
 	public function get_keywords() {
 		return [ 'post', 'meta', 'info' ];
 	}
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+        return true;
+    }
 
 	protected function register_controls() {
 		$this->start_controls_section(

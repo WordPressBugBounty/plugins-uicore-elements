@@ -308,21 +308,22 @@ trait Meta_Trait {
     {
         global $post;
         $author_id = $post->post_author;
+        $author_name = get_the_author_meta('display_name', $author_id);
 
         // name, full, avatar
         if($mode === 'avatar'){
             $display = '<img class="ui-e-meta-avatar" src="' . esc_url( get_avatar_url($author_id, array('size' => 100)) ) . '" />';
         }elseif($mode === 'full'){
-            $display = '<img class="ui-e-meta-avatar" src="' . esc_url( get_avatar_url($author_id, array('size' => 100)) ) . '" /> '.get_the_author_meta('display_name', $author_id);
+            $display = '<img class="ui-e-meta-avatar" src="' . esc_url( get_avatar_url($author_id, array('size' => 100)) ) . '" /> '. esc_html($author_name);
         }else{
-            $display = esc_html(\get_the_author_meta('display_name', $author_id));
+            $display = esc_html($author_name);
         }
         $link = sprintf(
             /* translators: 1: Author archive url, 2: Author meta title, 3: Author display name */
             '<a href="%1$s" title="%2$s" rel="author">%3$s</a>',
             esc_url( get_author_posts_url( $author_id) ),
             /* translators: %s: Author's display name. */
-            esc_attr( sprintf( __( 'View %s&#8217;s posts', 'uicore-elements' ), esc_html($display) ) ),
+            esc_attr( sprintf( __( 'View %s&#8217;s posts', 'uicore-elements' ), esc_html($author_name) ) ),
             $display
         );
         return $link;

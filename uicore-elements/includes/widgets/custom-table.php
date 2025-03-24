@@ -41,6 +41,10 @@ class CustomTable extends UiCoreNestedWidget {
     {
         return [];
     }
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+		return true;
+	}
 
     protected function carousel_content_container( int $index ) {
 		return [
@@ -114,6 +118,7 @@ class CustomTable extends UiCoreNestedWidget {
                         'max' => 12,
                     ],
                 ],
+                'render_type'  => 'template',
                 'selectors' => [
                     '{{WRAPPER}}' => '--ui-e-last:{{SIZE}}{{UNIT}};',
                 ],
@@ -152,6 +157,7 @@ class CustomTable extends UiCoreNestedWidget {
             [
                 'type'        => Control_Nested_Repeater::CONTROL_TYPE,
                 'fields'      => $repeater->get_controls(),
+                'title_field' => '{{{ item }}}',
                 'allow_empty' => false,
                 'default'     => [
                     [ 'item' => __( 'Cel #1', 'uicore-elements' ) ],
@@ -189,16 +195,8 @@ class CustomTable extends UiCoreNestedWidget {
         $this->end_controls_section();
     }
 
-    public function render()
+    protected function build_grid_css($cols)
     {
-        if(!Plugin::$instance->experiments->is_feature_active('nested-elements')) {
-			$this->nesting_fallback();
-			return;
-		}
-
-        $cells = $this->get_settings_for_display('cells');
-        $cols  = $this->get_settings_for_display('columns');
-
         // Build the grid columns css
         if ($cols) {
             $grid_css = '';
@@ -210,26 +208,21 @@ class CustomTable extends UiCoreNestedWidget {
                 'unit' => 'fr',
             ];
 
-            // Columns loop
             foreach ($cols as $index => $item) {
-                // Set desktop column size if we have both size and unit
-                if (isset($item['col_size']['size']) && isset($item['col_size']['unit'])) {
-                    $grid_columns['desktop'][] = $item['col_size']['size'] . $item['col_size']['unit'];
-                } else {
-                    $grid_columns['desktop'][] = $fallback['size'] . $fallback['unit'];
-                }
 
-                // Check for the current column responsive sizes
+                // Set desktop column size
+                $grid_columns['desktop'][] = isset($item['col_size']['size']) && isset($item['col_size']['unit'])
+                    ? $item['col_size']['size'] . $item['col_size']['unit']
+                    : $fallback['size'] . $fallback['unit'];
+
                 foreach ($breakpoints as $breakpoint => $object) {
                     $size_slug = 'col_size_' . $breakpoint;
 
-                    // Register the current column responsive size if it exists and
-                    // the value is not empty, because empty values will break the table design
-                    if (isset($item[$size_slug]['size']) && isset($item[$size_slug]['unit'])) {
-                        $grid_columns[$breakpoint][] = $item[$size_slug]['size'] . $item[$size_slug]['unit'];
-                    } else {
-                        $grid_columns[$breakpoint][] = $grid_columns['desktop'][$index];
-                    }
+                    // Register the current column responsive size if exists and the
+                    // value is not empty, because empty values breaks the table design
+                    $grid_columns[$breakpoint][] = isset($item[$size_slug]['size']) && isset($item[$size_slug]['unit'])
+                        ? $item[$size_slug]['size'] . $item[$size_slug]['unit']
+                        : $grid_columns['desktop'][$index];
                 }
             }
 
@@ -239,11 +232,23 @@ class CustomTable extends UiCoreNestedWidget {
                 $grid_css .= '--ui-e-table-cols' . $breakpoint . ':' . implode(' ', $values) . ';';
             }
 
-            // Add it to the widget wrapper
-            $this->add_render_attribute('_wrapper', [
-                'style' => $grid_css,
-            ]);
+            return $grid_css;
         }
+    }
+
+    public function render()
+    {
+        if(!Plugin::$instance->experiments->is_feature_active('nested-elements')) {
+			$this->nesting_fallback();
+			return;
+		}
+
+        $cells = $this->get_settings_for_display('cells');
+        $cols  = $this->get_settings_for_display('columns');
+        $grid_css = $this->build_grid_css($cols);
+
+        // Add it to the widget wrapper
+        $this->add_render_attribute('_wrapper', ['style' => $grid_css]);
 
         ?>
         <div class="ui-e-table">
@@ -292,7 +297,7 @@ class CustomTable extends UiCoreNestedWidget {
             if ( cols ) {
                 let gridCss = '';
                 const gridColumns = {};
-                const breakpoints = elementorFrontend.config.breakpoints.activeBreakpoints;
+                const breakpoints = elementorFrontend.config.responsive.activeBreakpoints;
 
                 _.each( cols, function( item, index ) {
 

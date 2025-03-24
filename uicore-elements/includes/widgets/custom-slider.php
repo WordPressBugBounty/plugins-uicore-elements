@@ -53,49 +53,37 @@ class CustomSlider extends CustomCarousel {
     {
 
         parent::register_controls(true); // inherit original controls and enables slider height
+        $this->TRAIT_update_slider_controls();
 
         // Change default border radius to zero
-        $this->update_control( 'item_border_radius', [
-            'default' => [
-                'top' => 0,
-                'right' => 0,
-                'bottom' => 0,
-                'left' => 0,
-                'unit' => 'px',
-                'isLinked' => true,
-            ],
-        ]);
-        // Add special animation slide
-        $this->update_control('animation_style',[
-            'default' => 'fade',
-            'options' => [
-                'coverflow'  => esc_html__('Coverflow', 'uicore-elements'),
-                'fade'  => esc_html__('Fade', 'uicore-elements'),
-                'cards'	  => esc_html__('Cards', 'uicore-elements'),
-                'flip'	  => esc_html__('Flip', 'uicore-elements'),
-                'creative'	  => esc_html__('Creative', 'uicore-elements'),
-                'stacked'	  => esc_html__('Stacked', 'uicore-elements'),
+        $this->update_control(
+            'item_border_radius',
+            [
+                'default' => [
+                    'top' => 0,
+                    'right' => 0,
+                    'bottom' => 0,
+                    'left' => 0,
+                    'unit' => 'px',
+                    'isLinked' => true,
+                ],
             ]
-        ]);
-        // Decrease default item padding
-        $this->update_control('item_padding', [
-            'default' => [
-                'top' => 25,
-                'right' => 25,
-                'bottom' => 25,
-                'left' => 25,
-                'unit' => 'px',
-                'isLinked' => true,
-            ],
-        ]);
+        );
 
-        // Remove controls that are meant for carousel, not slide type widgets
-        $this->remove_responsive_control('slides_per_view');
-        $this->remove_control('show_hidden');
-        $this->remove_control('fade_edges');
-        $this->remove_control('fade_edges_alert');
-        $this->remove_control('match_height');
-        $this->remove_control('carousel_gap');
+        // Decrease default item padding
+        $this->update_control(
+            'item_padding',
+            [
+                'default' => [
+                    'top' => 25,
+                    'right' => 25,
+                    'bottom' => 25,
+                    'left' => 25,
+                    'unit' => 'px',
+                    'isLinked' => true,
+                ],
+            ]
+        );
     }
 }
 \Elementor\Plugin::instance()->widgets_manager->register(new CustomSlider());

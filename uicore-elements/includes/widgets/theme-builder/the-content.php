@@ -34,6 +34,10 @@ class TheContent extends Widget_Base
 	public function get_keywords() {
 		return [ 'content', 'post' ];
 	}
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+        return true;
+    }
 
 	public function show_in_panel() {
 		return true;

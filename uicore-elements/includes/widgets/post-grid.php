@@ -52,12 +52,28 @@ class PostGrid extends UiCoreWidget
     }
     public function get_styles()
     {
-        return ['post-grid'];
+        return [
+            'post-grid',
+            // get framework assets
+            'uicore-blog-st' => [
+                'external' => true,
+            ],
+            'uicore-portfolio-st' => [
+                'external' => true,
+                'condition' => [
+                    'posts-filter_post_type' => 'portfolio',
+                ]
+            ]
+        ];
     }
     public function get_scripts()
     {
         return [];
     }
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+		return true;
+	}
 
     public function on_import($element)
     {
@@ -400,18 +416,7 @@ class PostGrid extends UiCoreWidget
         $type = $settings['posts-filter_post_type'];
 
         if($type != 'portfolio'){
-
             $type = str_replace(' ', '-', $settings['box_style']);
-
-            // Adds the global css to edit page
-            if( $this->is_edit_mode()) {
-                $content = \file_get_contents( Assets::get_global('uicore-blog.css') );
-                ?>
-                <style>
-                    <?php echo esc_html(wp_strip_all_tags($content)); ?>
-                </style>
-                <?php
-            }
         }
 
         $this->query_posts($settings['item_limit']['size'], $type);
@@ -425,14 +430,6 @@ class PostGrid extends UiCoreWidget
 
         if ($type === 'portfolio') {
 
-            if( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-                $content = \file_get_contents( Assets::get_global('uicore-portfolio.css') );
-                ?>
-                <style>
-                    <?php  echo wp_strip_all_tags($content); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-                </style>
-                <?php
-            }
             if(!class_exists('\UiCore\Portfolio\Frontend')){
                 require_once UICORE_INCLUDES . '/portfolio/class-template.php';
                 require_once UICORE_INCLUDES . '/portfolio/class-frontend.php';

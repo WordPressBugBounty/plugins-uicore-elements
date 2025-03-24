@@ -55,6 +55,10 @@ class CustomCarousel extends UiCoreNestedWidget {
     {
         return $this->TRAIT_get_carousel_scripts(false);
     }
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+		return true;
+	}
 
     // Nested required functions
     protected function carousel_content_container( int $index ) {

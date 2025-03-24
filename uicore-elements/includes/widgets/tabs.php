@@ -48,8 +48,9 @@ class Tabs extends UiCoreNestedWidget {
     {
 		return ['tabs'];
     }
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-		return false;
+		return true;
 	}
 
     // Nested required functions
@@ -93,8 +94,8 @@ class Tabs extends UiCoreNestedWidget {
 		$end = is_rtl() ? 'left' : 'right';
 		$start_logical = is_rtl() ? 'end' : 'start';
 		$end_logical = is_rtl() ? 'start' : 'end';
-		$heading_selector = '{{WRAPPER}} > .ui-e-tabs > .ui-e-tabs-heading';
-		$content_selector = ':where( {{WRAPPER}} > .ui-e-tabs > .ui-e-tabs-content ) > .e-con';
+        $heading_selector = '{{WRAPPER}} > .elementor-widget-container > .ui-e-tabs > .ui-e-tabs-heading';
+		$content_selector = ':where( {{WRAPPER}} > .elementor-widget-container > .ui-e-tabs > .ui-e-tabs-content ) > .e-con';
 
         $this->start_controls_section(
 			'section_tabs',

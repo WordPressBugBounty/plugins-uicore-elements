@@ -1,5 +1,8 @@
 <?php
 namespace UiCoreElements\Utils;
+
+use UicoreElements\Helper;
+
 use \Elementor\Controls_Manager;
 use \Elementor\Group_Control_Border;
 use \Elementor\Group_Control_Box_Shadow;
@@ -423,21 +426,20 @@ trait Pagination_Trait {
     }
 
     /**
-     * sajdnek
+     * Render pagination numbers.
      *
+     * @param bool $is_product - If the pagination is for products
      * @param array $args
-     * @param string $class
      * @author Andrei Voica <andrei@uicore.co>
      * @since 1.0.0
      */
     function render_numbers($is_product, $args = [])
     {
-        //
+
         if ( $is_product ){
             $query = $this->get_query();
 
-            //
-            $total_items = $query['limit'] ?? get_option('posts_per_page'); // TODO: using products quantity from framework maybe better
+            $total_items = Helper::get_framework_visible_posts('product');
             $total_count = wc_get_products( array_merge($query, ['limit' => -1, 'return' => 'ids']) );  // Fetch all products - TODO: -1 is very bad for performance
             $total = ceil( count($total_count) / $total_items );
             $current_page = max(1, get_query_var('paged'));

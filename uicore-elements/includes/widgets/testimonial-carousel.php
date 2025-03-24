@@ -70,6 +70,10 @@ class TestimonialCarousel extends UiCoreWidget
         ];
         return array_merge($scripts, $this->TRAIT_get_carousel_scripts());
     }
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+        return true;
+    }
     protected function register_controls()
     {
 
@@ -197,7 +201,8 @@ class TestimonialCarousel extends UiCoreWidget
                         if( $this->TRAIT_should_duplicate_slides($total_slides)) {
                             $diff = $this->TRAIT_get_duplication_diff($total_slides);
                             for($i = 0; $i <= $diff; $i++){
-                                $this->TRAIT_render_review_item($settings['review_items'][$i], $settings['layout']);
+                                $index = $i % $total_slides; // Ensure the index does not surpass the maximum index
+                                $this->TRAIT_render_review_item($settings['review_items'][$index], $settings['layout']);
                             }
                         }
                     ?>

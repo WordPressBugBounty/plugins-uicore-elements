@@ -402,7 +402,7 @@ class Accordion extends UiCoreWidget
                     'size' => 5,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item + .ui-e-item' => 'margin-top: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-accordion-item + .ui-e-accordion-item' => 'margin-top: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -420,7 +420,7 @@ class Accordion extends UiCoreWidget
                 Group_Control_Background::get_type(),
                 [
                     'name'      => 'item_background',
-                    'selector'  => '{{WRAPPER}} .ui-e-item',
+                    'selector'  => '{{WRAPPER}} .ui-e-accordion-item',
                 ]
             );
 
@@ -430,7 +430,7 @@ class Accordion extends UiCoreWidget
                     'name'        => 'item_border',
                     'placeholder' => '1px',
                     'default'     => '1px',
-                    'selector'    => '{{WRAPPER}} .ui-e-item',
+                    'selector'    => '{{WRAPPER}} .ui-e-accordion-item',
                 ]
             );
 
@@ -441,7 +441,7 @@ class Accordion extends UiCoreWidget
                     'type'       => Controls_Manager::DIMENSIONS,
                     'size_units' => ['px', '%'],
                     'selectors'  => [
-                        '{{WRAPPER}} .ui-e-item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                        '{{WRAPPER}} .ui-e-accordion-item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                     ],
                 ]
             );
@@ -461,7 +461,7 @@ class Accordion extends UiCoreWidget
                         'isLinked' => true,
                     ],
                     'selectors'  => [
-                        '{{WRAPPER}} .ui-e-item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                        '{{WRAPPER}} .ui-e-accordion-item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                     ],
                 ]
             );
@@ -470,7 +470,7 @@ class Accordion extends UiCoreWidget
                 Group_Control_Box_Shadow::get_type(),
                 [
                     'name'     => 'item_shadow',
-                    'selector' => '{{WRAPPER}} .ui-e-item',
+                    'selector' => '{{WRAPPER}} .ui-e-accordion-item',
                 ]
             );
 
@@ -487,7 +487,7 @@ class Accordion extends UiCoreWidget
                 Group_Control_Background::get_type(),
                 [
                     'name'      => 'hover_item_background',
-                    'selector'  => '{{WRAPPER}} .ui-e-item:hover',
+                    'selector'  => '{{WRAPPER}} .ui-e-accordion-item:hover',
                 ]
             );
 
@@ -500,7 +500,7 @@ class Accordion extends UiCoreWidget
                         'item_border_border!' => '',
                     ],
                     'selectors' => [
-                        '{{WRAPPER}} .ui-e-item:hover' => 'border-color: {{VALUE}};',
+                        '{{WRAPPER}} .ui-e-accordion-item:hover' => 'border-color: {{VALUE}};',
                     ],
                 ]
             );
@@ -518,7 +518,7 @@ class Accordion extends UiCoreWidget
                 Group_Control_Background::get_type(),
                 [
                     'name'      => 'active_item_background',
-                    'selector'  => '{{WRAPPER}} .ui-e-item.ui-open',
+                    'selector'  => '{{WRAPPER}} .ui-e-accordion-item.ui-open',
                 ]
             );
 
@@ -526,7 +526,7 @@ class Accordion extends UiCoreWidget
                 Group_Control_Box_Shadow::get_type(),
                 [
                     'name'     => 'active_item_shadow',
-                    'selector' => '{{WRAPPER}} .ui-e-item.ui-open',
+                    'selector' => '{{WRAPPER}} .ui-e-accordion-item.ui-open',
                 ]
             );
 
@@ -536,7 +536,7 @@ class Accordion extends UiCoreWidget
                     'name'        => 'active_item_border',
                     'placeholder' => '1px',
                     'default'     => '1px',
-                    'selector'    => '{{WRAPPER}} .ui-e-item.ui-open',
+                    'selector'    => '{{WRAPPER}} .ui-e-accordion-item.ui-open',
                 ]
             );
 
@@ -547,7 +547,7 @@ class Accordion extends UiCoreWidget
                     'type'       => Controls_Manager::DIMENSIONS,
                     'size_units' => ['px', '%'],
                     'selectors'  => [
-                        '{{WRAPPER}} .ui-e-item.ui-open' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
+                        '{{WRAPPER}} .ui-e-accordion-item.ui-open' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
                     ],
                 ]
             );
@@ -590,7 +590,7 @@ class Accordion extends UiCoreWidget
                 'toggle'      => false,
                 'label_block' => false,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-title-text' => 'justify-content: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-title-text' => 'justify-content: {{VALUE}};',
                 ],
             ]
         );
@@ -610,7 +610,7 @@ class Accordion extends UiCoreWidget
                 'label'     => __('Title Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-title' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-title' => 'color: {{VALUE}};',
                     '{{WRAPPER}} .ui-e-custom-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
@@ -620,7 +620,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Background::get_type(),
             [
                 'name'      => 'title_background',
-                'selector'  => '{{WRAPPER}} .ui-e-title',
+                'selector'  => '{{WRAPPER}} .ui-e-accordion-title',
             ]
         );
 
@@ -630,7 +630,7 @@ class Accordion extends UiCoreWidget
                 'name'        => 'title_border',
                 'placeholder' => '1px',
                 'default'     => '1px',
-                'selector'    => '{{WRAPPER}} .ui-e-title',
+                'selector'    => '{{WRAPPER}} .ui-e-accordion-title',
             ]
         );
 
@@ -641,7 +641,7 @@ class Accordion extends UiCoreWidget
                 'type'       => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', '%'],
                 'selectors'  => [
-                    '{{WRAPPER}} .ui-e-title' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
+                    '{{WRAPPER}} .ui-e-accordion-title' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
                 ],
             ]
         );
@@ -653,7 +653,7 @@ class Accordion extends UiCoreWidget
                 'type'       => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'selectors'  => [
-                    '{{WRAPPER}} .ui-e-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-accordion-title' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -662,7 +662,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Typography::get_type(),
             [
                 'name'     => 'title_typography',
-                'selector' => '{{WRAPPER}} .ui-e-title',
+                'selector' => '{{WRAPPER}} .ui-e-accordion-title',
             ]
         );
 
@@ -670,7 +670,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Box_Shadow::get_type(),
             [
                 'name'     => 'title_shadow',
-                'selector' => '{{WRAPPER}} .ui-e-title',
+                'selector' => '{{WRAPPER}} .ui-e-accordion-title',
             ]
         );
 
@@ -689,8 +689,8 @@ class Accordion extends UiCoreWidget
                 'label'     => __('Title Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item:hover .ui-e-title' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .ui-e-item:hover .ui-e-custom-icon svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-accordion-title' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-custom-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -699,7 +699,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Background::get_type(),
             [
                 'name'      => 'hover_title_background',
-                'selector'  => '{{WRAPPER}} .ui-e-item:hover .ui-e-title',
+                'selector'  => '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-accordion-title',
             ]
         );
 
@@ -712,7 +712,7 @@ class Accordion extends UiCoreWidget
                     'title_border_border!' => '',
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item:hover .ui-e-title' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-accordion-title' => 'border-color: {{VALUE}};',
                 ],
             ]
         );
@@ -732,8 +732,8 @@ class Accordion extends UiCoreWidget
                 'label'     => __('Title Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item.ui-open .ui-e-title' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .ui-e-item.ui-open .ui-e-custom-icon svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-accordion-title' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-custom-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -742,7 +742,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Background::get_type(),
             [
                 'name'      => 'active_title_background',
-                'selector'  => '{{WRAPPER}} .ui-e-item.ui-open .ui-e-title',
+                'selector'  => '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-accordion-title',
             ]
         );
 
@@ -750,7 +750,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Box_Shadow::get_type(),
             [
                 'name'     => 'active_title_shadow',
-                'selector' => '{{WRAPPER}} .ui-e-item.ui-open .ui-e-title',
+                'selector' => '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-accordion-title',
             ]
         );
 
@@ -760,7 +760,7 @@ class Accordion extends UiCoreWidget
                 'name'        => 'active_title_border',
                 'placeholder' => '1px',
                 'default'     => '1px',
-                'selector'    => '{{WRAPPER}} .ui-e-item.ui-open .ui-e-title',
+                'selector'    => '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-accordion-title',
             ]
         );
 
@@ -771,7 +771,7 @@ class Accordion extends UiCoreWidget
                 'type'       => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', '%'],
                 'selectors'  => [
-                    '{{WRAPPER}} .ui-e-item.ui-open .ui-e-title' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
+                    '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-accordion-title' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow: hidden;',
                 ],
             ]
         );
@@ -861,8 +861,8 @@ class Accordion extends UiCoreWidget
                 'label'     => __('Title Icon Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item:hover .ui-e-custom-icon i' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .ui-e-item:hover .ui-e-custom-icon svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-custom-icon i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-custom-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -882,8 +882,8 @@ class Accordion extends UiCoreWidget
                 'label'     => __('Title Icon Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item.ui-open .ui-e-custom-icon i' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .ui-e-item.ui-open .ui-e-custom-icon svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-custom-icon i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-custom-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -941,8 +941,8 @@ class Accordion extends UiCoreWidget
                 'label'     => esc_html__('Item Icon Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-icon' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .ui-e-icon svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-icon' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -951,7 +951,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Background::get_type(),
             [
                 'name'      => 'icon_background_color',
-                'selector'  => '{{WRAPPER}} .ui-e-icon'
+                'selector'  => '{{WRAPPER}} .ui-e-accordion-icon'
             ]
         );
 
@@ -959,7 +959,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Border::get_type(),
             [
                 'name'        => 'icon_border',
-                'selector'    => '{{WRAPPER}} .ui-e-icon',
+                'selector'    => '{{WRAPPER}} .ui-e-accordion-icon',
             ]
         );
 
@@ -970,7 +970,7 @@ class Accordion extends UiCoreWidget
                 'type'       => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', '%'],
                 'selectors'  => [
-                    '{{WRAPPER}} .ui-e-icon' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-accordion-icon' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -983,7 +983,7 @@ class Accordion extends UiCoreWidget
                 'size_units' => ['px', 'em', '%'],
                 'selectors'  => [
                     // set as css variables because animations may need some particular value, such as pad-top for fade icon animation
-                    '{{WRAPPER}} .ui-e-icon' => '--ui-e-icon-pad-top: {{TOP}}{{UNIT}}; --ui-e-icon-pad-right: {{RIGHT}}{{UNIT}}; --ui-e-icon-pad-bot: {{BOTTOM}}{{UNIT}}; --ui-e-icon-pad-left: {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-accordion-icon' => '--ui-e-icon-pad-top: {{TOP}}{{UNIT}}; --ui-e-icon-pad-right: {{RIGHT}}{{UNIT}}; --ui-e-icon-pad-bot: {{BOTTOM}}{{UNIT}}; --ui-e-icon-pad-left: {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1004,7 +1004,7 @@ class Accordion extends UiCoreWidget
 					'size' => 15,
 				],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-title .ui-e-icon' => '--ui-e-icon-size: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-accordion-title .ui-e-accordion-icon' => '--ui-e-icon-size: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -1021,7 +1021,7 @@ class Accordion extends UiCoreWidget
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-title' => 'gap: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-accordion-title' => 'gap: {{SIZE}}{{UNIT}};',
                 ]
             ]
         );
@@ -1030,7 +1030,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Box_Shadow::get_type(),
             [
                 'name'     => 'icon_box_shadow',
-                'selector' => '{{WRAPPER}} .ui-e-icon',
+                'selector' => '{{WRAPPER}} .ui-e-accordion-icon',
             ]
         );
 
@@ -1049,8 +1049,8 @@ class Accordion extends UiCoreWidget
                 'label'     => esc_html__('Item Icon Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item:hover .ui-e-icon'   => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .ui-e-item:hover .ui-e-icon svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-accordion-icon'   => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-accordion-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -1059,7 +1059,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Background::get_type(),
             [
                 'name'      => 'icon_hover_background_color',
-                'selector'  => '{{WRAPPER}} .ui-e-item:hover .ui-e-icon'
+                'selector'  => '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-accordion-icon'
             ]
         );
 
@@ -1072,7 +1072,7 @@ class Accordion extends UiCoreWidget
                     'icon_border_border!' => '',
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item:hover .ui-e-icon' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item:hover .ui-e-accordion-icon' => 'border-color: {{VALUE}};',
                 ],
             ]
         );
@@ -1092,8 +1092,8 @@ class Accordion extends UiCoreWidget
                 'label'     => esc_html__('Item Icon Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item.ui-open .ui-e-icon'   => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .ui-e-item.ui-open .ui-e-icon svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-accordion-icon'   => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-accordion-icon svg' => 'fill: {{VALUE}};',
                 ],
             ]
         );
@@ -1102,7 +1102,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Background::get_type(),
             [
                 'name'      => 'icon_active_background_color',
-                'selector'  => '{{WRAPPER}} .ui-e-item.ui-open .ui-e-icon'
+                'selector'  => '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-accordion-icon'
             ]
         );
 
@@ -1115,7 +1115,7 @@ class Accordion extends UiCoreWidget
                     'icon_border_border!' => '',
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-item.ui-open .ui-e-icon' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-item.ui-open .ui-e-accordion-icon' => 'border-color: {{VALUE}};',
                 ],
             ]
         );
@@ -1140,7 +1140,7 @@ class Accordion extends UiCoreWidget
                 'label'     => __('Text Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-content' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-content' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -1149,7 +1149,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Background::get_type(),
             [
                 'name'      => 'content_background_color',
-                'selector'  => '{{WRAPPER}} .ui-e-content',
+                'selector'  => '{{WRAPPER}} .ui-e-accordion-content',
             ]
         );
 
@@ -1158,7 +1158,7 @@ class Accordion extends UiCoreWidget
             [
                 'name'        => 'content_border',
                 'label'       => __('Border', 'uicore-elements'),
-                'selector'    => '{{WRAPPER}} .ui-e-content',
+                'selector'    => '{{WRAPPER}} .ui-e-accordion-content',
             ]
         );
 
@@ -1181,7 +1181,7 @@ class Accordion extends UiCoreWidget
                 'type'       => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'selectors'  => [
-                    '{{WRAPPER}} .ui-e-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-accordion-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -1202,7 +1202,7 @@ class Accordion extends UiCoreWidget
 					'size' => 15,
 				],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-content' => 'margin-top: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-accordion-content' => 'margin-top: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -1211,7 +1211,7 @@ class Accordion extends UiCoreWidget
             Group_Control_Typography::get_type(),
             [
                 'name'     => 'content_typography',
-                'selector' => '{{WRAPPER}} .ui-e-content',
+                'selector' => '{{WRAPPER}} .ui-e-accordion-content',
             ]
         );
 
@@ -1220,7 +1220,7 @@ class Accordion extends UiCoreWidget
             [
                 'name'     => 'content_shadow',
                 'label'       => __('Box Shadow', 'uicore-elements'),
-                'selector' => '{{WRAPPER}} .ui-e-content',
+                'selector' => '{{WRAPPER}} .ui-e-accordion-content',
             ]
         );
 
@@ -1244,7 +1244,7 @@ class Accordion extends UiCoreWidget
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-content' => 'text-align: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-accordion-content' => 'text-align: {{VALUE}};',
                 ],
             ]
         );
@@ -1313,7 +1313,7 @@ class Accordion extends UiCoreWidget
 					'size' => 315,
 				],
 				'selectors' => [
-					'{{WRAPPER}} .ui-e-icon' => '--ui-e-spin:{{SIZE}}deg;',
+					'{{WRAPPER}} .ui-e-accordion-icon' => '--ui-e-spin:{{SIZE}}deg;',
 				],
                 'condition' =>[
                     'icon_animation'  => 'ui-e-animation-ico-spin',
@@ -1326,8 +1326,8 @@ class Accordion extends UiCoreWidget
     protected function render()
     {
 
-        $settings = $this->get_settings_for_display(); // Get settings
-        $ID = 'ui-e-accordion-' . $this->get_id(); // Sets the accordion item ID that will'be used to implement hash features and also if the item has no title.
+        $settings = $this->get_settings_for_display();
+        $ID = 'ui-e-accordion-' . $this->get_id();
 
         // Sets schema atts if active
         if ($settings['schema_activity'] == 'yes') {
@@ -1340,16 +1340,15 @@ class Accordion extends UiCoreWidget
         ?>
             <div class="ui-e-accordion" <?php $this->print_render_attribute_string('accordion');?>>
 
-                <?php foreach ($settings['tabs'] as $index => $item) : // loop throught the repeater
+                <?php foreach ($settings['tabs'] as $index => $item) :
 
                     $loopCounter = $index + 1;
 
                     // Builds the accordion ID
-                    if($item['tab_title']){
-                        $acc_id = 'ui-e-' . sanitize_title($item['tab_title']); // filters so it can be used as ID, also prefixing it
-                    } else {
-                        $acc_id = $ID . $loopCounter; // If it hasn't title, uses the widget ID plus the loop counter iteration
-                    }
+                    $acc_id = $item['tab_title']
+                        ? 'ui-e-' . sanitize_title($item['tab_title'])
+                        : $ID . $loopCounter;
+
                     // Build the Aria ID
                     if('sectionId' == $item['source']){
                         $aria_id = 'ui-' . preg_replace('/#/', '', $item['section_id']);
@@ -1357,24 +1356,26 @@ class Accordion extends UiCoreWidget
                         $aria_id = 'ui-e-acc-' . $loopCounter;
                     }
 
-
                     // Creates the title and content atts
                     $tab_title_setting_key   = $this->get_repeater_setting_key('tab_title', 'tabs', $index);
                     $tab_content_setting_key = $this->get_repeater_setting_key('tab_content', 'tabs', $index);
 
                     // Render title atts
+                    // TODO: remove `ui-e-title` class after, at least, 3 releases from 1.2.1. Kept for compatibility purposes
                     $this->add_render_attribute($tab_title_setting_key, [
-                        'class' => ['ui-e-title'],
+                        'class' => ['ui-e-accordion-title ui-e-title'],
                     ]);
                     $this->add_render_attribute($tab_title_setting_key, 'class', ('right' == $settings['icon_align']) ? 'ui-right' : '');
 
                     // Render content atts
+                    // TODO: remove `ui-e-content` class after, at least, 3 releases from 1.2.1. Kept for compatibility purposes
                     $this->add_render_attribute($tab_content_setting_key, [
-                        'class' => ['ui-e-content'],
+                        'class' => ['ui-e-accordion-content ui-e-content'],
                         'style' => ($loopCounter === $settings['active_item']) ? '' : 'display:none;', // keep content hide if item not active (has to be set inline so jquery can take control over it)
                         'aria-labelledby' => $acc_id,
                         'id' => $aria_id
                     ]);
+
                     // Check if the current accordion item uses sectionId as source
                     if ('sectionId' == $item['source']) {
                         // and also check if an ID was set
@@ -1385,12 +1386,12 @@ class Accordion extends UiCoreWidget
                             $sectionWarning = esc_html__( "You didn't define an ID.", 'uicore-elements' );
                         }
                     }
-                    $this->add_inline_editing_attributes($tab_content_setting_key, 'advanced'); // Allow content inline editing
 
                     // Render item atts
+                    // TODO: remove `ui-e-item` class after, at least, 3 releases from 1.2.1. Kept for compatibility purposes
                     $item_key = 'ui-e-item-' . $index;
                     $this->add_render_attribute($item_key, [
-                        'class' => ($loopCounter === $settings['active_item']) ? 'ui-e-item ui-open' : 'ui-e-item',
+                        'class' => ($loopCounter === $settings['active_item']) ? 'ui-e-accordion-item ui-e-item ui-open' : 'ui-e-accordion-item ui-e-item',
                         'role' => 'button',
                         'tabindex' => '0',
                         'aria-expanded' => ($loopCounter === $settings['active_item']) ? 'true' : 'false',
@@ -1412,6 +1413,7 @@ class Accordion extends UiCoreWidget
                         $schema_name = $this->get_repeater_setting_key('schema_name', 'tabs', $index);
                         $this->add_render_attribute($schema_text, 'itemprop', 'text');
                         $this->add_render_attribute($schema_name, 'itemprop', 'name');
+
                     // Sets the variables to empty to avoid undefined variable problems
                     } else {
                         $schema_text = $schema_name = '';
@@ -1421,15 +1423,17 @@ class Accordion extends UiCoreWidget
 
                         <<?php echo esc_html($titleTag)?> <?php $this->print_render_attribute_string($tab_title_setting_key);?>>
 
-                            <?php if ($settings['accordion_icon']['value']) : ?>
-                                <span class="ui-e-icon ui-e-<?php echo esc_attr($settings['icon_align']); ?>" aria-hidden="true">
+                            <?php if ($settings['accordion_icon']['value']) :
+                                // TODO: remove `ui-e-icon` class after, at least, 3 releases from 1.2.1. Kept for compatibility purposes
+                                ?>
+                                <span class="ui-e-accordion-icon ui-e-icon ui-e-<?php echo esc_attr($settings['icon_align']); ?>" aria-hidden="true">
 
-                                    <span class="ui-e-icon-closed">
+                                    <span class="ui-e-accordion-icon-closed">
                                         <?php Icons_Manager::render_icon($settings['accordion_icon'], ['aria-hidden' => 'true']); ?>
                                     </span>
 
                                     <?php if($settings['icon_animation'] != 'ui-e-animation-ico-spin') : //spin animation dismiss the opened accordion icon ?>
-                                        <span class="ui-e-icon-opened">
+                                        <span class="ui-e-accordion-icon-opened">
                                             <?php Icons_Manager::render_icon($settings['accordion_active_icon'], ['aria-hidden' => 'true']); ?>
                                         </span>
                                     <?php endif; ?>
@@ -1437,7 +1441,8 @@ class Accordion extends UiCoreWidget
                                 </span>
                             <?php endif; ?>
 
-                            <span class="ui-e-title-text" <?php $this->print_render_attribute_string($schema_name) ;?>>
+                            <?php // TODO: remove `ui-e-title-text` class after, at least, 3 releases from 1.2.1. Kept for compatibility purposes ?>
+                            <span class="ui-e-accordion-title-text ui-e-title-text" <?php $this->print_render_attribute_string($schema_name) ;?>>
                                 <?php if (!empty($item['repeater_icon']['value']) and $settings['show_custom_icon'] == 'yes') : ?>
                                     <span class="ui-e-custom-icon">
                                         <?php Icons_Manager::render_icon($item['repeater_icon'], ['aria-hidden' => 'true']); ?>
@@ -1468,7 +1473,7 @@ class Accordion extends UiCoreWidget
                                     }
                                 }
                                 // if source is sectionId and we're inside editor, returns a warning for context. The sectionId content is moved via JS
-                                if ('sectionId' == $item['source'] && Plugin::$instance->editor->is_edit_mode()) {
+                                if ('sectionId' == $item['source'] && $this->is_edit_mode()) {
                                     echo wp_kses($sectionWarning, ['em' => []]);
                                 }
                             ?>

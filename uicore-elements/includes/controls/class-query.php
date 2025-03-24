@@ -1,7 +1,9 @@
 <?php
 namespace UiCoreElements\Controls;
 
+use UiCoreElements\Helper;
 use Elementor\Control_Select2;
+
 defined('ABSPATH') || exit();
 
 class Query extends Control_Select2
@@ -43,9 +45,13 @@ class Query extends Control_Select2
             'order' => $settings['order'],
             'post_status' => 'publish', // Hide drafts/private posts for admins
             'paged' => $paged,
-            'ignore_sticky_posts' => true,
-            'posts_per_page' => isset( $settings['item_limit'] ) ? $settings['item_limit']['size'] : get_option('posts_per_page'),
+            'ignore_sticky_posts' => true
         ];
+
+        // Get posts per page
+        $query_args['posts_per_page'] = isset($settings['item_limit'])
+            ? $settings['item_limit']['size']
+            : Helper::get_framework_visible_posts($post_type);
 
         // Update posts quantity to woo requirements
         if ($is_product) {
@@ -105,7 +111,7 @@ class Query extends Control_Select2
     }
 
     /**
-     * Build the query args to work with filter component under rest api.
+     * Build the `tax_query` args to work with filter component.
      *
      * @param array $settings The control settings array.
      * @param string $post_type The post type slug.
@@ -120,7 +126,13 @@ class Query extends Control_Select2
             'tax_query' => [],
         ];
 
-        if (isset($settings['post_filtering']) && $settings['post_filtering'] && isset($_GET['tax']) && isset($_GET['term'])) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if (
+            isset($settings['post_filtering']) &&
+            $settings['post_filtering'] &&
+            isset($_GET['tax']) && //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            isset($_GET['term']) //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            ) {
+
             $args['tax_query'][] = [
                 'taxonomy' => sanitize_text_field( wp_unslash($_GET['tax'])), //phpcs:ignore WordPress.Security.NonceVerification.Recommended
                 'field'    => 'term_id',
@@ -149,7 +161,7 @@ class Query extends Control_Select2
             }
         }
 
-        // If multiple tax queries are set, specify a relation (default to 'AND')
+        // Set `AND` relation if we're working with multiple tax queries
         if ( count($args['tax_query']) > 1 ) {
             $args['tax_query']['relation'] = 'AND';
         };
@@ -174,9 +186,13 @@ class Query extends Control_Select2
 
         // Makes sure we have a limit set
         if( isset($default_query['limit']) || isset($default_query['posts_per_page']) ) {
-            $limit = isset($default_query['limit']) ? $default_query['limit'] : $default_query['posts_per_page'];
+            $limit = isset($default_query['limit'])
+                ? $default_query['limit']
+                : $default_query['posts_per_page'];
+
+        // Get limit from framework otherwise
         } else {
-            $limit = get_option('posts_per_page');
+            $limit = Helper::get_framework_visible_posts('product');
         }
 
         // Get total pages value
@@ -185,7 +201,6 @@ class Query extends Control_Select2
 
         return $total;
     }
-
 
 }
 

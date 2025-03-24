@@ -87,6 +87,10 @@ class AdvancedPostGrid extends UiCoreWidget
             ]
         ];
     }
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+		return true;
+	}
 
     private function filter_missing_taxonomies($settings)
     {
@@ -218,6 +222,7 @@ class AdvancedPostGrid extends UiCoreWidget
 
         // Get settings and post type
         $settings = $this->get_settings();
+        $loop = 0;
 
         $this->TRAIT_query_posts( $settings, $current_query );
         $wp_query = $this->get_query();
@@ -229,7 +234,8 @@ class AdvancedPostGrid extends UiCoreWidget
         \ob_start();
         while ($wp_query->have_posts()) {
             $wp_query->the_post();
-            $this->TRAIT_render_item(false, true);
+            $this->TRAIT_render_item($loop, false, true);
+            $loop++;
         }
         $markup = \ob_get_clean();
 
@@ -280,7 +286,7 @@ class AdvancedPostGrid extends UiCoreWidget
                         }
 
                         $wp_query->the_post();
-                        $this->TRAIT_render_item(false, true);
+                        $this->TRAIT_render_item($loops, false, true);
 
                         $loops++;
                     }
@@ -291,15 +297,21 @@ class AdvancedPostGrid extends UiCoreWidget
                 $this->TRAIT_render_pagination($settings);
 
                 if( $settings['pagination'] == 'yes' && $settings['pagination_type'] == 'load_more' && $settings['posts-filter_post_type'] == 'current' ) {
+
+                    // Build the public query args the ajax request script passes to rest api
+                    $public_query = array();
+                    $public_query['query']['post_type'] = get_post_type();
+                    $public_query['query_vars'] = $wp_query->query_vars;
+
                     echo '<script>';
                         echo 'window.ui_total_pages_' . esc_html($ID) . ' = "none";'; // add none to avoid ajax errors for lack of value, but posts don't need it
-                        echo 'window.ui_query_' . esc_html($ID) . ' = ' . \json_encode($wp_query->query_vars) . ';';
+                        echo 'window.ui_query_' . esc_html($ID) . ' = ' . \json_encode($public_query) . ';';
                     echo '</script>';
                 }
         }
 
         //reset query
-        wp_reset_postdata();
+        wp_reset_query();
         $wp_query = $default_query;
     }
 }

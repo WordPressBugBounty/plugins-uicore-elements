@@ -67,6 +67,10 @@ class AdvancedPostCarousel extends UiCoreWidget
     {
         return $this->TRAIT_get_carousel_scripts();
     }
+    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
+    public function has_widget_inner_wrapper(): bool {
+		return true;
+	}
 
     private function filter_missing_taxonomies($settings)
     {
@@ -231,7 +235,7 @@ class AdvancedPostCarousel extends UiCoreWidget
                             // }
 
                             $wp_query->the_post();
-                            $this->TRAIT_render_item(true);
+                            $this->TRAIT_render_item($loops, true);
 
                             $loops++;
                         }
@@ -243,7 +247,7 @@ class AdvancedPostCarousel extends UiCoreWidget
         }
 
         //reset query
-        wp_reset_postdata();
+        wp_reset_query();
         $wp_query = $default_query;
     }
 }

@@ -4,7 +4,7 @@ Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
 Tested up to: 6.7.2
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -124,6 +124,24 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+= 1.2.1 =
+* TWEAK - Improved Post Grid widget assets enqueue method to last plugin standards
+* UPD - Updated Slider widget's `coverflow` animation params, improving the visual aspect of the animation
+* UPD - Temporarily removed `creative` animation from Slider widget's
+* UPD - Small alignment improvement on the Advanced Post/Product widget's meta icon
+* UPD - Changed Accordion widget classnames to avoid styles overwriting when setting other Uicore widgets as content for a given accordion
+* UPD - Added `<a>` tag support for Page Description widget and several other widget's text control fields that use our string sanitization method
+* UPD - Changed Swiper version from `11.2.4` to `11.2.1`, due to instabilities with the `loop` feature
+* FIX - Fixed Gallery Slider widget's 'vertical alignment' editor control label
+* FIX - Fixed Slider widgets `cards` animation bug where having few slide items with `loop` featured enabled breaks the slider
+* FIX - Fixed Tabs widget `advanced` tab styles bug, such as padding; margin and borders properties
+* FIX - Fixed Advanced Post/Product Grid widgets pagination bugs where page numbers didn't correspond to the amount of available posts/products
+* FIX - Fix Advanced Post/Product Carousel widgets meta category bug where having a second category would create a second line
+* FIX - Fixed Advanced Post widgets bug where the HTML title attribute from `author` Meta, if avatar was enabled, had HTML as content instead of the proper text
+* FIX - Fixed post/product widgets `current` query bug where posts per page weren't pushed from Framework options if the user had Uicore Framework enabled
+* FIX - Fixed Icon Box bug with `show button` animation where `advanced` tab padding styles were ignored
+* FIX - Added styles to `author` meta avatar since it looked odd with default settings
+
 = 1.2.0 =
 * NEW - Added new `marquee` and `default` animation style to Carousel widgets
 * NEW - Added `center slides` option, allowing new and exciting designs for Carousel widgets

@@ -62,6 +62,19 @@ trait Post_Filters_Trait {
                     ],
                 ]
             );
+            $this->add_control(
+                'filters_ajax_alert',
+                [
+                    'type' => Controls_Manager::ALERT,
+                    'alert_type' => 'warning',
+                    'heading' => esc_html('Ajax enabled', 'uicore-elements'),
+                    'content' => esc_html__( 'When using `load more` pagination, filters are disabled on taxonomy archive pages, such as categories, tags, authors, etc. Blog, shop, or custom post-type archive pages are not affected.', 'uicore-elements' ),
+                    'condition' => [
+                        'post_filtering' => 'yes',
+                        'pagination_type' => 'load_more',
+                    ],
+                ]
+            );
 
         if($section){
             $this->end_controls_section();
@@ -291,6 +304,14 @@ trait Post_Filters_Trait {
 
     function TRAIT_render_filters($settings, $is_product = false)
     {
+
+        // Tax filters should not be displayed on taxonomy pages if ajax is enabled
+        // since may cause several conflicts with the query management
+        $is_tax_archive =  is_tax() || is_category() || is_tag() || is_author();
+        if( isset($settings['pagination_type']) && $settings['pagination_type'] === 'load_more' && $is_tax_archive ) {
+            return;
+        }
+
         $slug      = $is_product ? 'product-filter_' : 'posts-filter_';
         $post_type = $is_product ? 'product' : $settings[$slug . 'post_type']; // $settings[] option may not necesarilly be a valid post type
         $taxonomy  = $settings['filters_taxonomies'] === 'custom' ? $settings['custom_meta'] : $settings['filters_taxonomies']; // taxonomy label
@@ -371,11 +392,13 @@ trait Post_Filters_Trait {
                 $active_class = '';
                 if( (is_archive() || is_tax() || is_post_type_archive()) && $is_main_query ){
                     $current = get_queried_object();
-                    if($term->term_id == $current->term_id){
+                    if( isset($current->term_id) && $term->term_id == $current->term_id){
                         $active_class = 'ui-e-active';
                     }
                 } else {
-                    $active_class = !$ajax && isset($_GET['term']) && $term->term_id == $_GET['term'] ? 'ui-e-active' : ''; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                    if( !$ajax && isset($_GET['term']) && $term->term_id == $_GET['term'] ){ //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                        $active_class = 'ui-e-active';
+                    }
                 }
                 ?>
 
