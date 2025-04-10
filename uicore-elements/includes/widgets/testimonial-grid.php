@@ -75,9 +75,9 @@ class TestimonialGrid extends UiCoreWidget
             ]
         ];
     }
-    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-        return true;
+        // TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
     }
     protected function register_controls()
     {
@@ -128,7 +128,9 @@ class TestimonialGrid extends UiCoreWidget
     {
         $settings = $this->get_settings_for_display();
         $layout   = $settings['layout'];
-        $masonry  = $settings['masonry'] === 'yes' ? 'ui-e-maso' : '';
+        $masonry  = $this->is_option('masonry', 'yes')
+            ? 'ui-e-maso'
+            : '';
 
         $this->add_render_attribute('review-card', 'class', ['ui-e-grid', $masonry]);
         ?>

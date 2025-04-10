@@ -1362,10 +1362,16 @@ class Counter extends UiCoreWidget
 
 		if ($media) {
 			switch($icon_type){
-				case 'icon'  : $icon = $settings['selected_icon']; break;
-				case 'image' : $icon = $settings['image']; break;
+				case 'icon'  :
+                    $icon = $settings['selected_icon'];
+                    break;
+				case 'image' :
+                    $icon = $settings['image'];
+                    break;
 			}
-			$icon_width = ($icon_type == 'image' && $settings['image_fullwidth'] == 'true') ? esc_attr('large') : esc_attr('thumbnail');
+			$icon_width = ( $icon_type === 'image' && $this->is_option('image_fullwidth', 'true') )
+                ? esc_attr('large')
+                : esc_attr('thumbnail');
 		}
 
 		$stack 	= $settings['counter_text_inline'] ? false : true; // If text inline, no stack wrapper between elements is needed
@@ -1409,7 +1415,7 @@ class Counter extends UiCoreWidget
 		if($media) : ?>
 			<div class="ui-e-ico">
 				<div class="ui-e-offset">
-					<?php if($icon_type == 'icon') {
+					<?php if($icon_type === 'icon') {
 						Icons_Manager::render_icon( $icon, [ 'aria-hidden' => 'true' ] );
 					} else {
 						echo wp_get_attachment_image( $icon['id'], $icon_width );

@@ -517,8 +517,8 @@ trait Pagination_Trait {
     }
     function TRAIT_render_pagination($settings, $is_product = false)
     {
-        if( $settings['pagination'] === 'yes'){
-            if( $settings['pagination_type'] === 'load_more'){
+        if( $this->is_option('pagination', 'yes') ){
+            if( $this->is_option('pagination_type', 'load_more') ){
                 $this->render_load_more();
             } else {
                 $this->render_numbers($is_product);

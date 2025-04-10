@@ -1330,7 +1330,7 @@ class Accordion extends UiCoreWidget
         $ID = 'ui-e-accordion-' . $this->get_id();
 
         // Sets schema atts if active
-        if ($settings['schema_activity'] == 'yes') {
+        if ( $this->is_option('schema_activity', 'yes')) {
             $this->add_render_attribute('accordion', 'itemscope');
             $this->add_render_attribute('accordion', ['itemtype' => 'https://schema.org/FAQPage']);
         }
@@ -1400,7 +1400,7 @@ class Accordion extends UiCoreWidget
                     ]);
 
                     // Render schema atts if active
-                    if ($settings['schema_activity'] == 'yes') {
+                    if ( $this->is_option('schema_activity', 'yes') ) {
                         $this->add_render_attribute($item_key, 'itemscope');
                         $this->add_render_attribute($item_key, 'itemprop', 'mainEntity');
                         $this->add_render_attribute($item_key, 'itemtype', 'https://schema.org/Question');
@@ -1443,7 +1443,7 @@ class Accordion extends UiCoreWidget
 
                             <?php // TODO: remove `ui-e-title-text` class after, at least, 3 releases from 1.2.1. Kept for compatibility purposes ?>
                             <span class="ui-e-accordion-title-text ui-e-title-text" <?php $this->print_render_attribute_string($schema_name) ;?>>
-                                <?php if (!empty($item['repeater_icon']['value']) and $settings['show_custom_icon'] == 'yes') : ?>
+                                <?php if ( !empty($item['repeater_icon']['value']) && $this->is_option('show_custom_icon', 'yes') ) : ?>
                                     <span class="ui-e-custom-icon">
                                         <?php Icons_Manager::render_icon($item['repeater_icon'], ['aria-hidden' => 'true']); ?>
                                     </span>
@@ -1458,7 +1458,7 @@ class Accordion extends UiCoreWidget
                                 if ('custom' == $item['source'] && !empty($item['tab_content'])) {
 
                                     // if schema is active, creates a wrapper for the itemprop structure
-                                    if($settings['schema_activity'] == 'yes') {
+                                    if( $this->is_option('schema_activity', 'yes') ) {
                                         ?>
                                             <div <?php $this->print_render_attribute_string($schema_text);?> >
                                         <?php
@@ -1466,7 +1466,7 @@ class Accordion extends UiCoreWidget
 
                                         echo $this->parse_text_editor($item['tab_content']);// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-                                    if($settings['schema_activity'] == 'yes') {
+                                    if( $this->is_option('schema_activity', 'yes') ) {
                                         ?>
                                             </div>
                                         <?php

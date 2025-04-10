@@ -476,7 +476,7 @@ class Contact_Form_Service {
         if (empty($field)) {
             throw new Submit_Exception( esc_html( $this->get_response_message('empty_field', esc_html($label))));
         }
-        return esc_html($field);
+        return $field;
     }
     protected function validate_mailchimp(string $key, string $list_id) {
         if (empty($key)) {
@@ -541,7 +541,7 @@ class Contact_Form_Service {
         $default_messages = [
             'invalid_status'    => esc_html__( 'Invalid status message.', 'uicore-elements' ),
             'redirect_no_url'   => esc_html__( 'Redirection failed. No URL set.', 'uicore-elements' ),
-            'empty_field'       => esc_html__( 'The following field is empty.', 'uicore-elements') . $dinamic_data,
+            'empty_field'       => esc_html__( 'The following field is empty: ', 'uicore-elements') . $dinamic_data,
         ];
 
         if($this->settings['custom_messages'] === 'yes') {

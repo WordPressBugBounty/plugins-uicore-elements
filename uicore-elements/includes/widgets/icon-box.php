@@ -69,9 +69,9 @@ class IconBox extends UiCoreWidget
             ]
         ];
     }
-    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-		return true;
+		// TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
 	protected function register_controls()
 	{
@@ -247,6 +247,19 @@ class IconBox extends UiCoreWidget
 				'frontend_available' => true,
 				'condition'    => [
 					'position' => ['left', 'right']
+				],
+			]
+		);
+
+        $this->add_control(
+			'icon_mobile',
+			[
+				'label'        => esc_html__('Icon Top on Mobile', 'uicore-elements'),
+				'type'         => Controls_Manager::SWITCHER,
+				'prefix_class' => 'ui-e-mobile-',
+				'condition'    => [
+					'position' => ['left', 'right'],
+                    'icon_inline' => ''
 				],
 			]
 		);
@@ -2224,7 +2237,7 @@ class IconBox extends UiCoreWidget
 			// 	$this->add_render_attribute( 'rm_atts', 'onclick', esc_js($settings['onclick_event']) );
 			// }
 		}
-
+;
 		// Check the icon position and sets the inline (true puts title/subtitlte inside flex wrapper, false puts inside content)
 		switch($settings['position']){
 
@@ -2238,7 +2251,7 @@ class IconBox extends UiCoreWidget
 				break;
 
 			default :
-				$inline = $settings['icon_inline'] === 'yes' ? true : false;
+				$inline = $this->is_option('icon_inline', 'yes');
 				break;
 		}
 

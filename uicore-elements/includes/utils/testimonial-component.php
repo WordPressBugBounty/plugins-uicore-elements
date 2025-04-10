@@ -407,7 +407,7 @@ trait Testimonial_Trait {
                     ],
                 ]
             );
-            $this->add_control(
+            $this->add_responsive_control(
                 'avatar_padding',
                 [
                     'label'      => __('Padding', 'uicore-elements'),
@@ -448,7 +448,7 @@ trait Testimonial_Trait {
                     ]
                 ]
             );
-            $this->add_control(
+            $this->add_responsive_control(
                 'avatar_size_px',
                 [
                     'label'     => __('Size', 'uicore-elements'),
@@ -471,7 +471,7 @@ trait Testimonial_Trait {
                     ]
                 ]
             );
-            $this->add_control(
+            $this->add_responsive_control(
                 'avatar_spacing',
                 [
                     'label'      => __('Spacing', 'uicore-elements'),
@@ -1197,7 +1197,9 @@ trait Testimonial_Trait {
     function render_reviewer_avatar($item)
     {
         $settings = $this->get_settings_for_display();
-        $fit_avatar = ( isset($settings['avatar_size']) && $settings['avatar_size']['unit'] === 'px' ) ? 'ui-avatar-fit' : '';
+        $fit_avatar = ( $this->is_option('avatar_size') && $settings['avatar_size']['unit'] === 'px' )
+            ? 'ui-avatar-fit'
+            : '';
 
         if ( ! $settings['show_reviewer_avatar'] ) {
 			return;
@@ -1401,12 +1403,12 @@ trait Testimonial_Trait {
 
         // Atts used by some layouts
         $atts      = [
-            'inline' => $settings['image_inline'] == 'yes' ? true : false,
+            'inline' => $this->is_option('image_inline', 'yes') ? true : false,
         ];
 
         // Get entrance and item hover animation classes
-        $entrance   = (isset($settings['animate_items']) &&  $settings['animate_items'] == 'ui-e-grid-animate') ? 'elementor-invisible' : '';
-        $hover      = isset($settings['item_hover_animation']) ? $settings['item_hover_animation'] : null;
+        $entrance = $this->is_option('animate_items', 'ui-e-grid-animate') ? 'elementor-invisible' : '';
+        $hover = isset($settings['item_hover_animation']) ? $settings['item_hover_animation'] : null;
         $animations = sprintf('%s %s', $entrance, $hover);
 
         // Get all elements animation control options (triggered by .ui-e-animations-wrp:hover)

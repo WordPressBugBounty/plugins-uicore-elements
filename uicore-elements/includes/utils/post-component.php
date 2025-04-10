@@ -1028,8 +1028,8 @@ trait Post_Trait {
 
             // Check if the font-size value is not empty (user might customize other infos but not the font-size)
             ${$meta . '_size'} = !empty( ${$meta .'_size'}['size'] )
-                                 ? ${$meta .'_size'}['size'] . ${$meta .'_size'}['unit']
-                                 : $default_size;
+                ? ${$meta .'_size'}['size'] . ${$meta .'_size'}['unit']
+                : $default_size;
 
             // Creates the css variable
             $metas_css .= '--' . $meta . '-font-size: ' . esc_html(${$meta . '_size'}) . ';';
@@ -1046,7 +1046,7 @@ trait Post_Trait {
      // Render functions
     function get_post_image()
     {
-        if ($this->get_settings_for_display('image') !== 'yes') {
+        if ( $this->is_option('image', 'yes', '!==') ) {
             return;
         }
 
@@ -1070,7 +1070,7 @@ trait Post_Trait {
     }
     function get_post_title()
     {
-        if ($this->get_settings_for_display('title') !== 'yes') {
+        if ( $this->is_option('title', 'yes', '!==') ) {
             return;
         }
         ?>
@@ -1204,7 +1204,7 @@ trait Post_Trait {
 
         } else {
             // Get entrance and item hover animation classes
-            $entrance   = (isset($settings['animate_items']) &&  $settings['animate_items'] == 'ui-e-grid-animate') ? 'elementor-invisible' : '';
+            $entrance   = $this->is_option('animate_items', 'ui-e-grid-animate') ? 'elementor-invisible' : '';
             $hover      = isset($settings[$hover_item_class]) ? $settings[$hover_item_class] : '';
             $animations = sprintf('%s %s', $entrance, $hover);
 
@@ -1229,7 +1229,7 @@ trait Post_Trait {
                     <div class="ui-e-post-content">
                         <?php $this->get_post_meta('before_title'); ?>
                         <?php
-                        if ($this->get_settings_for_display('title') === 'yes')
+                        if ( $this->is_option('title', 'yes') )
                             $this->get_post_title();
                         ?>
                         <?php $this->get_post_meta('after_title'); ?>
@@ -1240,10 +1240,10 @@ trait Post_Trait {
                         <?php $this->get_post_meta('bottom');  // button
                         ?>
                         <?php
-                        if ( $this->get_settings_for_display('show_button') === 'yes' ) {
+                        if ( $this->is_option('show_button', 'yes') ) {
                             // Add match height spacing element if carousel. May look intrusive, but is the simplest method compared
                             // to absolute positioning or catching last content element to apply margin.
-                            if($carousel && $settings['match_height'] === 'yes'){
+                            if($carousel && $this->is_option('match_height', 'yes') ){
                                 ?>
                                     <span class="ui-e-match-height"></span>
                                 <?php

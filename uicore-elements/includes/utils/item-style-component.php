@@ -58,7 +58,7 @@ trait Item_Style_Component {
 					'selector' => '{{WRAPPER}} .ui-e-item',
 				]
 			);
-			$this->add_control(
+			$this->add_responsive_control(
 				'item_border_radius',
 				[
 					'label' => esc_html__( 'Border Radius', 'uicore-elements' ),
@@ -78,7 +78,7 @@ trait Item_Style_Component {
 					],
 				]
 			);
-			$this->add_control(
+			$this->add_responsive_control(
 				'item_padding',
 				[
 					'label' => esc_html__( 'Padding', 'uicore-elements' ),

@@ -423,7 +423,7 @@ trait Logo_Trait {
         $settings   = $this->get_settings_for_display();
 
         // Get entrance and item hover animation classes
-        $entrance   = (isset($settings['animate_items']) &&  $settings['animate_items'] == 'ui-e-grid-animate') ? 'elementor-invisible' : '';
+        $entrance   = $this->is_option('animate_items', 'ui-e-grid-animate') ? 'elementor-invisible' : '';
         $hover      = isset($settings['item_hover_animation']) ? $settings['item_hover_animation'] : null;
         $animations = sprintf('%s %s', $entrance, $hover);
 

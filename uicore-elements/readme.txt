@@ -4,7 +4,7 @@ Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
 Tested up to: 6.7.2
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -124,6 +124,28 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+= 1.2.2 =
+* NEW - Added new style options to the Custom Table widget
+* NEW - Added dynamic field support to Contact Form `reply to`, `cc`, and `bcc` fields
+* NEW - Added 'icon mobile adjustment` option to Icon Box widget, giving icon/image position responsive option
+* TWEAK - Removed Product Tab bottom spacing
+* TWEAK - Small widgets keywords and descriptions adjustments
+* UPD - Improved Item style section `padding` and `border-radius` control to responsive type for Custom Carousel; Testimonial and Gallery widgets.
+* UPD - Introduced a new default method for verifying the widget's control values and better avoid future problems with Elementor optimization experiments
+* UPD - Improved Slider widgets `card` animation with `loop` enabled
+* UPD - APG and APrG adjustment on justify button alignment
+* UPD - Enabled widget inner wrapper removal, based on site `optimized markup` experiment, for most of our widgets
+* FIX - Fixed Carousel widgets bug where, on mobile, you ended up with one less visible slide if `centered slides` was enabled
+* FIX - Fixed Testimonial carousel widget's `layout` 5 bug
+* FIX - Removed `circular avatar` animation from Testimonial Carousel since it's specific to slider version
+* FIX - Fixed `stacked` animation loop bug in Slider widgets
+* FIX - Fixed a bug where you couldn't update a page in Guttenberg if it had one of the Advanced Product widgets
+* FIX - Fixed Advanced Product widget's purchase button bug where the icon was not visible with Elementor Inline font-icon experiment enabled
+* FIX - Adjusted Advanced Product widget's `product rating` meta unintentional line break
+* FIX - Fixed Contact Form `subject` field bug where dynamic field data was not being adequately printed
+* FIX - Fixed Post meta widget discrepancies between editor and front-end
+* FIX - Fixed Counter bug with empty `thousand symbol` and `decimal symbol` values not triggering the animation
+
 = 1.2.1 =
 * TWEAK - Improved Post Grid widget assets enqueue method to last plugin standards
 * UPD - Updated Slider widget's `coverflow` animation params, improving the visual aspect of the animation

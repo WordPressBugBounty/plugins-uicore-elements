@@ -89,7 +89,8 @@ class AdvancedPostGrid extends UiCoreWidget
     }
     // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-		return true;
+		// TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
 
     private function filter_missing_taxonomies($settings)
@@ -266,7 +267,9 @@ class AdvancedPostGrid extends UiCoreWidget
         $loops = 0;
 
         // Set masonry class
-        $masonry = $settings['masonry'] === 'yes' ? 'ui-e-maso' : '';
+        $masonry = $this->is_option('masonry', 'yes')
+            ? 'ui-e-maso'
+            : '';
 
         $this->TRAIT_render_filters($settings);
 
@@ -296,7 +299,11 @@ class AdvancedPostGrid extends UiCoreWidget
 
                 $this->TRAIT_render_pagination($settings);
 
-                if( $settings['pagination'] == 'yes' && $settings['pagination_type'] == 'load_more' && $settings['posts-filter_post_type'] == 'current' ) {
+                if(
+                    $this->is_option('pagination', 'yes') &&
+                    $this->is_option('pagination_type', 'load_more') &&
+                    $this->is_option('posts-filter_post_type', 'current')
+                ) {
 
                     // Build the public query args the ajax request script passes to rest api
                     $public_query = array();

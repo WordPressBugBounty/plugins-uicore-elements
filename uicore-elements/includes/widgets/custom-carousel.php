@@ -55,9 +55,9 @@ class CustomCarousel extends UiCoreNestedWidget {
     {
         return $this->TRAIT_get_carousel_scripts(false);
     }
-    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-		return true;
+		// TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
 
     // Nested required functions
@@ -267,21 +267,31 @@ class CustomCarousel extends UiCoreNestedWidget {
 			$child_ids[] = $child->get_id();
 		}
 
-		// Add the `ui-e-item` class directly on the item container
-		$add_attribute_to_container = function ( $should_render, $container ) use ( $child_ids ) {
-			if ( in_array( $container->get_id(), $child_ids ) ) {
-                $container->add_render_attribute( '_wrapper', [
-                    'class' => 'ui-e-item',
-                ] );
-			}
+		add_filter( 'elementor/frontend/container/should_render', function( $should_render, $container ) use ($child_ids) {
+            return $this->add_child_attributes($should_render, $container, $child_ids);
+        }, 10, 3 );
 
-			return $should_render;
-		};
-
-		add_filter( 'elementor/frontend/container/should_render', $add_attribute_to_container, 10, 3 );
 		$children[ $index ]->print_element();
-		remove_filter( 'elementor/frontend/container/should_render', $add_attribute_to_container );
+
+		remove_filter( 'elementor/frontend/container/should_render', [$this, 'add_child_attributes'] );
 	}
+
+    /**
+     * Adds attributes to child elements containers.
+     */
+    protected function add_child_attributes($should_render, $container, $child_ids, $classnames = ['ui-e-item'])
+    {
+
+        // custom cases may be added here
+
+        if ( in_array( $container->get_id(), $child_ids ) ) {
+            $container->add_render_attribute( '_wrapper', [
+                'class' => $classnames,
+            ]);
+        }
+
+		return $should_render;
+    }
 
     protected function get_initial_config(): array {
 		if ( Plugin::$instance->experiments->is_feature_active( 'e_nested_atomic_repeaters' ) ) {

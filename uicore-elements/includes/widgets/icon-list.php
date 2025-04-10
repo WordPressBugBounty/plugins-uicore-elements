@@ -48,9 +48,9 @@ class IconList extends UiCoreWidget
     {
         return [];
     }
-    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-		return true;
+		// TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
     public function get_keywords()
     {
@@ -1190,7 +1190,7 @@ class IconList extends UiCoreWidget
     {
 
         $settings = $this->get_settings_for_display();
-        $this->add_render_attribute('icon_list', 'class', $settings['show_number_icon'] === 'yes' ? 'ui-e-number' : '');
+        $this->add_render_attribute('icon_list', 'class', $this->is_option('show_number_icon', 'yes') ? 'ui-e-number' : '');
         ?>
             <ul>
                 <?php foreach ($settings['icon_list'] as $index => $item) :
@@ -1222,7 +1222,7 @@ class IconList extends UiCoreWidget
 
                             <?php echo wp_kses_post($wrapper); ?>
 
-                                <?php if($settings['show_number_icon'] == 'yes') : ?>
+                                <?php if( $this->is_option('show_number_icon', 'yes') ) : ?>
                                     <div class='ui-e-number'>
                                         <span> <?php echo esc_html($i);?> </span>
                                     </div>

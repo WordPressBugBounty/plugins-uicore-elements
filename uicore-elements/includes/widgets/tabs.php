@@ -38,7 +38,7 @@ class Tabs extends UiCoreNestedWidget {
         return ['uicore'];
     }
 	public function get_keywords() {
-		return [ 'tabs', 'tab', 'content' ];
+		return [ 'tabs', 'tab', 'content', 'nested' ];
 	}
     public function get_styles()
     {
@@ -94,8 +94,8 @@ class Tabs extends UiCoreNestedWidget {
 		$end = is_rtl() ? 'left' : 'right';
 		$start_logical = is_rtl() ? 'end' : 'start';
 		$end_logical = is_rtl() ? 'start' : 'end';
-        $heading_selector = '{{WRAPPER}} > .elementor-widget-container > .ui-e-tabs > .ui-e-tabs-heading';
-		$content_selector = ':where( {{WRAPPER}} > .elementor-widget-container > .ui-e-tabs > .ui-e-tabs-content ) > .e-con';
+        $heading_selector = '{{WRAPPER}} > .elementor-widget-container > .ui-e-tabs > .ui-e-tabs-heading'; // TODO: .elementor-widget-container will be gone soon
+		$content_selector = ':where( {{WRAPPER}} > .elementor-widget-container > .ui-e-tabs > .ui-e-tabs-content ) > .e-con'; // TODO: .elementor-widget-container will be gone soon
 
         $this->start_controls_section(
 			'section_tabs',

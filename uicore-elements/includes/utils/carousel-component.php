@@ -1712,20 +1712,27 @@ trait Carousel_Trait {
      */
     function TRAIT_update_slider_controls( $item_animation = true )
     {
+
+          $animations = [
+            'coverflow'  => esc_html__('Coverflow', 'uicore-elements'),
+            'fade' => esc_html__('Fade', 'uicore-elements'),
+            'cards' => esc_html__('Cards', 'uicore-elements'),
+            'flip' => esc_html__('Flip', 'uicore-elements'),
+            //'creative' => esc_html__('Creative', 'uicore-elements'), //TODO: enable creative again after fixing arrows bug
+            'stacked'=> esc_html__('Stacked', 'uicore-elements'),
+        ];
+
+        // Testimonial slider specifics
+        if ( $this->get_name() === 'uicore-testimonial-slider' ) {
+            $animations['circular_avatar'] = esc_html__('Circular Avatar', 'uicore-elements');
+        }
+
         // Update animations
         $this->update_control(
             'animation_style',
             [
                 'default' => 'fade',
-                'options' => [
-                    'coverflow'  => esc_html__('Coverflow', 'uicore-elements'),
-                    'fade'  => esc_html__('Fade', 'uicore-elements'),
-                    'cards'	  => esc_html__('Cards', 'uicore-elements'),
-                    'flip'	  => esc_html__('Flip', 'uicore-elements'),
-                    //'creative'	  => esc_html__('Creative', 'uicore-elements'), //TODO: enable creative again after fixing arrows bug
-                    'stacked'	  => esc_html__('Stacked', 'uicore-elements'),
-                    'circular_avatar' => esc_html__('Circular Avatar', 'uicore-elements'),
-                ]
+                'options' => $animations
             ]
         );
 
@@ -1742,8 +1749,6 @@ trait Carousel_Trait {
             $this->remove_control('animate_items');
             $this->remove_control('item_hover_animation');
         }
-
-
     }
 
 	// Navigation rendering
@@ -1782,6 +1787,11 @@ trait Carousel_Trait {
 	function TRAIT_render_carousel_navigations()
 	{
 		$navigation = $this->get_settings_for_display('navigation');
+
+        // Migration code from old navigation select2 array values - TODO: can only be removed when the all design library is updated
+		if(is_array($navigation)) {
+			$navigation = implode('-', $navigation);
+		}
 
 		if( strpos($navigation, 'dots') !== false ) {
 			$this->render_carousel_dots();

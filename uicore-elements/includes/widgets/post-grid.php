@@ -70,9 +70,9 @@ class PostGrid extends UiCoreWidget
     {
         return [];
     }
-    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-		return true;
+		// TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
 
     public function on_import($element)
@@ -449,10 +449,10 @@ class PostGrid extends UiCoreWidget
             }
             if(isset($settings['extra_author'])){
                 $extra = [
-                    'author'    => $settings['extra_author'] === 'yes' ? true : false,
-                    'date'      => $settings['extra_date'] === 'yes' ? true : false,
-                    'excerpt'   => $settings['extra_excerpt'] === 'yes' ? true : false,
-                    'category'  => $settings['extra_category'] === 'yes' ? true : false
+                    'author'    => $this->is_option('extra_author', 'yes'),
+                    'date'      => $this->is_option('extra_date', 'yes'),
+                    'excerpt'   => $this->is_option('extra_excerpt', 'yes'),
+                    'category'  => $this->is_option('extra_category', 'yes')
                 ];
             }else{ //Fallback for older versions
                 $extra = [

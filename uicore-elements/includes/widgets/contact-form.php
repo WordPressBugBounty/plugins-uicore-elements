@@ -64,9 +64,9 @@ class ContactForm extends UiCoreWidget {
 			]
         ];
     }
-    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-		return true;
+		// TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );;
 	}
     function check_recaptcha_version($version)
     {
@@ -2151,8 +2151,8 @@ class ContactForm extends UiCoreWidget {
 
         // Set frontend validation message
         $front_msg_required = isset($instance['required_fields_message'])
-                                ? $instance['required_fields_message']
-                                : $messages['required'];
+            ? $instance['required_fields_message']
+            : $messages['required'];
 		?>
 
 		<form class="ui-e-form" method="post" <?php $this->print_render_attribute_string( 'form' ); ?>>
@@ -2266,8 +2266,12 @@ class ContactForm extends UiCoreWidget {
             <div class="ui-e-message <?php echo $this->is_edit_mode() ? 'elementor-hidden' : ''; ?>">
                <?php if($this->is_edit_mode()) :
                     // Get custom messages if set, else use default
-                    $success = isset($instance['success_message']) ? $instance['success_message'] : $messages['success'];
-                    $error = isset($instance['error_message']) ? $instance['error_message'] : $messages['error'];
+                    $success = isset($instance['success_message'])
+                        ? $instance['success_message']
+                        : $messages['success'];
+                    $error = isset($instance['error_message'])
+                        ? $instance['error_message']
+                        : $messages['error'];
                     ?>
                     <span class="success"> <?php echo esc_html($success);?> </span> <br>
                     <span class="error"> <?php echo esc_html($error);?> </span>

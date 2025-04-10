@@ -15,7 +15,7 @@ abstract class UiCoreWidget extends Widget_Base {
 
     /**
      * Get widget categories.
-     * 
+     *
      * custom_condition need to always return true if $this->is_edit_mode() is true
      * @return object ['assets-name' => ['condition' => ['key' => 'value'] ,'custom_condition' => true , 'deps' => ['global-handler-name','other-handler-name'], 'external' => true]]
      */
@@ -90,5 +90,70 @@ abstract class UiCoreWidget extends Widget_Base {
         return false;
     }
 
+    /**
+     * Verify if the control exists and if matches the given value.
+     * Usefull for controls that may not be returned, in the settings stack, under certain conditions.
+     *
+     * @param string $control The control slug.
+     * @param string|null $value Optional. The value to check against.
+     * @param string $operator Optional. The operator to use for comparing `control` and `value`. Default is '==='.
+     *
+     * @return bool
+     * @since 1.2.2
+     */
+    protected function is_option( string $control, $value = null, $operator = '==='): bool
+    {
+        $option = $this->get_settings_for_display($control);
 
+        if( isset($option) ){
+
+            if( !isset($value) ){
+                return true;
+            }
+
+            switch($operator){
+                case '===':
+                    return $option === $value;
+                case '!==':
+                    return $option !== $value;
+                case '<':
+                    return $option < $value;
+                case '<=':
+                    return $option <= $value;
+                case '>':
+                    return $option > $value;
+                case '>=':
+                    return $option >= $value;
+                default:
+                    return false;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Verify if the control exists and get both `size` and `unit` values, if requested.
+     *
+     * @param string $control The control slug.
+     * @param array $fallback The fallback value to return if the control does not exist. Should have `size` and, if requested, `unit` keys.
+     * @param bool $use_unit If true, the unit will also be checked and returned.
+     *
+     * @return string `size` and, if requested, `unit` values from the control or the fallback value.
+     * @since 1.2.2
+     */
+    public function get_option_size($control, array $fallback, $use_unit = false)
+    {
+        $option = $this->get_settings_for_display($control);
+
+        if ( isset($option) && ! empty($option['size']) ) {
+            $size = $control['size'];
+            $unit = $use_unit && isset($option['unit']) ? $option['unit'] : '';
+            return $size . $unit;
+        }
+
+        $fallback_size = $fallback['size'];
+        $fallback_unit = $use_unit ? $fallback['unit'] : '';
+        return $fallback_size . $fallback_unit;
+    }
 }

@@ -67,9 +67,9 @@ class AdvancedPostCarousel extends UiCoreWidget
     {
         return $this->TRAIT_get_carousel_scripts();
     }
-    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-		return true;
+        // TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
 
     private function filter_missing_taxonomies($settings)

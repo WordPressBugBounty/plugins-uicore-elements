@@ -68,7 +68,7 @@ trait Product_Trait {
         $query_args['total_pages'] = Query::get_total_pages($query_args);
 
         // Hide out of stock products
-        if( $settings['hide_out_of_stock'] === 'yes' ){
+        if( $this->is_option('hide_out_of_stock', 'yes') ){
             $query_args['meta_query'] = [
                 [
                     'key' => '_stock_status',
@@ -87,7 +87,7 @@ trait Product_Trait {
     // Render functions
     function get_product_image(object $product)
     {
-        if ($this->get_settings_for_display('image') !== 'yes') {
+        if ( $this->is_option('image', 'yes', '!==') ) {
             return;
         }
 
@@ -162,7 +162,7 @@ trait Product_Trait {
     }
     function get_product_title($product)
     {
-        if ($this->get_settings_for_display('title') !== 'yes') {
+        if ( $this->is_option('title', 'yes', '!==') ) {
             return;
         }
 
@@ -311,7 +311,8 @@ trait Product_Trait {
                 esc_url($product->add_to_cart_url()),
                 //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 $this->get_render_attribute_string($button_slug),
-                wp_kses_post($tbn_content)
+                //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                Helper::esc_svg($tbn_content)
             ),
             wp_kses_post($product)
         ));
@@ -346,8 +347,8 @@ trait Product_Trait {
 
         } else {
             // Get entrance and item hover animation classes
-            $entrance   = (isset($settings['animate_items']) &&  $settings['animate_items'] == 'ui-e-grid-animate') ? 'elementor-invisible' : '';
-            $hover      = isset($settings[$hover_item_class]) ? $settings[$hover_item_class] : ''; //$settings[$hover_item_class] : null;
+            $entrance   = $this->is_option('animate_items', 'ui-e-grid-animate') ? 'elementor-invisible' : '';
+            $hover      = isset($settings[$hover_item_class]) ? $settings[$hover_item_class] : '';
             $animations = sprintf('%s %s', $entrance, $hover);
 
             // Check if entrance or hover animation are set
@@ -375,27 +376,28 @@ trait Product_Trait {
                     </div>
                     <div class="ui-e-post-content">
                         <?php $this->get_post_meta('before_title'); ?>
-                        <?php
-                        if ($this->get_settings_for_display('title') === 'yes')
-                            $this->get_product_title($product);
-                        ?>
+                        <?php $this->get_product_title($product);?>
                         <?php $this->get_post_meta('after_title'); ?>
                         <?php $this->get_product_summary($product, $settings['excerpt_trim']); ?>
                         <?php $this->get_post_meta('bottom');  // button
                         ?>
                         <?php
-                        if( defined('UICORE_VERSION') && version_compare(UICORE_VERSION, '6.0.1', '>=') && $this->get_settings_for_display('show_swatches') === 'yes' ){
+                        if( defined('UICORE_VERSION') && version_compare(UICORE_VERSION, '6.0.1', '>=') && $this->is_option('show_swatches', 'yes') ){
                             // ajax requests works under minimal conditions, wich means Swatches class is not present
                             if ( $is_ajax ) {
                                 require_once UICORE_INCLUDES . '/woocommerce/components/class-swatches.php';
                             }
 
-                            \UiCore\WooCommerce\Swatches::print_swatches($product); // from Uicore Framework
+                            // In guterberg we might experience an `Class not found` error, so we insist in checking it even
+                            // though we just required the file. For more see https://uicore.atlassian.net/browse/ELM-432
+                            if ( class_exists('\UiCore\WooCommerce\Swatches') ) {
+                                \UiCore\WooCommerce\Swatches::print_swatches($product);
+                            }
                         }
-                        if ( $this->get_settings_for_display('show_button') === 'yes' ) {
+                        if ( $this->is_option('show_button', 'yes') ) {
                             // Add match height spacing element if carousel. May look intrusive, but is the simplest method compared
                             // to absolute positioning or catching last content element to apply margin.
-                            if($carousel && $settings['match_height'] === 'yes'){
+                            if($carousel && $this->is_option('match_height', 'yes') ){
                                 ?>
                                     <span class="ui-e-match-height"></span>
                                 <?php

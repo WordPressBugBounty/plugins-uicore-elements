@@ -308,18 +308,18 @@ trait Post_Filters_Trait {
         // Tax filters should not be displayed on taxonomy pages if ajax is enabled
         // since may cause several conflicts with the query management
         $is_tax_archive =  is_tax() || is_category() || is_tag() || is_author();
-        if( isset($settings['pagination_type']) && $settings['pagination_type'] === 'load_more' && $is_tax_archive ) {
+        if( $this->is_option('pagination_type', 'load_more') && $is_tax_archive ) {
             return;
         }
 
         $slug      = $is_product ? 'product-filter_' : 'posts-filter_';
         $post_type = $is_product ? 'product' : $settings[$slug . 'post_type']; // $settings[] option may not necesarilly be a valid post type
         $taxonomy  = $settings['filters_taxonomies'] === 'custom' ? $settings['custom_meta'] : $settings['filters_taxonomies']; // taxonomy label
-        $ajax      = isset($settings['pagination_type']) && $settings['pagination_type'] == 'load_more'; // if filters should work with rest api
+        $ajax      = $this->is_option('pagination_type', 'load_more'); // if filters should work with rest api
         $is_main_query = $post_type === 'current';
 
         // Return if filters are disabled or if there's no taxonomies
-        if ($settings['post_filtering'] !== 'yes' || !$taxonomy) {
+        if ( $this->is_option('post_filtering', 'yes', '!==') || !$taxonomy) {
             return;
         }
 

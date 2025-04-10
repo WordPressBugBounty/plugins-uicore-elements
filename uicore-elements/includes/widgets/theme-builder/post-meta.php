@@ -1,9 +1,8 @@
 <?php
 namespace UiCoreElements\Widgets\ThemeBuilder;
 
-use Elementor\Widget_Base;
+use UiCoreElements\UiCoreWidget;
 use Elementor\Controls_Manager;
-use UiCoreElements\Helper;
 use UiCoreElements\Utils\Meta_Trait;
 
 defined('ABSPATH') || exit();
@@ -13,7 +12,7 @@ defined('ABSPATH') || exit();
  *
  * @since 1.0.0
  */
-class PostMeta extends Widget_Base {
+class PostMeta extends UiCoreWidget {
 
 	use Meta_Trait;
 
@@ -30,15 +29,18 @@ class PostMeta extends Widget_Base {
 		return ['uicore', 'uicore-theme-builder' ];
 	}
 
-	public function get_style_depends() {
+	public function get_styles() {
 		return [ 'post-meta' ];
 	}
+    public function get_scripts() {
+        return [];
+    }
 	public function get_keywords() {
 		return [ 'post', 'meta', 'info' ];
 	}
-    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-        return true;
+        // TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
     }
 
 	protected function register_controls() {
@@ -108,16 +110,11 @@ class PostMeta extends Widget_Base {
             return;
         }
 
-        $font_size = $this->get_settings_for_display('tb-meta_meta_typography_font_size');
-        $default_size = '16px';
-
-        // Check if theres font-size set.
-        $size = isset( $font_size ) ? $font_size : $default_size;
-
-        // Check if the font-size value is not empty (user might customize other infos but not the font-size)
-        $size = !empty( $size['size'] )
-                            ? $size['size'] . $size['unit']
-                            : $default_size;
+        $size = $this->get_option_size(
+            'tb-meta_meta_typography_font_size',
+            ['size' => 16, 'unit' => 'px'],
+            true
+        );
 
         // Creates the css variable
         $metas_css = '--post_meta-font-size: ' . esc_html($size) . ';';

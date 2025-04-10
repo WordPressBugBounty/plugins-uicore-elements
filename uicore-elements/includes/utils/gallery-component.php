@@ -910,7 +910,7 @@ trait Gallery_Trait {
         protected function TRAIT_render_gallery($settings, $is_carousel = false)
         {
             // Get entrance and item hover animation classes
-            $entrance   = (isset($settings['animate_items']) && $settings['animate_items'] == 'ui-e-grid-animate') ? 'elementor-invisible' : '';
+            $entrance   = $this->is_option('animate_items', 'ui-e-grid-animate') ? 'elementor-invisible' : '';
             $hover      = isset($settings['item_hover_animation']) ? $settings['item_hover_animation'] : null;
             $animations = sprintf('%s %s', $entrance, $hover);
 
@@ -1137,7 +1137,7 @@ trait Gallery_Trait {
         }
         protected function render_tags($instance, $settings)
         {
-            if( empty( $instance['item_tags'] ) || $settings['hide_tags'] === 'yes' ){
+            if( empty( $instance['item_tags'] ) || $this->is_option('hide_tags', 'yes') ){
                 return;
             }
 
@@ -1158,7 +1158,7 @@ trait Gallery_Trait {
         }
         protected function TRAIT_render_gallery_filters($settings)
         {
-            if( $settings['filters'] !== 'yes' ){
+            if( $this->is_option('filters', 'yes', '!==') ){
                 return;
             }
 

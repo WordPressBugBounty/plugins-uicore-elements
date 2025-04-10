@@ -339,8 +339,13 @@ class AdvancedProductGrid extends AdvancedPostGrid
             [
                 'condition' => [
                     'button_position!' => 'ui-e-button-placement-image',
+                ],
+                // since product might have ajax add to cart, wich has flex display so the cart added icon do not break button layout,
+                // we justify the flex content to center so justified text align button keeps text centralized. See: https://uicore.atlassian.net/browse/ELM-429
+                'selectors' => [
+                    '{{WRAPPER}} .ui-e-readmore' => 'align-self: {{VALUE}}; justify-content: center;',
                 ]
-            ]
+        ]
         );
         $this->update_control(
             'button_gap',
@@ -464,7 +469,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
             $this->TRAIT_render_pagination($settings, true);
 
              // Add some data, to help rest api, to the js
-            if( $settings['pagination'] == 'yes' && $settings['pagination_type'] == 'load_more' ) {
+            if( $this->is_option('pagination', 'yes') && $this->is_option('pagination_type', 'load_more') ) {
 
                 echo '<script>';
 

@@ -81,9 +81,9 @@ class GalleryGrid extends UiCoreWidget
             ]
         ];
     }
-    // TODO: remove or set as false, after 3.30, when the full deprecation of widget innet wrapper is ready
     public function has_widget_inner_wrapper(): bool {
-		return true;
+		// TODO: remove after 3.30, when the full deprecation of widget innet wrapper is ready
+		return ! \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_optimized_markup' );
 	}
     protected function register_controls()
     {
@@ -239,7 +239,7 @@ class GalleryGrid extends UiCoreWidget
     public function render()
     {
         $settings = $this->get_settings_for_display();
-        $masonry = ( isset($settings['masonry']) && $settings['masonry'] === 'yes' ) ? 'ui-e-maso' : '';
+        $masonry = $this->is_option('masonry', 'yes') ? 'ui-e-maso' : '';
 
         $this->TRAIT_render_gallery_filters($settings);
 
