@@ -99,7 +99,7 @@ abstract class UiCoreWidget extends Widget_Base {
      * @param string $operator Optional. The operator to use for comparing `control` and `value`. Default is '==='.
      *
      * @return bool
-     * @since 1.2.2
+     * @since 1.2.3
      */
     protected function is_option( string $control, $value = null, $operator = '==='): bool
     {
@@ -140,7 +140,7 @@ abstract class UiCoreWidget extends Widget_Base {
      * @param bool $use_unit If true, the unit will also be checked and returned.
      *
      * @return string `size` and, if requested, `unit` values from the control or the fallback value.
-     * @since 1.2.2
+     * @since 1.2.3
      */
     public function get_option_size($control, array $fallback, $use_unit = false)
     {
