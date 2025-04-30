@@ -154,6 +154,59 @@ class GalleryCarousel extends UiCoreWidget
             ]
         );
 
+        $image_conditions = [
+            'relation' => 'or',
+            'terms' => [
+                [
+                    'relation' => 'and',
+                    'terms' => [
+                        [
+                            'name' => 'layout',
+                            'operator' => '==',
+                            'value' => '',
+                        ],
+                        [
+                            'name' => 'vertical',
+                            'operator' => '!=',
+                            'value' => 'true',
+                        ],
+                    ]
+                ],
+                [
+                    'relation' => 'and',
+                    'terms' => [
+                        [
+                            'name' => 'layout',
+                            'operator' => '==',
+                            'value' => 'ui-e-overlay',
+                        ],
+                        [
+                            'name' => 'match_height',
+                            'operator' => '==',
+                            'value' => 'yes',
+                        ],
+                        [
+                            'name' => 'vertical',
+                            'operator' => '!=',
+                            'value' => 'true',
+                        ],
+                    ],
+                ]
+            ],
+        ];
+
+        $this->update_responsive_control(
+            'image_height', [
+                'conditions' => $image_conditions
+            ]
+        );
+        $this->update_responsive_control(
+            'style_image_section', [
+                'conditions' => $image_conditions
+            ]
+        );
+
+
         // Remove some useless component controls or group controls that can't be properly updated
         $this->remove_control('item_background_background');
         $this->remove_control('item_hover_background_background');
@@ -183,6 +236,9 @@ class GalleryCarousel extends UiCoreWidget
                     'prefix_class' => '',
                     'render_type'  => 'template',
                     'frontend_available' => true,
+                    'condition' => [
+                        'animation_style!' => 'marquee',
+                    ]
                 ]
             );
 

@@ -99,7 +99,7 @@ abstract class UiCoreWidget extends Widget_Base {
      * @param string $operator Optional. The operator to use for comparing `control` and `value`. Default is '==='.
      *
      * @return bool
-     * @since 1.2.3
+     * @since 1.2.4
      */
     protected function is_option( string $control, $value = null, $operator = '==='): bool
     {
@@ -130,30 +130,5 @@ abstract class UiCoreWidget extends Widget_Base {
         }
 
         return false;
-    }
-
-    /**
-     * Verify if the control exists and get both `size` and `unit` values, if requested.
-     *
-     * @param string $control The control slug.
-     * @param array $fallback The fallback value to return if the control does not exist. Should have `size` and, if requested, `unit` keys.
-     * @param bool $use_unit If true, the unit will also be checked and returned.
-     *
-     * @return string `size` and, if requested, `unit` values from the control or the fallback value.
-     * @since 1.2.3
-     */
-    public function get_option_size($control, array $fallback, $use_unit = false)
-    {
-        $option = $this->get_settings_for_display($control);
-
-        if ( isset($option) && ! empty($option['size']) ) {
-            $size = $control['size'];
-            $unit = $use_unit && isset($option['unit']) ? $option['unit'] : '';
-            return $size . $unit;
-        }
-
-        $fallback_size = $fallback['size'];
-        $fallback_unit = $use_unit ? $fallback['unit'] : '';
-        return $fallback_size . $fallback_unit;
     }
 }

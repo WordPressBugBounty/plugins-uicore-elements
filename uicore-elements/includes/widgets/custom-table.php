@@ -287,11 +287,9 @@ class CustomTable extends UiCoreNestedWidget {
             foreach ($cols as $index => $item) {
 
                 // Set desktop column size
-                $grid_columns['desktop'][] = $this->get_option_size(
-                    'col_size',
-                    ['size' => 2, 'unit' => 'fr'],
-                    true
-                );
+                $grid_columns['desktop'][] = isset($item['col_size']['size']) && isset($item['col_size']['unit'])
+                    ? $item['col_size']['size'] . $item['col_size']['unit']
+                    : '1fr'; // fallback
 
                 foreach ($breakpoints as $breakpoint => $object) {
                     $size_slug = 'col_size_' . $breakpoint;

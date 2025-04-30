@@ -30,6 +30,15 @@ class AdvancedProductGrid extends AdvancedPostGrid
     }
     public function get_title()
     {
+        // In some contexts, such as theme-builder, our custom controls are not available
+        // and requiring in register_controls method breaks the widget render in editor
+        if( ! class_exists('UiCoreElements\Controls\Product_Filter') ){
+            require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-product-filter-control.php';
+        }
+        if( ! class_exists('UiCoreElements\Controls\Post_Filter') ){
+            require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-post-filter-control.php';
+        }
+
         return __('Advanced Product Grid', 'uicore-elements');
     }
     public function get_icon()
@@ -64,6 +73,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
 
     protected function register_controls()
     {
+
         // Fallback
         if( !class_exists('WooCommerce') ) {
             $this->start_controls_section(
@@ -421,8 +431,6 @@ class AdvancedProductGrid extends AdvancedPostGrid
         // Build query
         $products = $this->TRAIT_query_products( $settings, $wp_query->query );
         $wc_query = $this->get_query();
-
-        $this->TRAIT_set_meta_font_size_to_svg($settings); // SVG icon experiment font-size adjustment
 
         // Store widget settings in a transient
         $ID = strval($this->get_ID());

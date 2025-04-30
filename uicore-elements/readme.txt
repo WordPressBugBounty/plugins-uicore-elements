@@ -4,7 +4,7 @@ Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
 Tested up to: 6.7.2
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -124,6 +124,19 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+= 1.2.4 =
+* NEW - Added 'Lightbox' option for Elementor's Button widget
+* NEW - Added `vertical` and `reverse` options for Carousel Widget's `marquee` animation, introducing autoplay direction change and vertical designs to the widgets
+* NEW - Added new options to Gallery Widgets to hide title and description, but also a `content position` option, unlocking new design possibilities for these widgets
+* NEW - Improved Gallery Carousel and Gallery Grid widget's `show` animations for both title and description, creating an interaction when one of them is enabled
+* TWEAK - Improved several widget's animation controls UI by removing the label block and decreasing select input size
+* UPD - Improved Advanced Post/Product widget's meta icon size adjustment with `inline icon` experiment to a more performative approach
+* UPD - Remove `marquee` animation from the Advanced Post Carousel widget
+* FIX - Fixed some widget's style sections bug where you could still see the section even if no controls were enabled under certain conditions
+* FIX - Fixed bug where you couldn't edit some pages in Elementor due to a control verification problem
+* FIX - Fixed Advanced Post/Product widget's bug where, in theme builder or similar contexts, a custom control Class was not properly loaded
+
+
 = 1.2.3 =
 * FIX - Fixed carousel script version
 

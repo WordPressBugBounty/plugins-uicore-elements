@@ -18,8 +18,10 @@ class Elementor
 
 
         add_action('elementor/elements/categories_registered', [$this, 'create_custom_category'], 999);
+        add_action('elementor/widgets/widgets_registered', [$this, 'extend_widgets'], 999);
         add_action('elementor/controls/register', [$this, 'init_controls']);
         add_action('elementor/widgets/register', [$this, 'init_widgets']);
+
     }
 
     public function init_widgets()
@@ -79,8 +81,6 @@ class Elementor
         require UICORE_ELEMENTS_INCLUDES . '/controls/class-product-filter-control.php';
     }
 
-
-
     public function init_utils()
     {
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/grid-component.php';
@@ -97,6 +97,11 @@ class Elementor
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/product-component.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/form-service.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/utils/form-component.php';
+    }
+
+    public function extend_widgets()
+    {
+        require UICORE_ELEMENTS_INCLUDES . '/controls/class-lightbox-button.php';
     }
 
     function create_custom_category($elements_manager)

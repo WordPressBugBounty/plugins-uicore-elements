@@ -239,6 +239,12 @@ trait Post_Trait {
     }
     function TRAIT_register_post_query_controls($section = true)
     {
+
+        // In some contexts, such as theme-builder, our custom controls are not available
+        if( ! class_exists('UiCoreElements\Controls\Post_Filter') ){
+            require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-post-filter-control.php';
+        }
+
         if($section){
             $this->start_controls_section(
                 'section_post_grid_def',
@@ -1001,49 +1007,7 @@ trait Post_Trait {
         }
     }
 
-    /**
-     * Match each meta icon size (if SVG) with the correspondent font size set by the user.
-     *
-     * @param array $settings Elementor controls settings.
-     *
-     * @return void
-     */
-    function TRAIT_set_meta_font_size_to_svg($settings)
-    {
-        // Required specifically for SVG icons
-        if( \Elementor\Plugin::$instance->experiments->is_feature_active('e_font_icon_svg') == false ){
-            return;
-        }
-
-        // Get all available metas
-        $metas = ['top_meta', 'before_title_meta', 'after_title_meta', 'bottom_meta'];
-        $metas_css = '';
-        $default_size = '16px';
-
-        // Creates a variable for each meta font-size and set a font-size, falling back to default size as last resource.
-        foreach ($metas as $meta) {
-
-            // Check if current meta has a font-size set.
-            ${$meta . '_size'} = isset( $settings[$meta . '_typography_font_size'] ) ? $settings[$meta . '_typography_font_size'] : $default_size;
-
-            // Check if the font-size value is not empty (user might customize other infos but not the font-size)
-            ${$meta . '_size'} = !empty( ${$meta .'_size'}['size'] )
-                ? ${$meta .'_size'}['size'] . ${$meta .'_size'}['unit']
-                : $default_size;
-
-            // Creates the css variable
-            $metas_css .= '--' . $meta . '-font-size: ' . esc_html(${$meta . '_size'}) . ';';
-        }
-
-        // print it on the main widget wrapper
-        $this->add_render_attribute(
-            '_wrapper',
-            'style',
-            $metas_css
-        );
-    }
-
-     // Render functions
+    // Render functions
     function get_post_image()
     {
         if ( $this->is_option('image', 'yes', '!==') ) {

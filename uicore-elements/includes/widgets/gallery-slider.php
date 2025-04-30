@@ -47,10 +47,15 @@ class GallerySlider extends GalleryCarousel
         parent::register_controls();
         $this->TRAIT_update_slider_controls();
 
-        // Remove conditions from image height
+        // Remove conditions from image height and image style section
         $this->update_responsive_control(
             'image_height',
             [
+                'conditions' => false,
+            ]
+        );
+        $this->update_responsive_control(
+            'style_image_section', [
                 'conditions' => false,
             ]
         );

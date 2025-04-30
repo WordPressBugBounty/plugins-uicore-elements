@@ -175,6 +175,24 @@ trait Gallery_Trait {
                     ]
                 );
 
+                $this->add_control(
+                    'hide_title',
+                    [
+                        'label'   => __('Hide title', 'uicore-elements'),
+                        'type'    => Controls_Manager::SWITCHER,
+                        'default' => 'no',
+                    ]
+                );
+
+                $this->add_control(
+                    'hide_description',
+                    [
+                        'label'   => __('Hide description', 'uicore-elements'),
+                        'type'    => Controls_Manager::SWITCHER,
+                        'default' => 'no',
+                    ]
+                );
+
                 if( ! $carousel ){
                     $this->add_control(
                         'filters',
@@ -215,6 +233,27 @@ trait Gallery_Trait {
                         'type' => Controls_Manager::SELECT,
                         'default' => 'uicore-medium',
                         'options' => Helper::get_images_sizes(),
+                    ]
+                );
+                $this->add_control(
+                    'content_position',
+                    [
+                        'label' => esc_html__('Content Position', 'uicore-elements'),
+                        'type' => Controls_Manager::SELECT,
+                        'default' => 'top',
+                        'prefix_class' => 'ui-e-content-',
+                        'options' => [
+                            'top' => esc_html__('Top', 'uicore-elements'),
+                            'center' => esc_html__('Center', 'uicore-elements'),
+                            'bottom' => esc_html__('Bottom', 'uicore-elements'),
+                        ],
+                        'condition' => [
+                            'layout' => 'ui-e-overlay',
+                        ],
+                        'selectors' => [
+                            '{{WRAPPER}} .ui-e-content' => 'text-align:' . is_rtl() ? 'right' : 'left' . ';',
+                            '{{WRAPPER}} .ui-e-title-wrapper' => 'justify-content:' . is_rtl() ? 'right' : 'left' . ';',
+                        ],
                     ]
                 );
                 $this->add_control(
@@ -476,16 +515,39 @@ trait Gallery_Trait {
         }
         function TRAIT_register_image_style_controls($is_carousel = false)
         {
-
-            // Carousel and grid use different match height controls and logic
-            $height_slug     = $is_carousel ? 'match_height' : 'masonry';
-            $height_operator = $is_carousel ? '==' : '!==';
+            // Condition used by both image height and the image section
+            $condition = [
+                'relation' => 'or',
+                'terms' => [
+                    [
+                        'name' => 'layout',
+                        'operator' => '==',
+                        'value' => '',
+                    ],
+                    [
+                        'relation' => 'and',
+                        'terms' => [
+                            [
+                                'name' => 'layout',
+                                'operator' => '==',
+                                'value' => 'ui-e-overlay',
+                            ],
+                            [
+                                'name' => 'masonry',
+                                'operator' => '!==',
+                                'value' => 'yes',
+                            ]
+                        ],
+                    ],
+                ],
+            ];
 
             $this->start_controls_section(
                 'style_image_section',
                 [
                     'label' => __('Image', 'uicore-elements'),
                     'tab'   => Controls_Manager::TAB_STYLE,
+                    'conditions' => $condition
                 ]
             );
 
@@ -516,54 +578,12 @@ trait Gallery_Trait {
                             'size' => 400,
                         ],
                         'selectors' => [
-                            '{{WRAPPER}} .ui-e-media-wrp' => 'height: {{SIZE}}{{UNIT}};',
+                            '{{WRAPPER}}' => '--ui-e-img-height: {{SIZE}}{{UNIT}};',
                         ],
-                        'conditions' => [
-                            'relation' => 'or',
-                            'terms' => [
-                                [
-                                    'name' => 'layout',
-                                    'operator' => '==',
-                                    'value' => '',
-                                ],
-                                [
-                                    'relation' => 'and',
-                                    'terms' => [
-                                        [
-                                            'name' => 'layout',
-                                            'operator' => '==',
-                                            'value' => 'ui-e-overlay',
-                                        ],
-                                        [
-                                            'name' => $height_slug,
-                                            'operator' => $height_operator,
-                                            'value' => 'yes',
-                                        ]
-                                    ],
-                                ],
-                            ],
-                        ],
+                        'conditions' => $condition
                     ]
                 );
-                $this->add_control(
-                    'image_position',
-                    [
-                        'label' => esc_html__('Image Position', 'uicore-elements'),
-                        'type' => Controls_Manager::SELECT,
-                        'default' => 'center',
-                        'options' => [
-                            'top' => __('Top', 'uicore-elements'),
-                            'center' => __('Center', 'uicore-elements'),
-                            'bottom' => __('Bottom', 'uicore-elements'),
-                        ],
-                        'selectors' => [
-                            '{{WRAPPER}} .ui-e-media-wrp' => 'background-position: {{VALUE}};',
-                        ],
-                        'condition' => [
-                            'layout' => 'ui-e-overlay',
-                        ],
-                    ]
-                );
+
                 $this->add_control(
                     'image_bottom_space',
                     [
@@ -621,6 +641,9 @@ trait Gallery_Trait {
                 [
                     'label' => __('Title', 'uicore-elements'),
                     'tab'   => Controls_Manager::TAB_STYLE,
+                    'condition' => [
+                        'hide_title!' => 'yes',
+                    ]
                 ]
             );
 
@@ -681,6 +704,9 @@ trait Gallery_Trait {
                 [
                     'label' => __('Description', 'uicore-elements'),
                     'tab'   => Controls_Manager::TAB_STYLE,
+                    'condition' => [
+                        'hide_description!' => 'yes',
+                    ]
                 ]
             );
 
@@ -878,15 +904,19 @@ trait Gallery_Trait {
                 // TODO: update all controls below after 'show' is globally implemented
                 $this->TRAIT_register_hover_animation_control(
                     'Title Animation',
-                    [],
-                    ['zoom']
+                    ['hide_title!' => 'yes'],
+                    ['zoom'],
+                    null,
+                    true,
+                    'ui-e-animated-title-'
                 );
                 $this->TRAIT_register_hover_animation_control(
                     'Description Animation',
-                    [],
+                    ['hide_description!' => 'yes'],
                     ['zoom', 'underline'],
                     null,
-                    true
+                    true,
+                    'ui-e-animated-description-'
                 );
                 $this->TRAIT_register_hover_animation_control(
                     'Badge Animation',
@@ -982,7 +1012,8 @@ trait Gallery_Trait {
                     <?php endif; ?>
 
                         <<?php echo esc_html($tag);?> <?php $this->print_render_attribute_string($key); ?>>
-                            <?php $this->render_layout($index, $item, $settings); ?>
+                            <?php $this->render_image($index, $item, $settings); ?>
+                            <?php $this->render_contents($item, $settings); ?>
                         </<?php echo esc_html($tag);?>>
 
                     <?php if($has_animation) : ?>
@@ -992,51 +1023,25 @@ trait Gallery_Trait {
                 </div>
             <?php
         }
-        protected function render_layout($index, $instance, $settings)
-        {
 
-            switch( $settings['layout'] ){
-                case 'ui-e-overlay':
-                    ?>
-                        <?php $this->render_image($index, $instance, $settings); ?>
+        protected function render_contents($instance, $settings){
 
-                            <div class="ui-e-content">
-                                <div class="ui-e-title-wrapper">
-                                    <?php $this->render_title($instance, $settings); ?>
-                                    <?php
-                                        if( empty($settings['badge_position']) ) {
-                                            $this->render_badge($instance, $settings['badge_animation']);
-                                        }
-                                    ?>
-                                </div>
-
-                                <?php $this->render_description($instance, $settings['description_animation']); ?>
-                                <?php $this->render_tags($instance, $settings); ?>
-                            </div>
-
-                        </div> <?php // close `ui-e-media-wrp` div opened by render_image()
-                    break;
-
-                default:
-                    ?>
-                        <?php $this->render_image($index, $instance, $settings); ?>
-
-                        <div class="ui-e-content">
-                            <div class="ui-e-title-wrapper">
-                                <?php $this->render_title($instance, $settings); ?>
-                                <?php
-                                    if( empty($settings['badge_position']) ) {
-                                        $this->render_badge($instance, $settings['badge_animation']);
-                                    }
-                                ?>
-                            </div>
-
-                            <?php $this->render_description($instance, $settings['description_animation']); ?>
-                            <?php $this->render_tags($instance, $settings); ?>
-                        </div>
-                    <?php
-                    break;
+            // Content container should only be rendered if at least one of the content elements is available
+            if(
+                ( empty( $instance['item_title'] ) || $this->is_option('hide_title', 'yes')  ) &
+                ( empty( $instance['item_description'] ) || $this->is_option('hide_description', 'yes')) &
+                ( empty( $instance['item_tags'] ) || $this->is_option('hide_tags', 'yes'))
+            ){
+                return;
             }
+
+            ?>
+                <div class="ui-e-content">
+                    <?php $this->render_title($instance, $settings); ?>
+                    <?php $this->render_description($instance, $settings['description_animation']) ?>
+                    <?php $this->render_tags($instance, $settings); ?>
+                </div>
+            <?php
         }
         protected function render_image($index, $instance, $settings){
 
@@ -1044,76 +1049,56 @@ trait Gallery_Trait {
                 return;
             }
 
-            // `get_attachment_image_` functions get the image size on the key passed as second argument with '_size' suffix
-            $instance['item_image_size'] = $settings['image_size'];
-            $key = 'image_' . $index;
 
-            // Overlay layout
-            if( $settings['layout'] === 'ui-e-overlay' ){
-
-                // get the image url with the proper size
-                $image = Group_Control_Image_Size::get_attachment_image_src( $instance['item_image']['id'], 'item_image', $instance );
-
-                $this->add_render_attribute(
-                    $key,
-                    [
-                        'style' => 'background-image: url(' . $image . '); background-size: cover;',
-                        'class' => [
-                            'ui-e-media-wrp',
-                            esc_attr($settings['image_animation'])
-                        ],
-                    ]
-                );
-
-                ?>
-                    <div <?php $this->print_render_attribute_string($key); ?>>
-                        <?php
-                            if( ! empty($settings['badge_position']) ) {
-                                $this->render_badge($instance, $settings['badge_animation']);
-                            }
-                    // We don't close the </div> div here because on overlay all the content goes
-                    // inside this wrapper. The div should be closed by the parent function.
-
-            // Default layout
-            } else {
-
-                $this->add_render_attribute(
-                    'image',
-                    [
-                        'src' => $instance['item_image']['url'],
-                        'alt' => Control_Media::get_image_alt( $instance['item_image'] ),
-                        'title' => Control_Media::get_image_title( $instance['item_image'] ),
-                        'class' => 'ui-e-img',
-                    ]
-                );
-
-                ?>
-                    <div class="ui-e-media-wrp <?php echo esc_attr($settings['image_animation']);?>">
-                        <?php
-                            if( ! empty($settings['badge_position']) ) {
-                                $this->render_badge($instance, $settings['badge_animation']);
-                            }
-                        ?>
-                        <?php echo wp_kses_post( Group_Control_Image_Size::get_attachment_image_html( $instance, 'item_image', )); ?>
-                    </div>
-                <?php
+            // Only default layout has media wrapper
+            if( $this->is_option('layout', '') ){
+                ?> <div class="ui-e-media-wrp <?php echo esc_attr($settings['image_animation']);?>"> <?php
             }
+
+            $this->add_render_attribute(
+                'image',
+                [
+                    'src' => $instance['item_image']['url'],
+                    'alt' => Control_Media::get_image_alt( $instance['item_image'] ),
+                    'title' => Control_Media::get_image_title( $instance['item_image'] ),
+                    'class' => 'ui-e-img',
+                ]
+            );
+
+            if( ! empty($settings['badge_position']) ) {
+                $this->render_badge($instance, $settings['badge_animation']);
+            }
+
+            echo wp_kses_post( Group_Control_Image_Size::get_attachment_image_html( $instance, 'item_image', ));
+
+            if( $this->is_option('layout', '') ){
+                ?> </div> <?php
+            }
+
         }
         protected function render_title($instance, $settings)
         {
-            if( empty($instance['item_title']) ){
+            if( empty( $instance['item_title'] ) || $this->is_option('hide_title', 'yes') ){
                 return;
             }
 
             ?>
-                <<?php echo esc_html($settings['title_tag']);?> class="ui-e-title <?php echo esc_attr($settings['title_animation'])?>">
-                    <span> <?php echo Helper::esc_string( $instance['item_title'] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> </span>
-                </<?php echo esc_html($settings['title_tag']);?>>
+                <div class="ui-e-title-wrapper">
+                    <<?php echo esc_html($settings['title_tag']);?> class="ui-e-title <?php echo esc_attr($settings['title_animation'])?>">
+                        <span> <?php echo Helper::esc_string( $instance['item_title'] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> </span>
+                    </<?php echo esc_html($settings['title_tag']);?>>
+
+                    <?php
+                        if( empty($settings['badge_position']) ) {
+                            $this->render_badge($instance, $settings['badge_animation']);
+                        }
+                    ?>
+                </div>
             <?php
         }
-        protected function render_description($instance, $animation = '')
+        protected function render_description($instance, $animation)
         {
-            if( empty( $instance['item_description'] ) ){
+            if( empty( $instance['item_description'] ) || $this->is_option('hide_description', 'yes') ){
                 return;
             }
 

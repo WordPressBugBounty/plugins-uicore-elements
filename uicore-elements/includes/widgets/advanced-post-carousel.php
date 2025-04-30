@@ -185,6 +185,16 @@ class AdvancedPostCarousel extends UiCoreWidget
                 'size' => 5,
             ],
         ]);
+
+        // TODO: create new method to return animations list and use it throughout the plugin
+        // Update carousel animations
+        $this->update_control('animation_style', [
+            'options'      => [
+               'circular' 	  => esc_html__('Circular', 'uicore-elements'),
+                'fade_blur'   => esc_html__('Fade Blur', 'uicore-elements'),
+                'default'     => esc_html__('Default', 'uicore-elements'),
+			],
+        ]);
     }
 
     function content_template()
@@ -212,9 +222,6 @@ class AdvancedPostCarousel extends UiCoreWidget
         // Build query
         $this->TRAIT_query_posts( $settings, $wp_query->query );
         $wp_query = $this->get_query();
-
-        // SVG icon experiment font-size adjustment
-        $this->TRAIT_set_meta_font_size_to_svg($settings);
 
         $this->TRAIT_render_filters($settings);
 

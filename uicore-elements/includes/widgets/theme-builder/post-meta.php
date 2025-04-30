@@ -98,35 +98,6 @@ class PostMeta extends UiCoreWidget {
 
 	}
 
-    /**
-     * Match each meta icon size (if SVG) with the correspondent font size set by the user.
-     *
-     * Based on the post component similar function.
-     */
-    function set_meta_font_size_to_svg()
-    {
-        // Required specifically for SVG icons
-        if( \Elementor\Plugin::$instance->experiments->is_feature_active('e_font_icon_svg') == false ){
-            return;
-        }
-
-        $size = $this->get_option_size(
-            'tb-meta_meta_typography_font_size',
-            ['size' => 16, 'unit' => 'px'],
-            true
-        );
-
-        // Creates the css variable
-        $metas_css = '--post_meta-font-size: ' . esc_html($size) . ';';
-
-        // print it on the main widget wrapper
-        $this->add_render_attribute(
-            '_wrapper',
-            'style',
-            $metas_css
-        );
-    }
-
 	protected function render() {
 
         if( !\Elementor\Plugin::$instance->editor->is_edit_mode() ) {
@@ -135,8 +106,6 @@ class PostMeta extends UiCoreWidget {
         }else{
             $title = __( 'This is a dummy title.', 'uicore-elements' );
         }
-
-        $this->set_meta_font_size_to_svg();
 
 		$meta_list = $this->get_settings_for_display( 'meta_list' );
         if(!isset($meta_list[0]) || $meta_list[0]['type'] == ''){

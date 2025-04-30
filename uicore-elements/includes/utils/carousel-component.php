@@ -861,9 +861,32 @@ trait Carousel_Trait {
 				],
 				'render_type' => 'template',
 				'frontend_available' => true,
-				'condition' => [
-					'animation_style!' => ['horizontal']
-				]
+                'content_classes' => 'elementor-control-field-select-small',
+                'conditions' => [
+                    'relation' => 'or',
+                    'terms' => [
+                        [
+                            'name' => 'animation_style',
+                            'operator' => '!==',
+                            'value' => 'marquee',
+                        ],
+                        [
+                            'relation' => 'and',
+                            'terms' => [
+                                [
+                                    'name' => 'animation_style',
+                                    'operator' => '===',
+                                    'value' => 'marquee',
+                                ],
+                                [
+                                    'name' => 'vertical',
+                                    'operator' => '!==',
+                                    'value' => 'true',
+                                ]
+                            ],
+                        ],
+                    ]
+                ]
 			]
 		);
 		$this->add_control(
@@ -877,22 +900,11 @@ trait Carousel_Trait {
 					'left'    => esc_html__( 'Show Left', 'uicore-elements' ),
 					'right'   => esc_html__( 'Show Right', 'uicore-elements' ),
 				],
+                'content_classes' => 'elementor-control-field-select-small',
 				'condition' => [
 					'animation_style' => ['fade_blur', 'circular']
 				],
 				'frontend_available' => true,
-			]
-		);
-        $this->add_control(
-			'center_slides',
-			[
-				'label' => esc_html__('Center Slides', 'uicore-elements'),
-				'type'  => Controls_Manager::SWITCHER,
-				'return_value' => 'true',
-				'condition' => [
-                    'animation_style!' => 'marquee',
-                ],
-                'frontend_available' => true,
 			]
 		);
         $this->add_control(
@@ -910,12 +922,74 @@ trait Carousel_Trait {
                 'frontend_available' => true,
 			]
 		);
+        $this->add_control(
+			'center_slides',
+			[
+				'label' => esc_html__('Center Slides', 'uicore-elements'),
+				'type'  => Controls_Manager::SWITCHER,
+				'return_value' => 'true',
+				'condition' => [
+                    'animation_style!' => 'marquee',
+                ],
+                'frontend_available' => true,
+			]
+		);
+        $this->add_control(
+            'vertical',
+            [
+                'label'        => __('Vertical Scroll', 'uicore-elements'),
+                'type'         => Controls_Manager::SWITCHER,
+                'return_value' => 'true',
+                'render_type'  => 'template',
+                'condition' => [
+                    'animation_style' => 'marquee',
+                ],
+                'prefix_class' => 'ui-e-vertical-',
+                'frontend_available' => true,
+                'selectors' => [
+                    '{{WRAPPER}} .ui-e-carousel' => '--ui-e-fade-edge-direction: bottom;',
+                ],
+            ]
+        );
+        $this->add_control(
+			'vertical_slide_height',
+			[
+				'label' => esc_html__( 'Carousel Height', 'uicore-elements' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px', 'vh', 'custom' ],
+				'range' => [
+					'px' => [
+						'min' => 10,
+						'max' => 1000,
+						'step' => 5,
+					],
+					'vh' => [
+						'min' => 1,
+						'max' => 100,
+					],
+				],
+				'default' => [
+					'unit' => 'px',
+					'size' => 350,
+				],
+                'condition' => [
+                    'animation_style' => 'marquee',
+					'vertical' => 'true',
+                ],
+				'selectors' => [
+					'{{WRAPPER}} .ui-e-carousel' => 'height: {{SIZE}}{{UNIT}} !important;',
+				],
+			]
+		);
 		$this->add_control(
 			'fade_edges',
 			[
 				'label'   => __('Fade Edges', 'uicore-elements'),
 				'type'    => Controls_Manager::SWITCHER,
 				'prefix_class' => 'ui-e-fade-edges-',
+                'selectors' => [
+                    '{{WRAPPER}}' => '--ui-e-fade-edge-direction: right;',
+                ],
 			]
 		);
         $this->add_control(
@@ -964,6 +1038,7 @@ trait Carousel_Trait {
                 'frontend_available' => true,
 			]
 		);
+
 		$this->add_control(
 			'autoplay_speed',
 			[
@@ -980,6 +1055,31 @@ trait Carousel_Trait {
                 'frontend_available' => true,
 			]
 		);
+        $this->add_control(
+            'reverse',
+            [
+                'label'        => __('Reverse Direction', 'uicore-elements'),
+                'type'         => Controls_Manager::SWITCHER,
+                'return_value' => 'true',
+                'render_type'  => 'template',
+                'conditions' => [
+                    'relation' => 'or',
+                    'terms' => [
+                        [
+                            'name' => 'animation_style',
+                            'operator' => '===',
+                            'value' => 'marquee',
+                        ],
+                        [
+                            'name' => 'autoplay',
+                            'operator' => '===',
+                            'value' => 'yes',
+                        ],
+                    ],
+                ],
+                'frontend_available' => true,
+            ]
+        );
 		$this->add_control(
 			'pause_on_hover',
 			[
@@ -1674,10 +1774,35 @@ trait Carousel_Trait {
 				'type'      => Controls_Manager::SWITCHER,
 				'default'   => 'yes',
 				'prefix_class' => 'ui-e-match-height-',
+                'conditions' => [
+                    'relation' => 'or',
+                    'terms' => [
+                        [
+                            'name' => 'animation_style',
+                            'operator' => '!==',
+                            'value' => 'marquee',
+                        ],
+                        [
+                            'relation' => 'and',
+                            'terms' => [
+                                [
+                                    'name' => 'animation_style',
+                                    'operator' => '===',
+                                    'value' => 'marquee',
+                                ],
+                                [
+                                    'name' => 'vertical',
+                                    'operator' => '!==',
+                                    'value' => 'true',
+                                ]
+                            ],
+                        ],
+                    ]
+                ],
 				'selectors' => [
 					'{{WRAPPER}} .ui-e-wrp' => 'height: auto',
 					'{{WRAPPER}} .ui-e-animations-wrp, {{WRAPPER}} .ui-e-item' => 'height: 100%'
-				]
+                ]
 			]
 		);
         if($is_slider) {
@@ -1788,8 +1913,13 @@ trait Carousel_Trait {
 	{
 		$navigation = $this->get_settings_for_display('navigation');
 
+        // Animations might disable navigation (e.g. `marquee`)
+        if( ! isset($navigation) ) {
+			return;
+		}
+
         // Migration code from old navigation select2 array values - TODO: can only be removed when the all design library is updated
-		if(is_array($navigation)) {
+		if( is_array($navigation)) {
 			$navigation = implode('-', $navigation);
 		}
 

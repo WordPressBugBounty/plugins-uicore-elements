@@ -3,14 +3,14 @@
 Plugin Name: UiCore Elements
 Plugin URI: https://elements.uicore.co
 Description: Elementor Widgets and Theme Builder Elements
-Version: 1.2.3
+Version: 1.2.4
 Author: UiCore
 Author URI: https://uicore.co
 License: GPL3
 Text Domain: uicore-elements
 Domain Path: /languages
  * Elementor requires at least: 3.19.2
- * Elementor tested up to: 3.27.6
+ * Elementor tested up to: 3.28.4
 */
 namespace UiCoreElements;
 
@@ -29,7 +29,7 @@ final class Base {
      *
      * @var string
      */
-    public $version = '1.2.3';
+    public $version = '1.2.4';
 
     /**
      * Holds various class instances
@@ -108,6 +108,7 @@ final class Base {
         define( 'UICORE_ELEMENTS_INCLUDES', UICORE_ELEMENTS_PATH . '/includes' );
         define( 'UICORE_ELEMENTS_URL', plugins_url( '', UICORE_ELEMENTS_FILE ) );
         define( 'UICORE_ELEMENTS_ASSETS', UICORE_ELEMENTS_URL . '/assets' );
+        define( 'UICORE_ELEMENTS_BADGE', '<span title="Powered by UiCore Elements" style="font-size:10px;font-weight:500;background:#5dbad8;color:black;padding:2px 5px;border-radius:3px;margin-right:4px;">UiCore</span> ');
     }
 
     /**

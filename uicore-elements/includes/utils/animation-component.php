@@ -16,29 +16,38 @@ trait Animation_Trait {
      * @param array $filter Removes requested animations from the options. (optional)
      * @param string|null $custom_slug A custom slug for the control. If null, use $name as slug, formating it. (optional)
      * @param bool $use_new Include new animations not globally available. (optional)
+     * @param string $prefix_class Let you add a custom prefix, but be cautious, the classname `ui-e-item-anim-{animation} will be part of the prefix classname. (optional)
      *
      * @return void
      */
-    function TRAIT_register_hover_animation_control($name, $conditions = [], $filter = [], $custom_slug = null, $use_new = false)
+    function TRAIT_register_hover_animation_control($name, $conditions = [], $filter = [], $custom_slug = null, $use_new = false, $prefix_class = null)
     {
         // Custom slug or name converted to slug
         $slug  = isset($custom_slug)
             ? $custom_slug
-            // using sanitize_title() would create incompatible problems since it uses hyphens, not underscores
+            // using sanitize_title() would create incompatibility problems since it uses hyphens, not underscores
             : strtolower(preg_replace('/\s+/', '_', preg_replace('/[^a-zA-Z0-9\s]/', '', $name)));
 
-        $this->add_control(
-            $slug,
-            [
-                /* translators: %s: control title */
-                'label' => esc_html( sprintf('%s', $name), 'uicore-elements'),
-                'type' => Controls_Manager::SELECT,
-                'default' => '',
-                'label_block' => true,
-                'options' => $this->uicore_get_animations($filter, $use_new),
-                'condition' => $conditions
-            ]
-        );
+        // Mandatory params
+        $params = [
+            /* translators: %s: control title */
+            'label' => esc_html( sprintf('%s', $name), 'uicore-elements'),
+            'type' => Controls_Manager::SELECT,
+            'default' => '',
+            'content_classes' => 'elementor-control-field-select-small',
+            'options' => $this->uicore_get_animations($filter, $use_new),
+        ];
+
+        // Optional params
+        if( isset($conditions) ){
+            $params['condition'] = $conditions;
+        }
+        if( isset($prefix_class) ) {
+            $params['prefix_class'] = $prefix_class;
+            $params['render_type'] = 'template';
+        }
+
+        $this->add_control($slug, $params);
     }
     // Entrance Animations Controls.
     function TRAIT_register_entrance_animations_controls()

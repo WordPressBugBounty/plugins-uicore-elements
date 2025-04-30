@@ -256,8 +256,6 @@ class AdvancedPostGrid extends UiCoreWidget
         $this->TRAIT_query_posts( $settings, $wp_query->query );
         $wp_query = $this->get_query();
 
-        $this->TRAIT_set_meta_font_size_to_svg($settings); // SVG icon experiment font-size adjustment
-
         // Store widget settings in a transient
         $ID = strval($this->get_ID());
         set_transient('ui_elements_widgetdata_' . $ID, $settings, \MONTH_IN_SECONDS);
