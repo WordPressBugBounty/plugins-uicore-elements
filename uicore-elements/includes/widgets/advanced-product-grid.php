@@ -30,15 +30,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
     }
     public function get_title()
     {
-        // In some contexts, such as theme-builder, our custom controls are not available
-        // and requiring in register_controls method breaks the widget render in editor
-        if( ! class_exists('UiCoreElements\Controls\Product_Filter') ){
-            require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-product-filter-control.php';
-        }
-        if( ! class_exists('UiCoreElements\Controls\Post_Filter') ){
-            require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-post-filter-control.php';
-        }
-
+        $this->custom_controls_verification();
         return __('Advanced Product Grid', 'uicore-elements');
     }
     public function get_icon()
@@ -65,6 +57,24 @@ class AdvancedProductGrid extends AdvancedPostGrid
         $styles[] = 'advanced-product-grid';
 
         return $styles;
+    }
+
+    /**
+     *  Makes sure some of our custom controls are present. This should be a
+     *  temporary fix to a problem that do not happens consistently.
+     */
+    function custom_controls_verification()
+    {
+        // In some contexts, such as theme-builder, our custom controls are not available
+        // and requiring in register_controls method breaks the widget render in editor
+        if( ! defined('DOING_AJAX') || ! DOING_AJAX ) {
+            if( ! class_exists('UiCoreElements\Controls\Product_Filter') ){
+                require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-product-filter-control.php';
+            }
+            if( ! class_exists('UiCoreElements\Controls\Post_Filter') ){
+                require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-post-filter-control.php';
+            }
+        }
     }
     function get_query()
     {

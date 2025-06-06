@@ -16,8 +16,6 @@ class Admin
      */
     public function __construct()
     {
-        $this->elementor_style();
-
         add_action('admin_menu', [$this, 'admin_menu']);
         add_action('admin_init', [$this, 'init_hooks']);
     }
@@ -33,14 +31,14 @@ class Admin
     {
         // Settings page (only required if uicore framework is not active)
         // if (!\class_exists('\UiCore\Helper')) {
-            $hook = add_submenu_page(
-                'options-general.php',
-                'UiCore Elements',
-                'UiCore Elements',
-                'manage_options',
-                'uicore-elements',
-                [$this, 'plugin_page']
-            );
+        $hook = add_submenu_page(
+            'options-general.php',
+            'UiCore Elements',
+            'UiCore Elements',
+            'manage_options',
+            'uicore-elements',
+            [$this, 'plugin_page']
+        );
 
         // }
 
@@ -95,7 +93,7 @@ class Admin
         settings_errors('uicoreelements_messages');
 
         // display plugin page
-        ?>
+?>
         <div class="wrap">
             <h1>UiCore Elements Settings</h1>
 
@@ -116,7 +114,7 @@ class Admin
             </form>
 
         </div>
-        <?php
+<?php
     }
 
     /**
@@ -130,7 +128,7 @@ class Admin
     {
         echo '<p class="description">Go to your Google <a href="https://www.google.com/recaptcha/admin/create" target="_blank">reCAPTCHA</a>, choose between V2 or V3 versions and create your API keys</p>';
     }
-     /**
+    /**
      * Render Mailchimp section description
      *
      * @return void
@@ -179,60 +177,5 @@ class Admin
     {
         $secret_key = get_option('uicore_elements_mailchimp_secret_key');
         echo '<input type="text" name="uicore_elements_mailchimp_secret_key" value="' . esc_attr($secret_key) . '" class="regular-text" />';
-    }
-
-
-    /**
-     * Elementor Editor Style, Fonts and Scripts
-     *
-     * @return void
-     * @author Andrei Voica <andrei@uicore.co
-     * @since 1.0.0
-     */
-    public function elementor_style()
-    {
-        add_action('elementor/editor/before_enqueue_scripts', function () {
-
-            echo '<style id="uicore-csss" >
-            .elementor-element .icon .ui-e-widget:after {
-              height: 28px;
-              width: 28px;
-              margin-right: 10px;
-              border-radius: 3px;
-              background-color: #532df5;
-              background-image: url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'16\' height=\'16\' viewBox=\'0 0 16 16\' xml:space=\'preserve\'%3E%3Cpath d=\'M5.383 15.217c3.1 0 5.4-2.3 5.4-5.3v-7.9h-2.9v7.9c0 1.4-1.1 2.5-2.5 2.5s-2.5-1.1-2.5-2.5v-7.9h-2.9v7.9c0 3 2.3 5.3 5.4 5.3zM14.283 4.117c1 0 1.7-.7 1.7-1.7s-.7-1.7-1.7-1.7-1.7.7-1.7 1.7.7 1.7 1.7 1.7zM15.683 15.017v-9.6h-2.8v9.6z\' fill=\'%23fff\'/%3E%3C/svg%3E");
-              background-size: 16px;
-              background-position: center;
-              background-repeat: no-repeat;
-            }
-
-            .elementor-element .icon .ui-e-widget:after {
-				content: "";
-			    position: absolute;
-			    right: 5px;
-			    top: 5px;
-			    margin-right: 0;
-			    width: 16px;
-			    height: 16px;
-			    background-size: 9px;
-			    background-color: #656c7196;
-				transition: background-color .3s ease-in-out;
-            }
-			.elementor-element:hover .icon .ui-e-widget:after {
-				background-color: #532df5;
-				transition: background-color .3s ease-in-out;
-			}
-            #elementor-panel-categories{
-                display: flex;
-                flex-direction: column;
-            }
-            #elementor-panel-category-basic,
-            #elementor-panel-category-layout,
-            #elementor-panel-category-favorites,
-            #elementor-panel-category-uicore{
-                order: -1;
-            }
-            </style>';
-        });
     }
 }

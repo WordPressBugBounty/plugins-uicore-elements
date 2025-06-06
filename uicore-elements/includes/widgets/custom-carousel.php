@@ -259,7 +259,7 @@ class CustomCarousel extends UiCoreNestedWidget {
 		$children  = $this->get_children();
 		$child_ids = [];
 
-		if( empty( $children )){
+		if( empty( $children ) || ! isset( $children[ $index ] ) ){
 			return;
 		}
 

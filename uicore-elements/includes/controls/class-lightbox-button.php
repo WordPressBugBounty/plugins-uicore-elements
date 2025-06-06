@@ -12,7 +12,7 @@ defined('ABSPATH') || exit();
  * Update Elementor Button Control by injecting a new lightbox option.
  * Functions were extracted and updated from the 'lightbox' dinamic tag module
  *
- * @since 1.2.4
+ * @since 1.0.15
  */
 
 class Lightbox_Button {
