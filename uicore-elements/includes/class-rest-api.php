@@ -53,13 +53,13 @@ class REST_API
         register_rest_route('uielem/v1', '/prepare_template', [
             'methods' => 'POST',
             'callback' => [$this, 'prepare_template'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'check_for_permission'],
         ]);
 
         register_rest_route('uielem/v1', '/check_connection', [
             'methods' => 'GET',
             'callback' => [$this, 'check_connection'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [$this, 'check_for_permission'],
         ]);
     }
 

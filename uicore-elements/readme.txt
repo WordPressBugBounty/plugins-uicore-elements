@@ -4,7 +4,7 @@ Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
 Tested up to: 6.7.2
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -130,6 +130,11 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+
+= 1.3.1 = 
+* FIX - Security Patch
+* FIX - Highlighted text default underline color
+
 = 1.3.0 =
 * NEW - Added Design Cloud (available only with UiCore Pro) https://uicore.pro/features/design-cloud/
 * FIX - Fatal error on Elements Manager screen
