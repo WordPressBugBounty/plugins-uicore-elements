@@ -71,6 +71,7 @@ class DesignCloud
             'api' => 'https://dc.uicore.co',
             // 'api' => 'http://dc.uicore',
             'builder' => 'el',
+            'nonce' => wp_create_nonce('wp_rest'),
             'preview' => [
                 'class' => 'elementor-kit-' . $kit_id,
                 'assets' => $assets,
