@@ -290,6 +290,34 @@ trait Post_Trait
             ]
         );
         $this->add_control(
+            'item_order',
+            [
+                'label' => esc_html__('Item Order', 'uicore-elements'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'ASC' => esc_html__('Ascending', 'uicore-elements'),
+                    'DESC' => esc_html__('Descending', 'uicore-elements'),
+                ],
+                'default' => 'DESC',
+            ]
+        );
+        $this->add_control(
+            'item_order_by',
+            [
+                'label' => esc_html__('Item Order By', 'uicore-elements'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'date' => esc_html__('Date', 'uicore-elements'),
+                    'modified' => esc_html__('Modified Date', 'uicore-elements'),
+                    'title' => esc_html__('Title', 'uicore-elements'),
+                    'rand' => esc_html__('Random', 'uicore-elements'),
+                    'comment_count' => esc_html__('Comments Count', 'uicore-elements'),
+                    'menu_order' => esc_html__('Menu Order', 'uicore-elements'),
+                ],
+                'default' => 'date',
+            ]
+        );
+        $this->add_control(
             'item_limit',
             [
                 'label' => esc_html__('Item Limit', 'uicore-elements'),
@@ -628,7 +656,7 @@ trait Post_Trait
                 'selector' => '{{WRAPPER}} .ui-e-post-title',
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'title_gap',
             [
                 'label' => __('Title Top Space', 'uicore-elements'),
@@ -670,7 +698,7 @@ trait Post_Trait
                 'selector' => '{{WRAPPER}} .ui-e-post-text',
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'text_gap',
             [
                 'label' => __('Excerpt Top Space', 'uicore-elements'),

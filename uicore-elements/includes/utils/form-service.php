@@ -243,10 +243,10 @@ class Contact_Form_Service
 
         // Build optional data
         if (!empty($settings['email_to_cc' . $slug])) {
-            $mail_data['headers'][] = 'Cc: ' . $settings['email_to_cc'];
+            $mail_data['headers'][] = 'Cc: ' . $this->replace_content_shortcode($settings['email_to_cc' . $slug]);
         }
         if (!empty($settings['email_to_bcc' . $slug])) {
-            $mail_data['headers'][] = 'Bcc: ' . $settings['email_to_bcc'];
+            $mail_data['headers'][] = 'Bcc: ' . $this->replace_content_shortcode($settings['email_to_bcc' . $slug]);
         }
 
         return [

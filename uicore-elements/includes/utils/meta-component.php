@@ -114,6 +114,64 @@ trait Meta_Trait
             ]
         );
         $repeater->add_control(
+            'stock_type',
+            [
+                'label' => esc_html__('Stock Data', 'uicore-elements'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'qty',
+                'options' => [
+                    'qty'   => esc_html__('Quantity', 'uicore-elements'),
+                    'in'    => esc_html__('In/Out of stock', 'uicore-elements'),
+                ],
+                'condition' => [
+                    'type' => ['product stock']
+                ]
+            ]
+        );
+        $repeater->add_control(
+            'in_stock_text',
+            [
+                'label' => esc_html__('In Stock Text', 'uicore-elements'),
+                'type' => Controls_Manager::TEXT,
+                'default' => esc_html__('In Stock', 'uicore-elements'),
+                'condition' => [
+                    'type' => ['product stock'],
+                    'stock_type' => 'in',
+                ]
+            ]
+        );
+        $repeater->add_control(
+            'out_of_stock_text',
+            [
+                'label' => esc_html__('Out of Stock Text', 'uicore-elements'),
+                'type' => Controls_Manager::TEXT,
+                'default' => esc_html__('Out of Stock', 'uicore-elements'),
+                'condition' => [
+                    'type' => ['product stock'],
+                ]
+            ]
+        );
+        $repeater->add_control(
+            'in_stock_color',
+            [
+                'label' => __('In Stock Color', 'uicore-elements'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .in-stock' => 'color: {{VALUE}}',
+                ],
+            ]
+        );
+        $repeater->add_control(
+            'out_of_stock_color',
+            [
+                'label' => __('Out of Stock Color', 'uicore-elements'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .out-of-stock' => 'color: {{VALUE}}',
+                ],
+            ]
+        );
+        $repeater->add_control(
             'before',
             [
                 'label' => __('Text Before', 'uicore-elements'),
@@ -357,7 +415,7 @@ trait Meta_Trait
         return $link;
     }
 
-    function get_woo_meta($type)
+    function get_woo_meta($type, $meta = null)
     {
         global $product;
 
@@ -369,20 +427,175 @@ trait Meta_Trait
             case 'product price':
                 return $product->get_price_html();
             case 'product rating':
-                return  wc_get_rating_html($product->get_average_rating());
+                return wc_get_rating_html($product->get_average_rating());
             case 'product category':
                 return get_the_term_list($product->get_id(), 'product_cat', '', ', ', '');
             case 'product tag':
                 return get_the_term_list($product->get_id(), 'product_tag', '', ', ', '');
             case 'product stock':
-                return ($product->managing_stock() && $product->is_type('simple') && $product->get_stock_quantity() !== null) ? $product->get_stock_quantity() : '';
+                return $this->get_product_stock_for_widget_meta($product, $meta);
             case 'product attribute':
-                return wc_display_product_attributes($product);
+                return $this->print_product_attributes($product);
             case 'product sale':
                 return $product->is_on_sale() ? esc_html__('Sale!', 'uicore-elements') : '';
             default:
                 return 'Invalid meta type.';
         }
+    }
+
+    /**
+     * Get the product stock quantity for Advanced Product widget meta. If the product is variable, return the highest stock quantity among its variations.
+     * TODO: this function should be part of the product TRAIT, but product trait uses this meta trait, so we'd have a circular dependency.
+     *
+     * @param WC_Product $product The WooCommerce product object.
+     * @param array $meta The meta settings array.
+     */
+    function get_product_stock_for_widget_meta($product, $meta)
+    {
+
+        // In/out of stock return
+        if (isset($meta['stock_type']) && $meta['stock_type'] === 'in') {
+
+            $in_stock = false;
+
+            if ($product->is_type('variable')) {
+                foreach ($product->get_children() as $child_id) {
+                    $variation = wc_get_product($child_id);
+                    if ($variation && $variation->is_in_stock()) {
+                        $in_stock = true;
+                        break;
+                    }
+                }
+            } else {
+                $in_stock = $product->is_in_stock();
+            }
+
+            return $in_stock
+                ? '<span class="in-stock">' . esc_html($meta['in_stock_text'] ?? __('In stock', 'uicore-elements')) . '</span>'
+                : '<span class="out-of-stock">' . esc_html($meta['out_of_stock_text'] ?? __('Out of stock', 'uicore-elements')) . '</span>';
+        }
+
+        // Quantity return
+        if ($product->is_type('variable')) {
+
+            $qty = 0;
+
+            // Find the maximum stock quantity among variations
+            foreach ($product->get_available_variations() as $variation) {
+                $obj = wc_get_product($variation['variation_id']);
+
+                if ($obj->managing_stock()) {
+                    $stock = $obj->get_stock_quantity();
+                    if ($stock > $qty) {
+                        $qty = $stock;
+                    }
+                }
+            }
+
+            return $qty > 0
+                ? '<span class="in-stock">' . esc_html($qty) . '</span>'
+                : '<span class="out-of-stock">' . esc_html($meta['out_of_stock_text'] ?? __('Out of stock', 'uicore-elements')) . '</span>';
+        }
+
+        if (!$product->managing_stock()) {
+            return '<span class="in-stock">' . esc_html($meta['in_stock_text'] ?? __('In stock', 'uicore-elements')) . '</span>';
+        }
+
+        return $product->get_stock_quantity() !== null
+            ? $product->get_stock_quantity()
+            : '';
+    }
+
+    /**
+     * Gets and prints a list of product attributes. We use a custom function for it because
+     * `wc_display_product_attributes` uses a table layout wich is not suitable for our widget.
+     *
+     * @param WC_Product $product The WooCommerce product object.
+     * @return string|false The HTML string of product attributes or false if none are visible.
+     * @since 1.3.13
+     */
+    function print_product_attributes($product)
+    {
+
+        $attributes = $product->get_attributes();
+
+        if (empty($attributes)) {
+            return false;
+        }
+
+        $default = true; // Flag to check if we're actually displaying any attribute
+        $content = '<ul class="ui-e-product-attributes">';
+
+        foreach ($attributes as $attribute) {
+            if (! $attribute->get_visible()) {
+                continue;
+            }
+
+            // We only want to display default attributes here that are not using framework swatches
+            $swatch = $this->get_swatch_type($attribute->get_name());
+            if ($swatch && in_array($swatch, ['color', 'label', 'button', 'image'])) {
+                continue;
+            }
+
+            $default = false; // Safe to output html
+            $name  = wc_attribute_label($attribute->get_name());
+            $value = '';
+
+            if ($attribute->is_taxonomy()) {
+                $taxonomy = $attribute->get_name();
+                $terms = wc_get_product_terms(
+                    $product->get_id(),
+                    $taxonomy,
+                    ['fields' => 'all']
+                );
+
+                $term_links = [];
+                $taxonomy_obj = get_taxonomy($taxonomy);
+                $has_archive = $taxonomy_obj && $taxonomy_obj->public && $taxonomy_obj->rewrite && !empty($taxonomy_obj->rewrite['slug']);
+
+                foreach ($terms as $term) {
+                    if ($has_archive && get_term_link($term)) {
+                        $term_links[] = '<a href="' . esc_url(get_term_link($term)) . '">' . esc_html($term->name) . '</a>';
+                    } else {
+                        $term_links[] = esc_html($term->name);
+                    }
+                }
+                $value = implode(', ', $term_links);
+            } else {
+                $value = implode(', ', $attribute->get_options());
+            }
+
+            if (empty($value)) {
+                continue;
+            }
+
+            $content .= '<li>';
+            $content .= '<strong>' . esc_html($name) . ':</strong> ';
+            $content .= $value;
+            $content .= '</li>';
+        }
+
+        if ($default) {
+            return false;
+        }
+
+        $content .= '</ul>';
+        return $content;
+    }
+
+    /**
+     * Get the attribute swatch type from Uicore Framework plugin.
+     *
+     * @return string The swatch type.
+     * @since 1.3.13
+     */
+    function get_swatch_type($attribute_slug)
+    {
+        if (!class_exists('Uicore\WooCommerce\Swatches') && !function_exists('get_attribute_swatch_type')) {
+            return false;
+        }
+
+        return \Uicore\WooCommerce\Swatches::get_attribute_swatch_type($attribute_slug);
     }
 
     function display_meta($meta, $product_id = null)
@@ -438,8 +651,9 @@ trait Meta_Trait
                 break;
             default:
                 if (strpos($type, 'product') === 0) {
-                    if ($this->get_woo_meta($type) === false) return; // Abort if there's no data for this product meta
-                    $content .= wp_kses_post($this->get_woo_meta($type));
+                    $data = $this->get_woo_meta($type, $meta);
+                    if ($data === false) return;
+                    $content .= wp_kses_post($data);
                 } else {
                     echo \esc_html($type);
                 }

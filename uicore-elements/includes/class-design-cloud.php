@@ -29,7 +29,7 @@ class DesignCloud
      */
     public function enqueue_elementor_assets()
     {
-        if (!function_exists('_uicore_pro')) {
+        if (!function_exists('_uicore_pro') || apply_filters('uicore_hide_design_cloud', false)) {
             return;
         }
         $dc_data = require UICORE_ELEMENTS_PATH . '/assets/design-cloud/design-cloud.asset.php';
@@ -51,16 +51,15 @@ class DesignCloud
         $kit_id = $kit_id ? $kit_id : 1;
         $assets = $this->get_elementor_kit_assets($kit_id);
 
-        if (class_exists('\UiCore\Assets')) {
-            $css_url = \UiCore\Assets::get_global("uicore-global.css");
-        } else {
-            // get elementor kit css file
-            $css_url = \get_upload_dir()['baseurl'] . "/elementor/css/post-{$kit_id}.css";
+        $upload_dir = wp_upload_dir();
+        $css_path = class_exists('\UiCore\Assets')
+            ? $upload_dir['basedir'] . "/uicore-global.css"
+            : $upload_dir['basedir'] . "/elementor/css/post-{$kit_id}.css";
+
+        if (file_exists($css_path)) {
+            $inline_css = file_get_contents($css_path);
         }
-        $response = wp_remote_get($css_url);
-        if (! is_wp_error($response)) {
-            $inline_css = wp_remote_retrieve_body($response);
-        }
+
         $local_data = get_option('uicore_connect', [
             'url' => '',
             'token' => '',
@@ -69,7 +68,6 @@ class DesignCloud
         $product = \apply_filters('uicore_product_id', $product);
         $dc_settings = [
             'api' => 'https://dc.uicore.co',
-            // 'api' => 'http://dc.uicore',
             'builder' => 'el',
             'nonce' => wp_create_nonce('wp_rest'),
             'preview' => [

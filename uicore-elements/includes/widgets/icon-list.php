@@ -868,7 +868,7 @@ class IconList extends UiCoreWidget
             ]
         );
 
-        $this->add_control(
+        $this->add_responsive_control(
             'icon_size',
             [
                 'label' => esc_html__('Icon Size', 'uicore-elements'),

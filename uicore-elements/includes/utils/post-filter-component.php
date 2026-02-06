@@ -56,6 +56,25 @@ trait Post_Filters_Trait
             ]
         );
         $this->add_control(
+            'parent_child_filter',
+            [
+                'label' => __('Hierarchy filter', 'uicore-elements'),
+                'type' => Controls_Manager::SELECT,
+                'multiple' => false,
+                'label_block' => true,
+                'options' => [
+                    '' => esc_html__('Default', 'uicore-elements'),
+                    'no_parents' => esc_html__('Hide parents', 'uicore-elements'),
+                    'no_children' => esc_html__('Hide children', 'uicore-elements'),
+                ],
+                'description' => esc_html__('Filter terms by parent/child relationship.', 'uicore-elements'),
+                'default' => '',
+                'condition' => [
+                    'post_filtering' => 'yes',
+                ],
+            ]
+        );
+        $this->add_control(
             'custom_meta',
             [
                 'label' => esc_html__('Meta Slug', 'uicore-elements'),
@@ -355,11 +374,16 @@ trait Post_Filters_Trait
         }
 
         // Fetch terms
-        $terms = get_terms([
+        $terms_atts = [
             'taxonomy' => $taxonomy,
             'hide_empty' => false,
-            'include' => $active_terms
-        ]);
+            'include' => $active_terms,
+            'childless' => $this->is_option('parent_child_filter', 'no_parents') ? true : false,
+        ];
+        if ($this->is_option('parent_child_filter', 'no_children')) {
+            $terms_atts['parent'] = 0;
+        }
+        $terms = get_terms($terms_atts);
 
         // Build archive url if we're not using rest api
         if (!$ajax) {
@@ -402,7 +426,7 @@ trait Post_Filters_Trait
                         $active_class = 'ui-e-active';
                     }
                 } else {
-                    if (!$ajax && isset($_GET['term']) && $term->term_id == $_GET['term']) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                    if (!$ajax && isset($_GET['ui_term']) && $term->term_id == $_GET['ui_term']) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
                         $active_class = 'ui-e-active';
                     }
                 }
@@ -410,7 +434,7 @@ trait Post_Filters_Trait
 
                 <?php if (!$ajax) :
                     // current query works with standart term links, other queries uses url params
-                    $term_url = $is_main_query ? get_term_link($term->term_id, $term->taxonomy) : $archive . '?tax=' . $term->taxonomy . '&term=' . $term->term_id;
+                    $term_url = $is_main_query ? get_term_link($term->term_id, $term->taxonomy) : $archive . '?ui_tax=' . $term->taxonomy . '&ui_term=' . $term->term_id;
                 ?>
                     <a href="<?php echo esc_url($term_url); ?>">
                     <?php endif; ?>

@@ -47,10 +47,6 @@ class Featured_Image extends UiCoreWidget
     {
         return ['image', 'photo', 'visual', 'featured', 'post', 'page', 'uicore'];
     }
-    protected function is_dynamic_content(): bool
-    {
-        return false;
-    }
     public function get_styles()
     {
         return [];

@@ -1,10 +1,10 @@
-=== UiCore Elements - Free Elementor widgets and templates  ===
+=== UiCore Elements – Free widgets and templates for Elementor  ===
 Contributors: uicore
 Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
-Tested up to: 6.8.2
-Stable tag: 1.3.6
+Tested up to: 6.9
+Stable tag: 1.3.13
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -130,6 +130,51 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+
+= 1.3.13 =
+* NEW - Added a new Posts per Load option to Advanced Post widgets, giving control over how many posts should be pulled through the ajax request
+* FIX - Alignment of Icon Box icons that are not square
+* FIX - Advanced Post widget's width would be limited by the Filters container if smaller
+* FIX - Improved Advanced Product Grid widget Product Attributes meta design and fixed a duplication issue
+* FIX - In some scenarios, Tab widget would have its content displayed vertically due to a flex issue
+
+= 1.3.12 =
+* NEW - Added Box Shadow options to Contact Form widget inputs
+* UPD - Upgraded both Fields and Button padding and border controls to responsive
+* FIX - Fixed Form Contact Form widget shortcode issue and all form widgets cc/bcc bugs
+
+= 1.3.11 =
+* FIX - Post widgets query `order` issue
+* FIX - Tabs widget hidden tabs empty spacing issue
+* UPD - Advanced Product Grid widget WPML compatibility
+
+= 1.3.10 =
+* FIX - Advanced Post grid errors
+
+= 1.3.9 =
+* FIX - WooCommerce styles conflict with Advanced Product Grid widget
+* Fix - Missing assets for some widgets
+
+= 1.3.8 =
+* NEW - Added new options for the Advanced Product Grid `meta` `stock` field
+* NEW - Added new filter options for Advanced Post Widgets’s
+* NEW - Introduced a new PHP filter to disable the Design Cloud button in the Elementor editor
+* UPD - Improved our widgets' performance by enabling cached output for most of them
+* UPD - Upgraded Testimonial Widget’s name, job, text, and divider spacing controls to responsive
+* UPD - Icon List widget's `Icon size` upgraded to responsive
+* UPD - Improved Design Cloud assets fetching
+* FIX - Undefined variables at post widgets
+* FIX - Fixed Advanced Post widgets Filter’s redirect issue to archive pages
+* FIX - Slide widgets always started on the 2nd slide
+* FIX - Newsletter widget button width issue
+* FIX - Advanced Post widgets Title’s top spacing was hardcoded on mobile devices
+* FIX - Advanced Product Grid Stock meta option wasn’t working properly
+* FIX - Fixed Icon Box widget unsynced animations on mobile devices
+
+= 1.3.7 =
+* NEW - Added the new `order` and `orderby` sorting options for Advanced Post Widgets
+* FIX - Fixed Carousel padding and arrows bugs on mobile
+* FIX - Fixed Icon Box mobile animation issues
 
 = 1.3.6 =
 * NEW - Added a Hover Color option for the overlay layout in Advanced Post/Product widgets

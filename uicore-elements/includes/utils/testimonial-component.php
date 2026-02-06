@@ -718,7 +718,7 @@ trait Testimonial_Trait
                 ],
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'name_bottom_space',
             [
                 'label'     => __('Spacing', 'uicore-elements'),
@@ -785,7 +785,7 @@ trait Testimonial_Trait
                 ],
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'job_title_bottom_space',
             [
                 'label'     => __('Spacing', 'uicore-elements'),
@@ -855,7 +855,7 @@ trait Testimonial_Trait
                 'selector' => '{{WRAPPER}} .ui-e-testimonial-text',
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'text_bottom_space',
             [
                 'label'     => __('Spacing', 'uicore-elements'),
@@ -1083,7 +1083,7 @@ trait Testimonial_Trait
                 ],
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'divider_spacing',
             [
                 'label'     => __('Spacing', 'uicore-elements'),

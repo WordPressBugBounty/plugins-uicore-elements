@@ -67,11 +67,11 @@ class AdvancedProductGrid extends AdvancedPostGrid
         // In some contexts, such as theme-builder, our custom controls are not available
         // and requiring in register_controls method breaks the widget render in editor
         if (! defined('DOING_AJAX') || ! DOING_AJAX) {
-            if (! class_exists('UiCoreElements\Controls\Product_Filter')) {
-                require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-product-filter-control.php';
-            }
             if (! class_exists('UiCoreElements\Controls\Post_Filter')) {
                 require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-post-filter-control.php';
+            }
+            if (! class_exists('UiCoreElements\Controls\Product_Filter')) {
+                require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-product-filter-control.php';
             }
         }
     }
@@ -222,6 +222,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
         $this->add_control(
             'variations_text',
             [
+                'type' => \Elementor\Controls_Manager::TEXT,
                 'label'       => esc_html__('Select Options Text', 'uicore-elements'),
                 'label_block' => true,
                 'default'     => '',
@@ -232,6 +233,7 @@ class AdvancedProductGrid extends AdvancedPostGrid
         $this->add_control(
             'unavailable_text',
             [
+                'type' => \Elementor\Controls_Manager::TEXT,
                 'label'       => esc_html__('Unavailable Text', 'uicore-elements'),
                 'label_block' => true,
                 'default'     => '',

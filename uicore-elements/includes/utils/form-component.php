@@ -7,6 +7,7 @@ use UiCoreElements\Helper;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Box_Shadow;
 use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
 use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 
@@ -207,6 +208,16 @@ trait Form_Component
     }
     function TRAIT_register_submit_redirect_controls()
     {
+        $this->start_controls_section(
+            'section_redirect',
+            [
+                'label' => esc_html__('Redirect', 'uicore-elements'),
+                'condition' => [
+                    'submit_actions' => 'redirect',
+                ],
+            ]
+        );
+
         $this->add_control(
             'redirect_to',
             [
@@ -226,6 +237,8 @@ trait Form_Component
                 'render_type' => 'none',
             ]
         );
+
+        $this->end_controls_section();
     }
     function TRAIT_register_submit_popup_controls()
     {
@@ -289,13 +302,34 @@ trait Form_Component
     /**
      * Register Newsletter Services controls for the submit action.
      *
-     * @param $instance - The widget instance. Required if $has_repeaters is true.
-     * @param bool $field_mapping - Enable Field Mapping control if the widget let allow form fields management.
+     * @param array $services - The list of services available.
+     * @param bool $field_mapping - Enable Field Mapping control if the widget accepts form fields management.
      *
      * @return void
      */
-    function TRAIT_register_submit_newsletter_services_controls($instance = null, bool $field_mapping = false)
+    function TRAIT_register_submit_newsletter_services_controls(array $services, bool $field_mapping = false)
     {
+
+        // Get and build the newsletter services section conditional display
+        $terms = [];
+        foreach ($services as $service) {
+            $terms[] = [
+                'name' => 'submit_actions',
+                'operator' => 'contains',
+                'value' => $service,
+            ];
+        }
+
+        $this->start_controls_section(
+            'newsletter_services_section',
+            [
+                'label' => esc_html__('Newsletter Service', 'uicore-elements'),
+                'conditions' => [
+                    'relation' => 'or',
+                    'terms' => $terms,
+                ],
+            ]
+        );
 
         if (!get_option('uicore_elements_newsletter_service_key')) {
             $this->add_control(
@@ -327,174 +361,183 @@ trait Form_Component
             ]
         );
 
-        if (! $field_mapping) {
-            return;
+        if ($field_mapping) {
+
+            $this->add_control(
+                'services_map_description',
+                [
+                    'label' => esc_html__('Field Mapping', 'uicore-elements'),
+                    'type' => Controls_Manager::RAW_HTML,
+                    'raw' => esc_html__('You need to set the "ID" of the field you want to map.', 'uicore-elements'),
+                    'content_classes' => 'elementor-control-field-description',
+                    'separator' => 'before',
+                ]
+            );
+            $this->add_control(
+                'mailchimp_fname_id',
+                [
+                    'label' => esc_html__('First Name', 'uicore-elements'),
+                    'type' => Controls_Manager::TEXT,
+                    'ai' => [
+                        'active' => false,
+                    ],
+                    'render_type' => 'none',
+                ]
+            );
+            $this->add_control(
+                'mailchimp_lname_id',
+                [
+                    'label' => esc_html__('Last Name', 'uicore-elements'),
+                    'type' => Controls_Manager::TEXT,
+                    'ai' => [
+                        'active' => false,
+                    ],
+                    'render_type' => 'none',
+                    'conditions' => [
+                        'terms' => [
+                            [
+                                'name' => 'submit_actions',
+                                'operator' => '!contains',
+                                'value' => 'moosend',
+                            ],
+                            [
+                                'name' => 'submit_actions',
+                                'operator' => '!contains',
+                                'value' => 'getresponse',
+                            ],
+                        ]
+                    ]
+                ]
+            );
+            $this->add_control(
+                'mailchimp_email_id',
+                [
+                    'label' => esc_html__('Email*', 'uicore-elements'),
+                    'type' => Controls_Manager::TEXT,
+                    'ai' => [
+                        'active' => false,
+                    ],
+                    'render_type' => 'none',
+                ]
+            );
+            $this->add_control(
+                'mailchimp_birthday_id',
+                [
+                    'label' => esc_html__('Birthday', 'uicore-elements'),
+                    'type' => Controls_Manager::TEXT,
+                    'ai' => [
+                        'active' => false,
+                    ],
+                    'render_type' => 'none',
+                    'conditions' => [
+                        'terms' => [
+                            [
+                                'name' => 'submit_actions',
+                                'operator' => '!contains',
+                                'value' => 'moosend',
+                            ],
+                            [
+                                'name' => 'submit_actions',
+                                'operator' => '!contains',
+                                'value' => 'getresponse',
+                            ],
+                            [
+                                'name' => 'submit_actions',
+                                'operator' => '!contains',
+                                'value' => 'mailerlite',
+                            ],
+                        ]
+                    ]
+                ]
+            );
+            $this->add_control(
+                'mailchimp_phone_id',
+                [
+                    'label' => esc_html__('Phone', 'uicore-elements'),
+                    'type' => Controls_Manager::TEXT,
+                    'ai' => [
+                        'active' => false,
+                    ],
+                    'render_type' => 'none',
+                    'conditions' => [
+                        'terms' => [
+                            [
+                                'name' => 'submit_actions',
+                                'operator' => '!contains',
+                                'value' => 'moosend',
+                            ],
+                            [
+                                'name' => 'submit_actions',
+                                'operator' => '!contains',
+                                'value' => 'getresponse',
+                            ],
+                        ]
+                    ]
+                ]
+            );
+
+            $this->add_control(
+                'services_custom_fields_description',
+                [
+                    'label' => esc_html__('Custom Fields', 'uicore-elements'),
+                    'type' => Controls_Manager::RAW_HTML,
+                    'raw' => esc_html__('Set the "ID" of the custom field you want to pass.', 'uicore-elements'),
+                    'content_classes' => 'elementor-control-field-description',
+                    'separator' => 'before',
+                ]
+            );
+            $this->add_control(
+                'newsletter_service_custom_fields',
+                [
+                    'label' => esc_html__('Custom Fields', 'uicore-elements'),
+                    'type' => Controls_Manager::REPEATER,
+                    'prevent_empty' => false,
+                    'fields' => [
+                        [
+                            'name' => 'field_name',
+                            'label' => esc_html__('API Field Key', 'uicore-elements'),
+                            'description' => esc_html__('How the field is called in the newsletter service provider.', 'uicore-elements'),
+                            'type' => Controls_Manager::TEXT,
+                        ],
+                        [
+                            'name' => 'field_id',
+                            'label' => esc_html__('Form Field ID', 'uicore-elements'),
+                            'description' => esc_html__('The correspondent form field ID in the widget data.', 'uicore-elements'),
+                            'type' => Controls_Manager::TEXT,
+                        ],
+                        [
+                            'name' => 'field_type',
+                            'label' => esc_html__('Sanitization Type', 'uicore-elements'),
+                            'description' => esc_html__('Defines which sanitization type this field should receive. E.g.: phone number validation.', 'uicore-elements'),
+                            'default' => 'text',
+                            'options' => [
+                                'text' => esc_html__('Text', 'uicore-elements'),
+                                'email' => esc_html__('Email', 'uicore-elements'),
+                                'phone' => esc_html__('Phone', 'uicore-elements'),
+                                'birthday' => esc_html__('Birthday', 'uicore-elements'),
+                                'date' => esc_html__('Date', 'uicore-elements'),
+                            ],
+                            'type' => Controls_Manager::SELECT,
+                        ]
+                    ],
+                ]
+            );
         }
 
-        $this->add_control(
-            'services_map_description',
-            [
-                'label' => esc_html__('Field Mapping', 'uicore-elements'),
-                'type' => Controls_Manager::RAW_HTML,
-                'raw' => esc_html__('You need to set the "ID" of the field you want to map.', 'uicore-elements'),
-                'content_classes' => 'elementor-control-field-description',
-                'separator' => 'before',
-            ]
-        );
-        $this->add_control(
-            'mailchimp_fname_id',
-            [
-                'label' => esc_html__('First Name', 'uicore-elements'),
-                'type' => Controls_Manager::TEXT,
-                'ai' => [
-                    'active' => false,
-                ],
-                'render_type' => 'none',
-            ]
-        );
-        $this->add_control(
-            'mailchimp_lname_id',
-            [
-                'label' => esc_html__('Last Name', 'uicore-elements'),
-                'type' => Controls_Manager::TEXT,
-                'ai' => [
-                    'active' => false,
-                ],
-                'render_type' => 'none',
-                'conditions' => [
-                    'terms' => [
-                        [
-                            'name' => 'submit_actions',
-                            'operator' => '!contains',
-                            'value' => 'moosend',
-                        ],
-                        [
-                            'name' => 'submit_actions',
-                            'operator' => '!contains',
-                            'value' => 'getresponse',
-                        ],
-                    ]
-                ]
-            ]
-        );
-        $this->add_control(
-            'mailchimp_email_id',
-            [
-                'label' => esc_html__('Email*', 'uicore-elements'),
-                'type' => Controls_Manager::TEXT,
-                'ai' => [
-                    'active' => false,
-                ],
-                'render_type' => 'none',
-            ]
-        );
-        $this->add_control(
-            'mailchimp_birthday_id',
-            [
-                'label' => esc_html__('Birthday', 'uicore-elements'),
-                'type' => Controls_Manager::TEXT,
-                'ai' => [
-                    'active' => false,
-                ],
-                'render_type' => 'none',
-                'conditions' => [
-                    'terms' => [
-                        [
-                            'name' => 'submit_actions',
-                            'operator' => '!contains',
-                            'value' => 'moosend',
-                        ],
-                        [
-                            'name' => 'submit_actions',
-                            'operator' => '!contains',
-                            'value' => 'getresponse',
-                        ],
-                        [
-                            'name' => 'submit_actions',
-                            'operator' => '!contains',
-                            'value' => 'mailerlite',
-                        ],
-                    ]
-                ]
-            ]
-        );
-        $this->add_control(
-            'mailchimp_phone_id',
-            [
-                'label' => esc_html__('Phone', 'uicore-elements'),
-                'type' => Controls_Manager::TEXT,
-                'ai' => [
-                    'active' => false,
-                ],
-                'render_type' => 'none',
-                'conditions' => [
-                    'terms' => [
-                        [
-                            'name' => 'submit_actions',
-                            'operator' => '!contains',
-                            'value' => 'moosend',
-                        ],
-                        [
-                            'name' => 'submit_actions',
-                            'operator' => '!contains',
-                            'value' => 'getresponse',
-                        ],
-                    ]
-                ]
-            ]
-        );
-
-        $this->add_control(
-            'services_custom_fields_description',
-            [
-                'label' => esc_html__('Custom Fields', 'uicore-elements'),
-                'type' => Controls_Manager::RAW_HTML,
-                'raw' => esc_html__('Set the "ID" of the custom field you want to pass.', 'uicore-elements'),
-                'content_classes' => 'elementor-control-field-description',
-                'separator' => 'before',
-            ]
-        );
-        $this->add_control(
-            'newsletter_service_custom_fields',
-            [
-                'label' => esc_html__('Custom Fields', 'uicore-elements'),
-                'type' => Controls_Manager::REPEATER,
-                'prevent_empty' => false,
-                'fields' => [
-                    [
-                        'name' => 'field_name',
-                        'label' => esc_html__('API Field Key', 'uicore-elements'),
-                        'description' => esc_html__('How the field is called in the newsletter service provider.', 'uicore-elements'),
-                        'type' => Controls_Manager::TEXT,
-                    ],
-                    [
-                        'name' => 'field_id',
-                        'label' => esc_html__('Form Field ID', 'uicore-elements'),
-                        'description' => esc_html__('The correspondent form field ID in the widget data.', 'uicore-elements'),
-                        'type' => Controls_Manager::TEXT,
-                    ],
-                    [
-                        'name' => 'field_type',
-                        'label' => esc_html__('Sanitization Type', 'uicore-elements'),
-                        'description' => esc_html__('Defines which sanitization type this field should receive. E.g.: phone number validation.', 'uicore-elements'),
-                        'default' => 'text',
-                        'options' => [
-                            'text' => esc_html__('Text', 'uicore-elements'),
-                            'email' => esc_html__('Email', 'uicore-elements'),
-                            'phone' => esc_html__('Phone', 'uicore-elements'),
-                            'birthday' => esc_html__('Birthday', 'uicore-elements'),
-                            'date' => esc_html__('Date', 'uicore-elements'),
-                        ],
-                        'type' => Controls_Manager::SELECT,
-                    ]
-                ],
-            ]
-        );
+        $this->end_controls_section();
     }
 
     // Settings and Content Controls
     function TRAIT_register_additional_controls($messages)
     {
+        $this->start_controls_section(
+            'section_form_options',
+            [
+                'label' => esc_html__('Additional Options', 'uicore-elements'),
+                'tab' => Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
         $this->add_control(
             'form_id',
             [
@@ -612,6 +655,7 @@ trait Form_Component
                 ],
             ]
         );
+        $this->end_controls_section();
     }
     function TRAIT_register_button_controls(string $submit_text = 'send')
     {
@@ -735,6 +779,37 @@ trait Form_Component
                 ],
             ]
         );
+    }
+
+    /**
+     * Register the submit action options;
+     *
+     * @param array $options - The options list for the elementor SELECT2 control.
+     *
+     * @return void
+     */
+    function TRAIT_register_submit_actions_controls($options)
+    {
+        $this->start_controls_section(
+            'section_actions',
+            [
+                'label' => esc_html__('Actions After Submit', 'uicore-elements'),
+            ]
+        );
+
+        $this->add_control(
+            'submit_actions',
+            [
+                'label' => esc_html__('Submit Actions', 'uicore-elements'),
+                'type' => Controls_Manager::SELECT2,
+                'label_block' => true,
+                'multiple' => true,
+                'options' => $options,
+                'default' => ['email'],
+            ]
+        );
+
+        $this->end_controls_section();
     }
 
     // Style Controls
@@ -871,6 +946,12 @@ trait Form_Component
                 ],
             ]
         );
+        $this->add_control(
+            'form_styles_component_divider',
+            [
+                'type' => Controls_Manager::DIVIDER,
+            ]
+        );
         if ($section) {
             $this->end_controls_section();
         }
@@ -902,7 +983,7 @@ trait Form_Component
             Group_Control_Typography::get_type(),
             [
                 'name' => 'field_typography',
-                'selector' => '{{WRAPPER}} .ui-e-field-group .ui-e-field, {{WRAPPER}} .ui-e-field-subgroup label',
+                'selector' => '{{WRAPPER}} .ui-e-field-group .ui-e-field, {{WRAPPER}} .ui-e-field-subgroup label, {{WRAPPER}} .ui-e-field-group .ui-e-field-select select',
                 'global' => [
                     'default' => Global_Typography::TYPOGRAPHY_TEXT,
                 ],
@@ -914,7 +995,7 @@ trait Form_Component
                 'label' => esc_html__('Text Color', 'uicore-elements'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-field-group .ui-e-field' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-field-group .ui-e-field, {{WRAPPER}} .ui-e-field-group .ui-e-field-select select' => 'color: {{VALUE}};',
                 ],
                 'global' => [
                     'default' => Global_Colors::COLOR_TEXT,
@@ -941,7 +1022,7 @@ trait Form_Component
                 'type' => Controls_Manager::COLOR,
                 'default' => '#ffffff',
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file) .ui-e-field:not(.ui-e-field-select)' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:not(.ui-e-field-select)' => 'background-color: {{VALUE}};',
                     '{{WRAPPER}} .ui-e-field-group .ui-e-field-select select' => 'background-color: {{VALUE}};',
                 ],
             ]
@@ -951,8 +1032,16 @@ trait Form_Component
             [
                 'name' => 'field_border',
                 'selector' =>
-                '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file) .ui-e-field:not(.ui-e-field-select),
-								 {{WRAPPER}} .ui-e-field-group .ui-e-field-select select',
+                '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:not(.ui-e-field-select),
+                 {{WRAPPER}} .ui-e-field-group .ui-e-field-select select',
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+            [
+                'name' => 'field_box_shadow',
+                'selector' => '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:not(.ui-e-field-select),
+                               {{WRAPPER}} .ui-e-field-group .ui-e-field-select select',
             ]
         );
 
@@ -971,7 +1060,7 @@ trait Form_Component
                 'label' => esc_html__('Text Color', 'uicore-elements'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-field-group:hover .ui-e-field' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-field-group:hover .ui-e-field, {{WRAPPER}} .ui-e-field-group:hover .ui-e-field-select select' => 'color: {{VALUE}};',
                 ],
                 'global' => [
                     'default' => Global_Colors::COLOR_TEXT,
@@ -998,7 +1087,7 @@ trait Form_Component
                 'type' => Controls_Manager::COLOR,
                 'default' => '#ffffff',
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-field-group:hover:not(.ui-e-field-type-file) .ui-e-field:not(.ui-e-field-select)' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-field-group:hover:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:not(.ui-e-field-select)' => 'background-color: {{VALUE}};',
                     '{{WRAPPER}} .ui-e-field-group:hover .ui-e-field-select select' => 'background-color: {{VALUE}};',
                 ],
             ]
@@ -1008,8 +1097,16 @@ trait Form_Component
             [
                 'name' => 'field_hover_border',
                 'selector' =>
-                '{{WRAPPER}} .ui-e-field-group:hover:not(.ui-e-field-type-file) .ui-e-field:not(.ui-e-field-select),
-								 {{WRAPPER}} .ui-e-field-group:hover .ui-e-field-select select',
+                '{{WRAPPER}} .ui-e-field-group:hover:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:not(.ui-e-field-select),
+                 {{WRAPPER}} .ui-e-field-group:hover .ui-e-field-select select',
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+            [
+                'name' => 'field_box_shadow_hover',
+                'selector' => '{{WRAPPER}} .ui-e-field-group:hover:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:not(.ui-e-field-select),
+                               {{WRAPPER}} .ui-e-field-group:hover .ui-e-field-select select',
             ]
         );
 
@@ -1028,7 +1125,7 @@ trait Form_Component
                 'label' => esc_html__('Text Color', 'uicore-elements'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-field-group .ui-e-field:focus' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-field-group .ui-e-field:focus, {{WRAPPER}} .ui-e-field-group .ui-e-field-select select:focus' => 'color: {{VALUE}};',
                 ],
                 'global' => [
                     'default' => Global_Colors::COLOR_TEXT,
@@ -1042,7 +1139,7 @@ trait Form_Component
                 'type' => Controls_Manager::COLOR,
                 'default' => '#ffffff',
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file) .ui-e-field:focus:not(.ui-e-field-select)' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:focus:not(.ui-e-field-select)' => 'background-color: {{VALUE}};',
                     '{{WRAPPER}} .ui-e-field-group .ui-e-field-select:focus select' => 'background-color: {{VALUE}};',
                 ],
             ]
@@ -1052,8 +1149,16 @@ trait Form_Component
             [
                 'name' => 'field_active_border',
                 'selector' =>
-                '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file) .ui-e-field:focus:not(.ui-e-field-select),
-								 {{WRAPPER}} .ui-e-field-group .ui-e-field-select:focus select',
+                '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:focus:not(.ui-e-field-select),
+                 {{WRAPPER}} .ui-e-field-group .ui-e-field-select:focus select',
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+            [
+                'name' => 'field_box_shadow_active',
+                'selector' => '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:focus:not(.ui-e-field-select),
+                               {{WRAPPER}} .ui-e-field-group .ui-e-field-select:focus select',
             ]
         );
 
@@ -1061,14 +1166,14 @@ trait Form_Component
 
         $this->end_controls_tabs();
 
-        $this->add_control(
+        $this->add_responsive_control(
             'field_border_radius',
             [
                 'label' => esc_html__('Border Radius', 'uicore-elements'),
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', '%', 'em', 'rem', 'custom'],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file) .ui-e-field:not(.ui-e-field-select)' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:not(.ui-e-field-select)' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                     '{{WRAPPER}} .ui-e-field-group .ui-e-field-select select' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
                 'separator' => 'before'
@@ -1081,7 +1186,7 @@ trait Form_Component
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', '%', 'em', 'rem', 'custom'],
                 'selectors' => [
-                    '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file) .ui-e-field:not(.ui-e-field-select)' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .ui-e-field-group:not(.ui-e-field-type-file, .ui-e-field-type-acceptance) .ui-e-field:not(.ui-e-field-select)' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                     '{{WRAPPER}} .ui-e-field-group .ui-e-field-select select' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
@@ -1253,7 +1358,7 @@ trait Form_Component
 
         $this->end_controls_tabs();
 
-        $this->add_control(
+        $this->add_responsive_control(
             'button_border_radius',
             [
                 'label' => esc_html__('Border Radius', 'uicore-elements'),
@@ -1266,7 +1371,7 @@ trait Form_Component
             ]
         );
 
-        $this->add_control(
+        $this->add_responsive_control(
             'button_text_padding',
             [
                 'label' => esc_html__('Text Padding', 'uicore-elements'),

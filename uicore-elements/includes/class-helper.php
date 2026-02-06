@@ -280,7 +280,7 @@ class Helper
      * @param bool   $spacing  Whether to add a trailing space after the tag. Default is false.
      * @return string  The sanitized HTML tag.
      *
-     * @since 1.3.6
+     * @since 1.3.13
      */
     public static function esc_tag($raw_tag, $default = 'h3', $spacing = false)
     {

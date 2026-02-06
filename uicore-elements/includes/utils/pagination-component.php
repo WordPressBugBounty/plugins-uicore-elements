@@ -19,13 +19,6 @@ defined('ABSPATH') || exit();
 trait Pagination_Trait
 {
 
-    function pagination_options()
-    {
-        return [
-            'numbers' => esc_html__('Numbers', 'uicore-elements'),
-            'load_more' => esc_html__('Load More', 'uicore-elements'),
-        ];
-    }
     function TRAIT_register_pagination_controls($section = true)
     {
         if ($section) {
@@ -52,11 +45,30 @@ trait Pagination_Trait
                 'label' => esc_html__('Pagination Type', 'uicore-elements'),
                 'type' => Controls_Manager::SELECT,
                 'default' => 'numbers',
-                'options' => $this->pagination_options(),
+                'options' => [
+                    'numbers' => esc_html__('Numbers', 'uicore-elements'),
+                    'load_more' => esc_html__('Load More', 'uicore-elements'),
+                ],
                 'frontend_available' => true,
                 'condition' => [
                     'pagination' => 'yes',
                 ],
+            ]
+        );
+        $this->add_control(
+            'load_more_qty',
+            [
+                'label' => esc_html__('Posts per Load', 'uicore-elements'),
+                'type' => Controls_Manager::SLIDER,
+                'range' => [
+                    'px' => [
+                        'min' => -1,
+                        'max' => 100,
+                    ],
+                ],
+                'condition' => array(
+                    'pagination_type' => 'load_more',
+                ),
             ]
         );
 

@@ -202,7 +202,6 @@ class AdvancedPostCarousel extends UiCoreWidget
 
     protected function render()
     {
-
         // Get query args, settings and post type slug
         global  $wp_query;
         $default_query = $wp_query;

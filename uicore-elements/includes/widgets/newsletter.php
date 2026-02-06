@@ -469,26 +469,7 @@ class Newsletter extends UiCoreWidget
 
         $this->end_controls_section();
 
-        $this->start_controls_section(
-            'section_actions',
-            [
-                'label' => esc_html__('Actions After Submit', 'uicore-elements'),
-            ]
-        );
-
-        $this->add_control(
-            'submit_actions',
-            [
-                'label' => esc_html__('Submit Actions', 'uicore-elements'),
-                'type' => Controls_Manager::SELECT2,
-                'label_block' => true,
-                'multiple' => true,
-                'options' => Form_Service::get_form_submit_options(),
-                'default' => ['email'],
-            ]
-        );
-
-        $this->end_controls_section();
+        $this->TRAIT_register_submit_actions_controls(Form_Service::get_form_submit_options());
 
         // Submit sections
         $this->start_controls_section(
@@ -519,56 +500,10 @@ class Newsletter extends UiCoreWidget
 
         $this->end_controls_section();
 
-        $this->start_controls_section(
-            'section_redirect',
-            [
-                'label' => esc_html__('Redirect', 'uicore-elements'),
-                'condition' => [
-                    'submit_actions' => 'redirect',
-                ],
-            ]
-        );
-
         $this->TRAIT_register_submit_redirect_controls();
-
-        $this->end_controls_section();
-
-        // Get and build the newsletter services section conditional display
-        $terms = [];
-        foreach (Newsletter_Services::get_services_list('keys') as $service) {
-            $terms[] = [
-                'name' => 'submit_actions',
-                'operator' => 'contains',
-                'value' => $service,
-            ];
-        }
-
-        $this->start_controls_section(
-            'newsletter_services_section',
-            [
-                'label' => esc_html__('Newsletter Service', 'uicore-elements'),
-                'conditions' => [
-                    'relation' => 'or',
-                    'terms' => $terms,
-                ],
-            ]
-        );
-
-        $this->TRAIT_register_submit_newsletter_services_controls();
-
-        $this->end_controls_section();
-
-        $this->start_controls_section(
-            'section_form_options',
-            [
-                'label' => esc_html__('Additional Options', 'uicore-elements'),
-                'tab' => Controls_Manager::TAB_CONTENT,
-            ]
-        );
-
+        $this->TRAIT_register_submit_popup_controls($this);
+        $this->TRAIT_register_submit_newsletter_services_controls(Newsletter_Services::get_services_list('keys'));
         $this->TRAIT_register_additional_controls(Form_Service::get_default_messages());
-
-        $this->end_controls_section();
 
         $this->TRAIT_register_all_form_style_controls();
     }

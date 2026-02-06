@@ -124,7 +124,7 @@ class GalleryCarousel extends UiCoreWidget
                 'default' => 'none'
             ]
         );
-        $this->update_control(
+        $this->update_responsive_control(
             'item_padding',
             [
                 'default' => [

@@ -34,7 +34,6 @@ class PostMeta extends UiCoreWidget
     {
         return ['uicore', 'uicore-theme-builder'];
     }
-
     public function get_styles()
     {
         return ['post-meta'];

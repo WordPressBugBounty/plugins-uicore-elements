@@ -78,8 +78,8 @@ class Elementor
 
     public function init_controls()
     {
-        require UICORE_ELEMENTS_INCLUDES . '/controls/class-post-filter-control.php';
-        require UICORE_ELEMENTS_INCLUDES . '/controls/class-product-filter-control.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-post-filter-control.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/controls/class-product-filter-control.php';
     }
 
     public function init_utils()

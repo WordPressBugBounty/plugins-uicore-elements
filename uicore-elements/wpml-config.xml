@@ -209,7 +209,9 @@
         </fields-in-item>
         <!-- basic fields -->
         <fields>
-            <field type="Readmore: text" editor_type="LINE">text</field>
+            <field type="Add to Cart: text" editor_type="LINE">text</field>
+            <field type="Select Options: text" editor_type="LINE">variations_text</field>
+            <field type="Not Available: text" editor_type="LINE">unavailable_text</field>
         </fields>
     </widget>
     <widget name="uicore-advanced-post-carousel">

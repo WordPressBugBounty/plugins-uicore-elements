@@ -161,4 +161,13 @@ abstract class UiCoreWidget extends Widget_Base
         $fallback_unit = $use_unit ? $fallback['unit'] : '';
         return $fallback_size . $fallback_unit;
     }
+
+    /**
+     * Determine if the widget content is dynamic. Dynamic widgets always have
+     * their render content refreshed on each page load.
+     */
+    protected function is_dynamic_content(): bool
+    {
+        return true;
+    }
 }

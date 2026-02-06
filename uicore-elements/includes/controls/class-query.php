@@ -42,8 +42,8 @@ class Query extends Control_Select2
         // Build query args
         $query_args = [
             'post_type' => $post_type,
-            'orderby' => $settings['orderby'],
-            'order' => $settings['order'],
+            'orderby' => $settings['item_order_by'] ?? 'date',
+            'order' => $settings['item_order'] ?? 'desc',
             'post_status' => 'publish', // Hide drafts/private posts for admins
             'paged' => $paged,
             'ignore_sticky_posts' => true
@@ -124,17 +124,20 @@ class Query extends Control_Select2
             'tax_query' => [],
         ];
 
+        $term = self::get_query_term_compatibility('term');
+        $tax = self::get_query_term_compatibility('tax');
+
         if (
             isset($settings['post_filtering']) &&
             $settings['post_filtering'] &&
-            isset($_GET['tax']) && //phpcs:ignore WordPress.Security.NonceVerification.Recommended
-            isset($_GET['term']) //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            isset($tax) &&
+            isset($term)
         ) {
 
             $args['tax_query'][] = [
-                'taxonomy' => sanitize_text_field(wp_unslash($_GET['tax'])), //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                'taxonomy' => sanitize_text_field(wp_unslash($tax)), //phpcs:ignore WordPress.Security.NonceVerification.Recommended
                 'field'    => 'term_id',
-                'terms'    => intval($_GET['term']), //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                'terms'    => intval($term), //phpcs:ignore WordPress.Security.NonceVerification.Recommended
             ];
         } else {
             $taxonomies = get_object_taxonomies($post_type, 'objects');
@@ -164,6 +167,24 @@ class Query extends Control_Select2
         };
 
         return $args;
+    }
+
+    /**
+     * TODO
+     * Temporary method to get the query terms from URL params, checking for both 'ui_{arg}' and '{arg}' params.
+     *
+     * At least 1 year after 1.3.13, we can remove this support and switch to prefixed values,
+     * with a decreased impact on clients cached widgets. For better context, check ELM-517 task
+     */
+    public static function get_query_term_compatibility(string $arg)
+    {
+        if (isset($_GET['ui_' . $arg])) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            return $_GET['ui_' . $arg]; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        }
+        if (isset($_GET[$arg])) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            return $_GET[$arg]; //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        }
+        return null;
     }
 
     /**

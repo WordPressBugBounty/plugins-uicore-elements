@@ -89,6 +89,11 @@ class REST_API
         $settings['__current_page'] = $request->get_param('page');
         $settings['__current_post_id'] = $request->get_param('current_post_id');
 
+        // Use load more qty (new option) if available
+        if (isset($settings['load_more_qty']) && isset($settings['load_more_qty']['size']) && !empty($settings['load_more_qty']['size'])) {
+            $settings['item_limit'] = $settings['load_more_qty'];
+        }
+
         // Build current query if requested
         if ($settings[$slug . '_post_type'] == 'current') {
             $current_query = $request->get_param('current_query');

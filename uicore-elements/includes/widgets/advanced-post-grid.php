@@ -67,6 +67,28 @@ class AdvancedPostGrid extends UiCoreWidget
         }
         return $styles;
     }
+
+    /**
+     * Adds `woocommerce` classname so rating  can inherit woo styles and
+     * also follow theme option styles instead of plain text.
+     */
+    protected function add_render_attributes()
+    {
+        parent::add_render_attributes();
+
+        if (class_exists('WooCommerce') && \is_woocommerce()) {
+            return;
+        }
+
+        $this->add_render_attribute(
+            '_wrapper',
+            'class',
+            [
+                'woocommerce',
+                $this->get_html_wrapper_class(),
+            ]
+        );
+    }
     public function get_scripts()
     {
         return [
