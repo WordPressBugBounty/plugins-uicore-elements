@@ -1468,7 +1468,7 @@ class Accordion extends UiCoreWidget
                                 <?php
                             }
 
-                            echo $this->parse_text_editor($item['tab_content']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo wp_kses_post($this->parse_text_editor($item['tab_content']));
 
                             if ($this->is_option('schema_activity', 'yes')) {
                                 ?>

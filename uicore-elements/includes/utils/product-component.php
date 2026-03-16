@@ -58,7 +58,9 @@ trait Product_Trait
 
             case 'related':
                 $current_product_id = $settings['__current_post_id'] ?? [];
-                $query_args['posts__in'] = Helper::get_product_related($settings['item_limit']['size'], $current_product_id);
+                $total_products = Query::get_posts_per_page('product', $settings);
+                $query_args['limit'] = $total_products;
+                $query_args['posts__in'] = Helper::get_product_related($total_products, $current_product_id);
                 break;
 
             default:

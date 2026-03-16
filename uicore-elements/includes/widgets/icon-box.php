@@ -2293,7 +2293,7 @@ class IconBox extends UiCoreWidget
                 <?php echo $inline ? '' : '<div class="ui-e-title-wrp">' . wp_kses_post($title . $subtitle) . '</div>'; ?>
 
                 <div class="ui-e-description">
-                    <?php echo wp_kses_post($settings['description_text']); ?>
+                    <?php echo wp_kses_post($this->parse_text_editor($settings['description_text'])); ?>
                 </div>
 
                 <?php if ($readmore) : ?>

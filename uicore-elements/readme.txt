@@ -3,8 +3,8 @@ Contributors: uicore
 Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
-Tested up to: 6.9
-Stable tag: 1.3.13
+Tested up to: 6.9.4
+Stable tag: 1.3.14
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -130,6 +130,15 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+
+= 1.3.14 =
+* UPD - Redesigned widget carousels. Navigation is now disabled when slides are fewer than the slides-per-view setting, creating a grid layout
+* UPD - Added editor warning when using loop and centered slides with an even number of slides, as this particular combination requires more slides to work correctly
+* FIX - Resolved a security vulnerability in the Accordion widget
+* FIX - Corrected APG widget hover color appearing in normal states
+* FIX - Fixed errors from Highlighted Text widget when SVG stroke was missing
+* FIX - Entrance animation on Icon Box readmore button no longer removes hover transitions
+* FIX - Fixed Advanced Product Grid query issue where Item Limit was being ignored
 
 = 1.3.13 =
 * NEW - Added a new Posts per Load option to Advanced Post widgets, giving control over how many posts should be pulled through the ajax request

@@ -981,14 +981,6 @@ trait Gallery_Trait
 
         if ($is_carousel) {
             $total_slides = count($settings['gallery_items']);
-
-            // Most recent swiper versions requires, if loop, at least one extra slide compared to visible slides
-            if ($this->TRAIT_should_duplicate_slides($total_slides)) {
-                $diff = $this->TRAIT_get_duplication_diff($total_slides);
-                for ($i = 0; $i <= $diff; $i++) {
-                    $this->render_item($index, $item, $settings, $has_animation, $animations);
-                }
-            }
         }
     }
 

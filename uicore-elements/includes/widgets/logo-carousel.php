@@ -164,13 +164,15 @@ class LogoCarousel extends UiCoreWidget
     }
     public function render()
     {
+        $total_slides = count($this->get_settings_for_display('logo_list'));
+        $this->TRAIT_render_center_loop_warning($total_slides);
 ?>
         <div class="ui-e-carousel swiper">
             <div class='swiper-wrapper'>
                 <?php $this->TRAIT_render_logo_item(); ?>
             </div>
         </div>
-        <?php $this->TRAIT_render_carousel_navigations(); ?>
+        <?php $this->TRAIT_render_carousel_navigations($total_slides); ?>
 <?php
     }
 }

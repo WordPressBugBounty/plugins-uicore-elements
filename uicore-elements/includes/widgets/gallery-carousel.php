@@ -311,13 +311,15 @@ class GalleryCarousel extends UiCoreWidget
     public function render()
     {
         $settings = $this->get_settings_for_display();
+        $total_slides = count($settings['gallery_items']);
+        $this->TRAIT_render_center_loop_warning($total_slides);
 ?>
         <div class="ui-e-carousel swiper">
             <div class='swiper-wrapper'>
                 <?php $this->TRAIT_render_gallery($settings, true); ?>
             </div>
         </div>
-        <?php $this->TRAIT_render_carousel_navigations(); ?>
+        <?php $this->TRAIT_render_carousel_navigations($total_slides); ?>
 <?php
     }
 }

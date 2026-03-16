@@ -219,27 +219,14 @@ class CustomCarousel extends UiCoreNestedWidget
         $carousel_items = '';
 
         $total_slides = count($items);
-        $should_duplicate = $this->TRAIT_should_duplicate_slides($total_slides);
-        $duplicated_slides = [];
+        $this->TRAIT_render_center_loop_warning($total_slides);
 
         foreach ($items as $index => $item) {
             ob_start();
             $this->render_item($index);
             $current_slide = ob_get_clean();
 
-            if ($should_duplicate) {
-                $duplicated_slides[$index] = $current_slide;
-            }
-
             $carousel_items .= $current_slide;
-        }
-
-        // Most recent swiper versions requires, if loop, at least one extra slide compared to visible slides
-        if ($should_duplicate) {
-            $diff = $this->TRAIT_get_duplication_diff($total_slides);
-            for ($i = 0; $i <= $diff; $i++) {
-                $carousel_items .= $duplicated_slides[$i];
-            }
         }
 
 ?>
@@ -252,7 +239,7 @@ class CustomCarousel extends UiCoreNestedWidget
 
         </div>
 
-        <?php $this->TRAIT_render_carousel_navigations(); ?>
+        <?php $this->TRAIT_render_carousel_navigations($total_slides); ?>
     <?php
     }
 
@@ -325,39 +312,65 @@ class CustomCarousel extends UiCoreNestedWidget
 
     ?>
         <#
-            var carouselItems=settings.carousel_items,
-            hideNavigation=settings.animation_style.includes('marquee'),
-            navigationDots=settings.navigation.includes('dots') && !hideNavigation,
-            navigationArrows=settings.navigation.includes('arrows') && !hideNavigation,
-            navigationFraction=settings.navigation.includes('fraction') && !hideNavigation;
+            var carouselItems=settings.carousel_items || [],
+            hideNavigation=settings.animation_style && settings.animation_style.includes('marquee'),
+            navigationDots=settings.navigation && settings.navigation.includes('dots') && !hideNavigation,
+            navigationArrows=settings.navigation && settings.navigation.includes('arrows') && !hideNavigation,
+            navigationFraction=settings.navigation && settings.navigation.includes('fraction') && !hideNavigation,
+            totalSlides=carouselItems.length,
+            perView=parseInt(settings.slides_per_view, 10) || 0,
+            needsCenterLoopWarning=settings.center_slides &&
+            settings.loop &&
+            perView % 2===0 &&
+            totalSlides < (perView + 2),
+            missingSlides=(perView + 2) - totalSlides;
 
-            var prev=elementor.helpers.renderIcon( view, settings.previous_arrow, { 'aria-hidden' : true }, 'i' , 'object' ),
-            next=elementor.helpers.renderIcon( view, settings.next_arrow, { 'aria-hidden' : true }, 'i' , 'object' );
+            var prev=elementor.helpers.renderIcon(view, settings.previous_arrow, { 'aria-hidden' : true }, 'i' , 'object' ),
+            next=elementor.helpers.renderIcon(view, settings.next_arrow, { 'aria-hidden' : true }, 'i' , 'object' );
             #>
 
-            <div class="ui-e-carousel ui-e-nested swiper {{ elementorFrontend.config.swiperClass }}">
-                <div class='swiper-wrapper'> </div>
-            </div>
+            <# if ( needsCenterLoopWarning ) { #>
+                <div style="background: red; mix-blend-mode: difference; padding: 15px; border-radius: 5px;">
+                    <span style="color: white; font-size: 1.2em; font-weight: bold;">
+                        <?php echo esc_html__('Warning', 'uicore-elements'); ?>
+                    </span>
 
-            <# if ( navigationDots ) { #>
-                <div class="swiper-pagination ui-e-dots ui-e-carousel-dots"></div>
+                    <p style="color: white; margin-bottom: 0px;">
+                        <?php echo esc_html__('You enabled centered slides, loop, and have an even number of slides per view', 'uicore-elements'); ?>
+                        ({{{ perView }}} <?php echo esc_html__('slides per view', 'uicore-elements'); ?>).
+                        <?php echo esc_html__('For this configuration to work properly, you need to have', 'uicore-elements'); ?>
+                        {{{ missingSlides }}}
+                        <?php echo esc_html__('more slide(s) or disable one of the mentioned features.', 'uicore-elements'); ?>
+                    </p>
+                </div>
                 <# } #>
-                    <# if ( navigationArrows ) { #>
-                        <div class="ui-e-button ui-e-carousel-button ui-e-previous" role="button" aria-label="Previous slide">
-                            {{{ prev.value }}}
-                        </div>
-                        <div class="ui-e-button ui-e-carousel-button ui-e-next" role="button" aria-label="Next slide">
-                            {{{ next.value }}}
-                        </div>
+
+                    <div class="ui-e-carousel ui-e-nested swiper {{ elementorFrontend.config.swiperClass }}">
+                        <div class='swiper-wrapper'> </div>
+                    </div>
+
+                    <# if ( navigationDots ) { #>
+                        <div class="swiper-pagination ui-e-dots ui-e-carousel-dots"></div>
                         <# } #>
-                            <# if ( navigationFraction ) { #>
-                                <div class="ui-e-fraction ui-e-carousel-fraction">
-                                    <span class="ui-e-current"></span>
-                                    /
-                                    <span class="ui-e-total"></span>
+
+                            <# if ( navigationArrows ) { #>
+                                <div class="ui-e-button ui-e-carousel-button ui-e-previous" role="button" aria-label="Previous slide">
+                                    {{{ prev.value }}}
+                                </div>
+                                <div class="ui-e-button ui-e-carousel-button ui-e-next" role="button" aria-label="Next slide">
+                                    {{{ next.value }}}
                                 </div>
                                 <# } #>
-                            <?php
-                        }
-                    }
-                    \Elementor\Plugin::instance()->widgets_manager->register(new CustomCarousel());
+
+                                    <# if ( navigationFraction ) { #>
+                                        <div class="ui-e-fraction ui-e-carousel-fraction">
+                                            <span class="ui-e-current"></span>
+                                            /
+                                            <span class="ui-e-total"></span>
+                                        </div>
+                                        <# } #>
+                                    <?php
+                                }
+                            }
+
+                            \Elementor\Plugin::instance()->widgets_manager->register(new CustomCarousel());

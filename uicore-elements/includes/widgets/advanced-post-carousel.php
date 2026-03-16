@@ -183,7 +183,7 @@ class AdvancedPostCarousel extends UiCoreWidget
         ]);
         $this->update_control('item_limit', [
             'default' => [
-                'size' => 5,
+                'size' => 4,
             ],
         ]);
 
@@ -211,11 +211,7 @@ class AdvancedPostCarousel extends UiCoreWidget
         $items = $settings['item_limit']['size'];
         $loops = 0;
 
-        // Check if should duplicate slides and update settings
-        if ($this->TRAIT_should_duplicate_slides($items)) {
-            $diff = abs($this->TRAIT_get_duplication_diff($items) + 1); // +1 to fix zero based index
-            $settings['item_limit']['size'] = $items + $diff;
-        }
+        $this->TRAIT_render_center_loop_warning($items);
 
         // Build query
         $this->TRAIT_query_posts($settings, $wp_query->query);
@@ -247,7 +243,7 @@ class AdvancedPostCarousel extends UiCoreWidget
                     ?>
                 </div>
             </div>
-            <?php $this->TRAIT_render_carousel_navigations(); ?>
+            <?php $this->TRAIT_render_carousel_navigations($items); ?>
 <?php
         }
 

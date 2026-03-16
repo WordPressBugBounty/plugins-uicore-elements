@@ -450,7 +450,7 @@ trait Post_Trait
             [
                 'name' => 'content_bg_hover',
                 'types' => ['classic', 'gradient'],
-                'selector' => '{{WRAPPER}} .ui-e-item article',
+                'selector' => '{{WRAPPER}} .ui-e-item:hover article',
             ]
         );
         $this->add_group_control(

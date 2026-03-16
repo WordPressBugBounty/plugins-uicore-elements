@@ -512,7 +512,7 @@ trait Meta_Trait
      *
      * @param WC_Product $product The WooCommerce product object.
      * @return string|false The HTML string of product attributes or false if none are visible.
-     * @since 1.3.13
+     * @since 1.3.14
      */
     function print_product_attributes($product)
     {
@@ -587,7 +587,7 @@ trait Meta_Trait
      * Get the attribute swatch type from Uicore Framework plugin.
      *
      * @return string The swatch type.
-     * @since 1.3.13
+     * @since 1.3.14
      */
     function get_swatch_type($attribute_slug)
     {

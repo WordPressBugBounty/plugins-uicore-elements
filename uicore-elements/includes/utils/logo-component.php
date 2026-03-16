@@ -444,19 +444,6 @@ trait Logo_Trait
         foreach ($settings['logo_list'] as $index => $item) {
             $this->render_logo($index, $item, $settings, $has_animation, $animations);
         }
-
-        if ($is_carousel) {
-
-            $total_slides = count($settings['logo_list']);
-
-            // Most recent swiper versions requires, if loop, at least one extra slide compared to visible slides
-            if ($this->TRAIT_should_duplicate_slides($total_slides)) {
-                $diff = $this->TRAIT_get_duplication_diff($total_slides);
-                for ($i = 0; $i <= $diff; $i++) {
-                    $this->render_logo($index, $item, $settings, $has_animation, $animations);
-                }
-            }
-        }
     }
 
     protected function render_logo($index, $item, $settings, $has_animation, $animations)

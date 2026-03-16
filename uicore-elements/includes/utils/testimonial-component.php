@@ -1294,7 +1294,7 @@ trait Testimonial_Trait
     ?>
         <?php if ($item['review_text']) : ?>
             <div class="ui-e-testimonial-text <?php echo esc_attr($settings['text_animations']); ?>">
-                <?php echo wp_kses_post($item['review_text']); ?>
+                <?php echo wp_kses_post($this->parse_text_editor($item['review_text'])); ?>
             </div>
         <?php endif; ?>
         <?php

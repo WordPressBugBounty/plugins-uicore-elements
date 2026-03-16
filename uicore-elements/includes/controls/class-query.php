@@ -50,9 +50,7 @@ class Query extends Control_Select2
         ];
 
         // Get posts per page
-        $query_args['posts_per_page'] = isset($settings['item_limit'])
-            ? $settings['item_limit']['size']
-            : Helper::get_framework_visible_posts($post_type);
+        $query_args['posts_per_page'] = self::get_posts_per_page($post_type, $settings);
 
         // Update posts quantity to woo requirements
         if ($is_product) {
@@ -84,6 +82,22 @@ class Query extends Control_Select2
         // \error_log("-----------------");
 
         return $query_args;
+    }
+
+    /**
+     * Get the amount of posts per page from a given widget settings, with fallback to framework and wordpress.
+     * @param string $post_type The post type slug.
+     * @param array $settings The control settings array.
+     *
+     * @return int The posts per page value.
+     */
+    public static function get_posts_per_page($post_type, $settings)
+    {
+        if (isset($settings['item_limit'])) {
+            return $settings['item_limit']['size'];
+        }
+
+        return Helper::get_framework_visible_posts($post_type);
     }
 
     /**
@@ -173,7 +187,7 @@ class Query extends Control_Select2
      * TODO
      * Temporary method to get the query terms from URL params, checking for both 'ui_{arg}' and '{arg}' params.
      *
-     * At least 1 year after 1.3.13, we can remove this support and switch to prefixed values,
+     * At least 1 year after 1.3.14, we can remove this support and switch to prefixed values,
      * with a decreased impact on clients cached widgets. For better context, check ELM-517 task
      */
     public static function get_query_term_compatibility(string $arg)
