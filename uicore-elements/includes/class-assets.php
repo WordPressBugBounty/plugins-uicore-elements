@@ -169,7 +169,8 @@ class Assets
                 'src'       => UICORE_ELEMENTS_ASSETS . '/js/components/global-testimonial.js',
                 'version'   => UICORE_ELEMENTS_VERSION,
                 'in_footer' => true
-            ]
+            ],
+
         ];
 
         return $scripts;
@@ -214,7 +215,39 @@ class Assets
             ],
             'ui-e-counter-motion' => [
                 'src' => UICORE_ELEMENTS_ASSETS . '/css/components/counter-motion.css'
-            ]
+            ],
+
+            // Advanced Menu
+            'ui-e-advanced-menu-editor' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/editor.css'
+            ],
+            'ui-e-advanced-menu-fullscreen-layout' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/fullscreen-layout.css'
+            ],
+            'ui-e-advanced-menu-website-blur' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/website-blur.css'
+            ],
+            'ui-e-advanced-menu-canvas-dropdown-expand' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/canvas-expand.css'
+            ],
+            'ui-e-advanced-menu-canvas-dropdown-slide' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/canvas-slide.css'
+            ],
+            'ui-e-advanced-menu-hover-underline' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/hover-underline.css'
+            ],
+            'ui-e-advanced-menu-hover-button' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/hover-button.css'
+            ],
+            'ui-e-advanced-menu-hover-magnet' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/hover-magnet.css'
+            ],
+            'ui-e-advanced-menu-hover-focus' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/hover-focus.css'
+            ],
+            'ui-e-advanced-menu-hover-text_flip' => [
+                'src' => UICORE_ELEMENTS_ASSETS . '/css/components/advanced-menu/hover-text-flip.css'
+            ],
         ];
 
         return $styles;

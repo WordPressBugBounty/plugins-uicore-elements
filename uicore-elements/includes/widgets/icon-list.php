@@ -68,6 +68,21 @@ class IconList extends UiCoreWidget
             ]
         );
 
+        $this->add_control(
+            'padding_by_dimensions',
+            [
+                'type' => Controls_Manager::NOTICE,
+                'notice_type' => 'warning',
+                'dismissible' => true,
+                'heading' => esc_html__("Number Count styles update", 'uicore-elements'),
+                'content' => esc_html__('The Number Count padding control was replaced by width/height controls. Please, check your widgets numbers styles.', 'uicore-elements'),
+                'condition' => [
+                    'show_number_icon' => 'yes',
+                ]
+            ]
+        );
+
+
         $repeater = new Repeater();
 
         $repeater->add_control(
@@ -634,14 +649,48 @@ class IconList extends UiCoreWidget
             ]
         );
 
-        $this->add_responsive_control(
-            'icon_number_padding',
+        $this->add_control(
+            'icon_number_width',
             [
-                'label'      => esc_html__('Padding', 'uicore-elements'),
-                'type'       => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', 'em', '%'],
-                'selectors'  => [
-                    '{{WRAPPER}} .ui-e-number' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                'label' => esc_html__('Width', 'uicore-elements'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em', 'rem', 'custom'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 200,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 25,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .ui-e-number' => 'min-width: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'icon_number_height',
+            [
+                'label' => esc_html__('Height', 'uicore-elements'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em', 'rem', 'custom'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 200,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 25,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .ui-e-number' => 'min-height: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );

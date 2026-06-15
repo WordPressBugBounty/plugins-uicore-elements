@@ -169,7 +169,7 @@ class AdvancedPostCarousel extends UiCoreWidget
         $this->end_controls_section();
 
         // Update post component controls
-        $this->update_control('image_size', [
+        $this->update_responsive_control('image_size', [
             'condition' => [],
         ]);
         $this->update_control('content_padding', [

@@ -3,14 +3,14 @@
 Plugin Name: UiCore Elements
 Plugin URI: https://elements.uicore.co
 Description: Free widgets and templates for Elementor
-Version: 1.3.14
+Version: 1.3.15
 Author: UiCore
 Author URI: https://uicore.co
 License: GPL3
 Text Domain: uicore-elements
 Domain Path: /languages
  * Elementor requires at least: 3.19.2
- * Elementor tested up to: 3.35.7
+ * Elementor tested up to: 4.1.3
 */
 
 namespace UiCoreElements;
@@ -31,7 +31,7 @@ final class Base
      *
      * @var string
      */
-    public $version = '1.3.14';
+    public $version = '1.3.15';
 
     /**
      * Holds various class instances

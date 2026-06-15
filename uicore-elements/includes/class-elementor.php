@@ -68,6 +68,7 @@ class Elementor
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/post-meta.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/page-description.php';
         require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/post-featured-image.php';
+        require_once UICORE_ELEMENTS_INCLUDES . '/widgets/theme-builder/advanced-menu.php';
 
         // Dependent on Uicore Framework
         if (defined('UICORE_ASSETS')) {

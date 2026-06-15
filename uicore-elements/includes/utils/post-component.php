@@ -537,7 +537,7 @@ trait Post_Trait
                 ]
             );
         }
-        $this->add_control(
+        $this->add_responsive_control(
             'image_size',
             [
                 'label' => __('Image Height (%)', 'uicore-elements'),

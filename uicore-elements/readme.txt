@@ -3,8 +3,8 @@ Contributors: uicore
 Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
-Tested up to: 6.9.4
-Stable tag: 1.3.14
+Tested up to: 7.0
+Stable tag: 1.3.15
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -130,6 +130,11 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+
+= 1.3.15 =
+* NEW – Added the new Advanced Menu widget (beta)
+* UPD – Updated the Advanced Posts widget image height control to support responsive values
+* UPD – Replaced the Icon List count number padding control with dedicated Width and Height controls
 
 = 1.3.14 =
 * UPD - Redesigned widget carousels. Navigation is now disabled when slides are fewer than the slides-per-view setting, creating a grid layout

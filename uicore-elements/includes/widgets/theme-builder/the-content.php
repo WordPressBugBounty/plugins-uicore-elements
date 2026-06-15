@@ -131,6 +131,11 @@ class TheContent extends Widget_Base
         $elementor_instance = \Elementor\Plugin::instance();
         $post = get_post();
 
+        // Add Framework classname if we need to enforce blog typography over general typography FRM-2028
+        if (defined('UICORE_ASSETS') && \Uicore\Helper::get_option('blogs_styles_tb') === 'true') {
+            $this->add_render_attribute('_wrapper', 'class', 'blog-fonts');
+        }
+
         if (post_password_required($post->ID)) {
             //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo get_the_password_form($post->ID); // WPCS: XSS ok.
