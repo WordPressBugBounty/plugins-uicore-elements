@@ -72,7 +72,7 @@ class CustomTable extends UiCoreNestedWidget
 
     protected function get_default_repeater_title_setting_key()
     {
-        return 'table_cels';
+        return 'item';
     }
 
     protected function get_default_children_title()
@@ -83,6 +83,11 @@ class CustomTable extends UiCoreNestedWidget
     protected function get_default_children_placeholder_selector()
     {
         return '.ui-e-table';
+    }
+
+    protected function get_default_children_container_placeholder_selector()
+    {
+        return '.ui-e-table-editor-placeholder';
     }
 
     protected function register_controls()
@@ -100,6 +105,16 @@ class CustomTable extends UiCoreNestedWidget
             ]
         );
 
+        $this->add_control(
+            'rerender_table',
+            [
+                'label' => esc_html__('Preview', 'uicore-elements'),
+                'type' => Controls_Manager::BUTTON,
+                'text' => esc_html__('Refresh Table', 'uicore-elements'),
+                'separator' => 'before',
+                'event' => 'ui-e-custom-table-rerender',
+            ]
+        );
 
         //Columns
         $columns = new Repeater();
@@ -123,7 +138,7 @@ class CustomTable extends UiCoreNestedWidget
                         'max' => 12,
                     ],
                 ],
-                'render_type'  => 'template',
+                'render_type'  => 'ui',
                 'selectors' => [
                     '{{WRAPPER}}' => '--ui-e-last:{{SIZE}}{{UNIT}};',
                 ],
@@ -136,7 +151,7 @@ class CustomTable extends UiCoreNestedWidget
                 'type'        => Controls_Manager::REPEATER,
                 'fields'      => $columns->get_controls(),
                 'title_field' => 'Column',
-                'render_type'  => 'template',
+                'render_type'  => 'ui',
                 'default'     => [
                     ['col_size' => ['size' => 1, 'unit' => 'fr']],
                     ['col_size' => ['size' => 1, 'unit' => 'fr']],
@@ -154,6 +169,7 @@ class CustomTable extends UiCoreNestedWidget
             [
                 'label'       => __('Title', 'uicore-elements'),
                 'type'        => Controls_Manager::TEXT,
+                'render_type' => 'ui'
             ]
         );
 
@@ -395,8 +411,9 @@ class CustomTable extends UiCoreNestedWidget
     {
     ?>
         <#
-            const cols=settings.columns;
-            const cols_qty='--ui-e-cols-qty:' + settings.columns.length;
+            const cols=settings.columns || [];
+            const cells=settings.cells || [];
+            const cols_qty='--ui-e-cols-qty:' + cols.length;
 
             if ( cols ) {
             let gridCss='' ;
@@ -433,13 +450,15 @@ class CustomTable extends UiCoreNestedWidget
             gridCss +='--ui-e-table-cols' + breakpoint + ':' + values.join(' ') + ' ;';
             });
 
+            view.addRenderAttribute('table', 'data-cell-count' , cells.length);
             view.addRenderAttribute('table', 'style' , [gridCss, cols_qty].join(' '));
             }
-        #>
-        <div class="ui-e-table" {{{ view.getRenderAttributeString('table') }}}>
+            #>
+            <div class="ui-e-table" {{{ view.getRenderAttributeString('table') }}}>
 
-        </div>
-        <?php
+            </div>
+            <div class="ui-e-table-editor-placeholder"></div>
+    <?php
     }
 }
 \Elementor\Plugin::instance()->widgets_manager->register(new CustomTable());

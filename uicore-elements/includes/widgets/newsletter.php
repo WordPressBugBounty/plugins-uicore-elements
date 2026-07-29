@@ -115,7 +115,7 @@ class Newsletter extends UiCoreWidget
                     ],
                 ],
                 'input' . $i => [
-                    'type' => 'text',
+                    'type' => $item === 'email' ? 'email' : 'text',
                     'size' => '1',
                     'name' => 'form_fields[' . $item . ']',
                     'id' => 'form-fields-' . $item,
@@ -502,6 +502,7 @@ class Newsletter extends UiCoreWidget
 
         $this->TRAIT_register_submit_redirect_controls();
         $this->TRAIT_register_submit_popup_controls($this);
+        $this->TRAIT_register_submit_webhook_controls();
         $this->TRAIT_register_submit_newsletter_services_controls(Newsletter_Services::get_services_list('keys'));
         $this->TRAIT_register_additional_controls(Form_Service::get_default_messages());
 

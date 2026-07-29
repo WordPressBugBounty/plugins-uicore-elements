@@ -195,9 +195,8 @@ class TheTitle extends Widget_Base
             [
                 'label' => esc_html__('Text Color', 'uicore-elements'),
                 'type' => Controls_Manager::COLOR,
-                'global' => [
-                    'default' => Global_Colors::COLOR_PRIMARY,
-                ],
+                'default' => 'var(--e-global-color-uicore_primary)',
+
                 'selectors' => [
                     '{{WRAPPER}} .elementor-heading-title' => 'color: {{VALUE}};',
                 ],

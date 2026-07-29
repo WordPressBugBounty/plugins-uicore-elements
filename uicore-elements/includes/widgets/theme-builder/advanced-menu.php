@@ -1563,9 +1563,8 @@ class Advanced_Menu extends UiCoreNestedWidget
                     $item . ':not(.ui-e-open) > a > .ui-e-dropdown-icon i' => 'color: {{VALUE}};',
                     $item . ':not(.ui-e-open) > a > .ui-e-dropdown-icon svg' => 'fill: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_PRIMARY,
-                ],
+                'default' => 'var(--e-global-color-uicore_primary)',
+
             ]
         );
         $this->end_controls_tab();
@@ -1582,9 +1581,8 @@ class Advanced_Menu extends UiCoreNestedWidget
                     $item . ' > a:hover > .ui-e-dropdown-icon i' => 'color: {{VALUE}};',
                     $item . ' > a:hover > .ui-e-dropdown-icon svg' => 'fill: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_PRIMARY,
-                ],
+                'default' => 'var(--e-global-color-uicore_primary)',
+
             ]
         );
         $this->end_controls_tab();
@@ -1650,9 +1648,8 @@ class Advanced_Menu extends UiCoreNestedWidget
             [
                 'label' => esc_html__('Background Color', 'uicore-elements'),
                 'type' => Controls_Manager::COLOR,
-                'global' => [
-                    'default' => Global_Colors::COLOR_PRIMARY,
-                ],
+                'default' => 'var(--e-global-color-uicore_primary)',
+
                 'selectors' => [
                     $link . ' .ui-e-badge' => 'background-color: {{VALUE}};',
                 ],

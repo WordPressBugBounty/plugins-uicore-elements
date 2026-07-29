@@ -1044,6 +1044,7 @@ class ContactForm extends UiCoreWidget
 
         $this->TRAIT_register_submit_redirect_controls();
         $this->TRAIT_register_submit_popup_controls($this);
+        $this->TRAIT_register_submit_webhook_controls();
         $this->TRAIT_register_submit_newsletter_services_controls(Newsletter_Services::get_services_list('keys'), true);
         $default_messages = Contact_Form_Service::get_default_messages();
         $this->TRAIT_register_additional_controls($default_messages);
@@ -1126,9 +1127,6 @@ class ContactForm extends UiCoreWidget
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-field-type-html' => 'color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_TEXT,
-                ],
             ]
         );
         $this->add_group_control(
@@ -1158,9 +1156,8 @@ class ContactForm extends UiCoreWidget
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-field-type-file input.ui-e-field' => 'color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_TEXT,
-                ],
+                'default' => 'var(--e-global-color-uicore_body)',
+
             ]
         );
         $this->end_injection();

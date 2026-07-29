@@ -473,13 +473,11 @@ class Featured_Image extends UiCoreWidget
             [
                 'label' => esc_html__('Text Color', 'uicore-elements'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .widget-image-caption' => 'color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_TEXT,
-                ],
+                'default' => 'var(--e-global-color-uicore_body)',
+
             ]
         );
 

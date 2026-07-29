@@ -295,7 +295,7 @@ class IconList extends UiCoreWidget
                         'icon' => 'eicon-h-align-right',
                     ],
                 ],
-                'default' => 'left',
+                'default' => is_rtl() ? 'right' : 'left',
                 'prefix_class' => 'ui-e-icon-',
                 'separator' => 'before'
             ]
@@ -953,9 +953,8 @@ class IconList extends UiCoreWidget
             [
                 'label' => esc_html__('Color', 'uicore-elements'),
                 'type' => Controls_Manager::COLOR,
-                'global' => [
-                    'default' => Global_Colors::COLOR_PRIMARY,
-                ],
+                'default' => 'var(--e-global-color-uicore_primary)',
+
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-icon' => '--ui-e-icon-color: {{VALUE}}',
                 ],
@@ -1091,10 +1090,8 @@ class IconList extends UiCoreWidget
             [
                 'label' => esc_html__('Line Color', 'uicore-elements'),
                 'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#333',
-                'global' => [
-                    'default' => Global_Colors::COLOR_PRIMARY,
-                ],
+                'default' => 'var(--e-global-color-uicore_body)',
+
                 'selectors' => [
                     '{{WRAPPER}} li:after' => 'background-color: {{VALUE}}',
                 ],

@@ -11,6 +11,7 @@ use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Background;
+use Elementor\Plugin;
 use Elementor\Core\Kits\Documents\Tabs\Global_Colors;
 use UiCoreElements\Helper;
 
@@ -195,6 +196,15 @@ trait Gallery_Trait
             ]
         );
 
+        $this->add_control(
+            'lightbox',
+            [
+                'label' => esc_html__('Enable Lightbox', 'uicore-elements') . UICORE_ELEMENTS_NEW_OPTION, // TODO: remove 3 releases after 1.3.15
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'no',
+            ]
+        );
+
         if (! $carousel) {
             $this->add_control(
                 'filters',
@@ -218,6 +228,34 @@ trait Gallery_Trait
             );
         }
 
+        $this->add_responsive_control(
+            'item_alignment',
+            [
+                'label' => esc_html__('Alignment', 'uicore-elements') . UICORE_ELEMENTS_NEW_OPTION, // TODO: remove 3 releases after 1.3.15
+                'type' => Controls_Manager::CHOOSE,
+                'options' => [
+                    'start' => [
+                        'title' => esc_html__('Left', 'uicore-elements'),
+                        'icon' => 'eicon-text-align-left',
+                    ],
+                    'center' => [
+                        'title' => esc_html__('Center', 'uicore-elements'),
+                        'icon' => 'eicon-text-align-center',
+                    ],
+                    'end' => [
+                        'title' => esc_html__('Right', 'uicore-elements'),
+                        'icon' => 'eicon-text-align-right',
+                    ],
+                ],
+                'separator' => 'before',
+                'default' => is_rtl() ? 'end' : 'start',
+                'selectors' => [
+                    '{{WRAPPER}} .ui-e-content' => 'text-align: {{VALUE}};',
+                    '{{WRAPPER}} .ui-e-title-wrapper' => 'justify-content: {{VALUE}};',
+                ],
+            ]
+        );
+
         $this->add_control(
             'title_tag',
             [
@@ -225,7 +263,6 @@ trait Gallery_Trait
                 'type' => Controls_Manager::SELECT,
                 'default' => 'h4',
                 'options' => Helper::get_title_tags(),
-                'separator' => 'before'
             ]
         );
         $this->add_control(
@@ -263,7 +300,7 @@ trait Gallery_Trait
             [
                 'label' => esc_html__('Badge Position', 'uicore-elements'),
                 'type' => Controls_Manager::SELECT,
-                'default' => 'ui-e-badge-start-left',
+                'default' => is_rtl() ? 'ui-e-badge-start-right' : 'ui-e-badge-start-left',
                 'prefix_class' => '',
                 'render_type' => 'template', // without it, loading a page with image and changing to title won't work
                 'options' => [
@@ -820,9 +857,8 @@ trait Gallery_Trait
             [
                 'label'     => __('Background Color', 'uicore-elements'),
                 'type'      => Controls_Manager::COLOR,
-                'global' => [
-                    'default' => Global_Colors::COLOR_PRIMARY,
-                ],
+                'default' => 'var(--e-global-color-uicore_primary)',
+
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-badge' => 'background-color: {{VALUE}};',
                 ],
@@ -989,62 +1025,112 @@ trait Gallery_Trait
         // Params
         $key = 'item_' . $index;
         $tag = 'div';
+        $lightbox = $this->is_option('lightbox', 'yes');
+        $is_overlay = $this->is_option('layout', 'ui-e-overlay');
+        $has_url = ! empty($item['item_url']['url']);
+        $lightbox_group_id = $this->get_id() . '-gallery';
 
         $this->add_render_attribute($key, 'class', 'ui-e-item');
 
-        // Build URL
-        if (!empty($item['item_url']['url'])) {
+        // The entire item becomes the lightbox trigger
+        if ($lightbox && $is_overlay && ! $has_url) {
+            $tag = 'a';
+
+            $this->add_gallery_lightbox_attributes(
+                $key,
+                $item['item_image'],
+                $lightbox_group_id
+            );
+        } elseif ($has_url && ! $lightbox) {
+            // The entire item uses the custom URL
             $tag = 'a';
             $this->add_link_attributes($key, $item['item_url']);
         }
 
+        // The image gets its own lightbox link unless the entire item is already acting as the lightbox trigger.
+        $image_lightbox = $lightbox && ! ($is_overlay && ! $has_url);
 ?>
-        <div <?php $this->print_render_attribute_string('item_wrapper'); ?> data-ui-e-tags="<?php echo esc_attr(sanitize_title($item['item_tags'])); ?>">
 
+        <div
+            <?php $this->print_render_attribute_string('item_wrapper'); ?>
+            data-ui-e-tags="<?php echo esc_attr(sanitize_title($item['item_tags'])); ?>">
             <?php if ($has_animation) : ?>
-                <div class='ui-e-animations-wrp <?php echo esc_attr($animations); ?>'>
+                <div class="ui-e-animations-wrp <?php echo esc_attr($animations); ?>">
                 <?php endif; ?>
 
-                <<?php echo Helper::esc_tag($tag); ?> <?php $this->print_render_attribute_string($key); ?>>
-                    <?php $this->render_image($index, $item, $settings); ?>
-                    <?php $this->render_contents($item, $settings); ?>
+                <<?php echo Helper::esc_tag($tag); ?>
+                    <?php $this->print_render_attribute_string($key); ?>>
+                    <?php
+                    $this->render_image(
+                        $index,
+                        $item,
+                        $settings,
+                        $image_lightbox
+                    );
+
+                    $this->render_contents(
+                        $index,
+                        $item,
+                        $settings,
+                        $lightbox
+                    );
+                    ?>
                 </<?php echo Helper::esc_tag($tag); ?>>
 
                 <?php if ($has_animation) : ?>
                 </div>
             <?php endif; ?>
-
         </div>
+
     <?php
     }
 
-    protected function render_contents($instance, $settings)
+    protected function render_contents($index, $instance, $settings, $lightbox = false)
     {
 
         // Content container should only be rendered if at least one of the content elements is available
         if (
-            (empty($instance['item_title']) || $this->is_option('hide_title', 'yes')) &
-            (empty($instance['item_description']) || $this->is_option('hide_description', 'yes')) &
+            (empty($instance['item_title']) || $this->is_option('hide_title', 'yes')) &&
+            (empty($instance['item_description']) || $this->is_option('hide_description', 'yes')) &&
             (empty($instance['item_tags']) || $this->is_option('hide_tags', 'yes'))
         ) {
             return;
         }
 
+        $tag = 'div';
+        $key = 'content_' . $index;
+
+        $this->add_render_attribute($key, 'class', 'ui-e-content');
+
+        if ($lightbox && ! empty($instance['item_url']['url'])) {
+            $tag = 'a';
+            $this->add_link_attributes($key, $instance['item_url']);
+        }
+
     ?>
-        <div class="ui-e-content">
+
+        <<?php echo Helper::esc_tag($tag); ?>
+            <?php $this->print_render_attribute_string($key); ?>>
             <?php $this->render_title($instance, $settings); ?>
-            <?php $this->render_description($instance, $settings['description_animation']) ?>
+
+            <?php
+            $this->render_description(
+                $instance,
+                $settings['description_animation']
+            );
+            ?>
+
             <?php $this->render_tags($instance, $settings); ?>
-        </div>
+        </<?php echo Helper::esc_tag($tag); ?>>
+
         <?php
     }
-    protected function render_image($index, $instance, $settings)
+    protected function render_image($index, $instance, $settings, $lightbox = false)
     {
 
         if (empty($instance['item_image']['url'])) {
             return;
         }
-
 
         // Only default layout has media wrapper
         if ($this->is_option('layout', '')) {
@@ -1066,13 +1152,66 @@ trait Gallery_Trait
             $this->render_badge($instance, $settings['badge_animation']);
         }
 
-        echo wp_kses_post(Group_Control_Image_Size::get_attachment_image_html($instance, 'item_image',));
+        $image_html = Group_Control_Image_Size::get_attachment_image_html($instance, 'item_image');
+        $lightbox_group_id = $this->get_id() . '-gallery';
+
+        if ($lightbox) {
+            $image_key = 'image_link_' . $index;
+
+            $this->add_gallery_lightbox_attributes(
+                $image_key,
+                $instance['item_image'],
+                $lightbox_group_id
+            );
+
+            echo '<a ';
+            $this->print_render_attribute_string($image_key);
+            echo '>';
+        }
+
+        echo wp_kses_post($image_html);
+
+        if ($lightbox) {
+            echo '</a>';
+        }
 
         if ($this->is_option('layout', '')) {
             ?> </div>
         <?php
         }
     }
+
+    protected function add_gallery_lightbox_attributes($key, $image, $group_id)
+    {
+        if (empty($image['url'])) {
+            return;
+        }
+
+        $this->add_render_attribute($key, 'href', $image['url']);
+
+        if (! empty($image['id'])) {
+            $this->add_lightbox_data_attributes(
+                $key,
+                $image['id'],
+                'yes',
+                $group_id,
+                true
+            );
+
+            return;
+        }
+
+        $this->add_render_attribute(
+            $key,
+            [
+                'data-elementor-open-lightbox' => 'yes',
+                'data-elementor-lightbox-slideshow' => $group_id,
+            ],
+            null,
+            true
+        );
+    }
+
     protected function render_title($instance, $settings)
     {
         if (empty($instance['item_title']) || $this->is_option('hide_title', 'yes')) {

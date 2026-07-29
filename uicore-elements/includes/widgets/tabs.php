@@ -633,9 +633,7 @@ class Tabs extends UiCoreNestedWidget
                         'default' => 'classic',
                     ],
                     'color' => [
-                        'global' => [
-                            'default' => Global_Colors::COLOR_ACCENT,
-                        ],
+                        'default' => 'var(--e-global-color-uicore_accent)',
                         'label' => esc_html__('Background Color', 'uicore-elements'),
                         'selectors' => [
                             '{{SELECTOR}}' => 'background: {{VALUE}};',
@@ -718,9 +716,7 @@ class Tabs extends UiCoreNestedWidget
                         'default' => 'classic',
                     ],
                     'color' => [
-                        'global' => [
-                            'default' => Global_Colors::COLOR_ACCENT,
-                        ],
+                        'default' => 'var(--e-global-color-uicore_accent)',
                         'label' => esc_html__('Background Color', 'uicore-elements'),
                         'selectors' => [
                             '{{SELECTOR}}' => 'background: {{VALUE}};',

@@ -588,7 +588,6 @@ class Accordion extends UiCoreWidget
                     ],
                 ],
                 'default'     => is_rtl() ? 'flex-end' : 'flex-start',
-                'default'     => 'flex-start',
                 'toggle'      => false,
                 'label_block' => false,
                 'selectors' => [
@@ -1245,6 +1244,7 @@ class Accordion extends UiCoreWidget
                         'icon'  => 'eicon-text-align-right',
                     ],
                 ],
+                'default'  => is_rtl() ? 'right' : 'left',
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-accordion-content' => 'text-align: {{VALUE}};',
                 ],

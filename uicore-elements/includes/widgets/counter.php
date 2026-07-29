@@ -375,7 +375,7 @@ class Counter extends UiCoreWidget
             ]
         );
 
-        $this->add_control(
+        $this->add_responsive_control(
             'text_align',
             [
                 'label' => esc_html__('Text Align', 'uicore-elements'),
@@ -396,7 +396,9 @@ class Counter extends UiCoreWidget
                 ],
                 'toggle' => false,
                 'default' => 'center',
-                'prefix_class'    => 'ui-e-align-',
+                'tablet_default' => 'center',
+                'mobile_default' => 'center',
+                'prefix_class'    => 'ui-e-align-%s-',
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-title' => 'text-align: {{VALUE}};',
                     '{{WRAPPER}} .ui-e-ico' => 'text-align: {{VALUE}};',

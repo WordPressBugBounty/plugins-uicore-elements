@@ -184,11 +184,7 @@ class Query extends Control_Select2
     }
 
     /**
-     * TODO
-     * Temporary method to get the query terms from URL params, checking for both 'ui_{arg}' and '{arg}' params.
-     *
-     * At least 1 year after 1.3.15, we can remove this support and switch to prefixed values,
-     * with a decreased impact on clients cached widgets. For better context, check ELM-517 task
+     * Get the query terms from URL params, checking for both 'ui_{arg}' and '{arg}' params.
      */
     public static function get_query_term_compatibility(string $arg)
     {

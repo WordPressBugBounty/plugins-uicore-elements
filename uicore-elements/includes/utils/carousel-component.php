@@ -1213,7 +1213,7 @@ trait Carousel_Trait
                 'conditions' => $this->nav_conditions('arrows'),
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'arrows_radius',
             [
                 'label'      => __('Border Radius', 'uicore-elements'),
@@ -1225,7 +1225,7 @@ trait Carousel_Trait
                 'conditions' => $this->nav_conditions('arrows'),
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'arrows_padding',
             [
                 'label'      => esc_html__('Padding', 'uicore-elements'),

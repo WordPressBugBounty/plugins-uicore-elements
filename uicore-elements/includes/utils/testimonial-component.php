@@ -343,6 +343,7 @@ trait Testimonial_Trait
                         'icon'  => 'eicon-text-align-justify',
                     ],
                 ],
+                'default' => is_rtl() ? 'right' : 'left',
                 'prefix_class' => 'ui-e-h-align-',
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-item' => 'text-align: {{VALUE}};',
@@ -365,11 +366,16 @@ trait Testimonial_Trait
                         'title' => __('Center', 'uicore-elements'),
                         'icon'  => 'eicon-align-center-v',
                     ],
+                    'space-between' => [
+                        'title' => __('Space Between', 'uicore-elements'),
+                        'icon'  => 'eicon-justify-space-between-v',
+                    ],
                     'end'   => [
                         'title' => __('Bottom', 'uicore-elements'),
                         'icon'  => 'eicon-align-end-v',
                     ],
                 ],
+                'prefix_class' => 'ui-e-v-align-',
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-item' => '--ui-e-content-v-alignment: {{VALUE}};',
                 ]
@@ -972,9 +978,8 @@ trait Testimonial_Trait
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-testimonial-rating' => 'background-color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_PRIMARY,
-                ],
+                'default' => 'var(--e-global-color-uicore_primary)',
+
                 'condition' => [
                     'rating_type' => 'number',
                 ],

@@ -28,6 +28,7 @@ trait Meta_Trait
             'reading time' => __('Reading Time', 'uicore-elements'),
             'category'     => __('Category', 'uicore-elements'),
             'tag'          => __('Tag', 'uicore-elements'),
+            'excerpt'      => __('Excerpt', 'uicore-elements'),
         ];
         $products = [
             'product price'     => __('Product Price', 'uicore-elements'),
@@ -159,6 +160,9 @@ trait Meta_Trait
                 'selectors' => [
                     '{{WRAPPER}} .in-stock' => 'color: {{VALUE}}',
                 ],
+                'condition' => [
+                    'type' => ['product stock'],
+                ]
             ]
         );
         $repeater->add_control(
@@ -169,6 +173,9 @@ trait Meta_Trait
                 'selectors' => [
                     '{{WRAPPER}} .out-of-stock' => 'color: {{VALUE}}',
                 ],
+                'condition' => [
+                    'type' => ['product stock'],
+                ]
             ]
         );
         $repeater->add_control(
@@ -512,7 +519,7 @@ trait Meta_Trait
      *
      * @param WC_Product $product The WooCommerce product object.
      * @return string|false The HTML string of product attributes or false if none are visible.
-     * @since 1.3.15
+     * @since 1.3.13
      */
     function print_product_attributes($product)
     {
@@ -648,6 +655,9 @@ trait Meta_Trait
                 break;
             case 'reading time':
                 $content .= esc_html(Helper::get_reading_time());
+                break;
+            case 'excerpt':
+                $content .= esc_html(get_the_excerpt());
                 break;
             default:
                 if (strpos($type, 'product') === 0) {

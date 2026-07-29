@@ -5,6 +5,7 @@ namespace UiCoreElements\Widgets\ThemeBuilder;
 use UiCoreElements\UiCoreWidget;
 use Elementor\Controls_Manager;
 use UiCoreElements\Utils\Meta_Trait;
+use UiCoreElements\Helper;
 
 defined('ABSPATH') || exit();
 
@@ -110,18 +111,56 @@ class PostMeta extends UiCoreWidget
         $this->end_controls_section();
     }
 
+    protected function display_dummy_text($meta_list)
+    {
+        echo '<div class="ui-e-post-meta ui-e-tb-meta">';
+        foreach ($meta_list as $meta) {
+            if ($meta['type'] != 'none') {
+
+                $dummy_content = [
+                    'excerpt' => esc_html__('This is a sample post excerpt. It provides a brief summary of the article, giving readers a quick preview of the content before they click through to read the full post.', 'uicore-elements'),
+                    'comment' => rand(1, 5),
+                    'reading time' => rand(1, 5)
+                ];
+
+                // Print dummy content, if available
+                if (array_key_exists($meta['type'], $dummy_content)) {
+                    $content = $dummy_content[$meta['type']];
+
+                    // The content printing is the same from display_meta() and should follow up future changes
+                    $wrapper = '<div class="ui-e-meta-item">';
+                    $prefix  = $meta['before'] ? '<span>' . esc_html($meta['before']) . '</span>' : '';
+                    $suffix  = $meta['after'] ? '<span class="ui-e-meta-after">' . esc_html($meta['after']) . '</span>' : '';
+
+                    ob_start();
+                    \Elementor\Icons_Manager::render_icon($meta['icon'], ['aria-hidden' => 'true', 'class' => 'ui-e-meta-icon'], 'span');
+                    $icon = ob_get_clean();
+
+                    if (!empty($content)) {
+                        echo $wrapper . Helper::esc_svg($icon) . $prefix . $content . $suffix . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    }
+                } else {
+                    $this->display_meta($meta);
+                }
+
+                if (next($meta_list) && $this->get_settings_for_display('tb-meta_meta_separator')) {
+                    echo '<span class="ui-e-separator">' . esc_html($this->get_settings_for_display('tb-meta_meta_separator')) . '</span>';
+                }
+            }
+        }
+        echo '</div>';
+    }
+
     protected function render()
     {
+        $meta_list = $this->get_settings_for_display('meta_list');
 
-        if (!\Elementor\Plugin::$instance->editor->is_edit_mode()) {
-            $title = wp_title(null, false);
-            $title = $title ? $title : get_bloginfo('name');
-        } else {
-            $title = __('This is a dummy title.', 'uicore-elements');
+        if (!isset($meta_list[0]) || $meta_list[0]['type'] == '') {
+            return;
         }
 
-        $meta_list = $this->get_settings_for_display('meta_list');
-        if (!isset($meta_list[0]) || $meta_list[0]['type'] == '') {
+        if ($this->is_edit_mode()) {
+            $this->display_dummy_text($meta_list);
             return;
         }
 

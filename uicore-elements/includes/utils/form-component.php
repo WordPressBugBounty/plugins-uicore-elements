@@ -299,6 +299,54 @@ trait Form_Component
         }
     }
 
+    function TRAIT_register_submit_webhook_controls()
+    {
+        $this->start_controls_section(
+            'section_webhook',
+            [
+                'label' => esc_html__('Webhook', 'uicore-elements'),
+                'condition' => [
+                    'submit_actions' => 'webhook',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'webhook_url',
+            [
+                'label' => esc_html__('Webhook URL', 'uicore-elements'),
+                'type' => Controls_Manager::TEXT,
+                'placeholder' => esc_html__('https://your-endpoint.com/webhook', 'uicore-elements'),
+                'label_block' => true,
+                'ai' => [
+                    'active' => false,
+                ],
+                'dynamic' => [
+                    'active' => true,
+                    'categories' => [
+                        'url',
+                    ],
+                ],
+                'render_type' => 'none',
+            ]
+        );
+
+        $this->add_control(
+            'webhook_advanced_data',
+            [
+                'label' => esc_html__('Advanced Data', 'uicore-elements'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => esc_html__('On', 'uicore-elements'),
+                'label_off' => esc_html__('Off', 'uicore-elements'),
+                'return_value' => 'true',
+                'default' => '',
+                'render_type' => 'none',
+            ]
+        );
+
+        $this->end_controls_section();
+    }
+
     /**
      * Register Newsletter Services controls for the submit action.
      *
@@ -917,9 +965,7 @@ trait Form_Component
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-field-group > label, {{WRAPPER}} .ui-e-field-subgroup label' => 'color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_TEXT,
-                ],
+                'default' => 'var(--e-global-color-uicore_body)',
             ]
         );
         $this->add_control(
@@ -997,9 +1043,8 @@ trait Form_Component
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-field-group .ui-e-field, {{WRAPPER}} .ui-e-field-group .ui-e-field-select select' => 'color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_TEXT,
-                ],
+                'default' => 'var(--e-global-color-uicore_body)',
+
             ]
         );
         $this->add_control(
@@ -1010,9 +1055,8 @@ trait Form_Component
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-field-group .ui-e-field::placeholder' => 'color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_TEXT,
-                ],
+                'default' => 'var(--e-global-color-uicore_body)',
+
             ]
         );
         $this->add_control(
@@ -1062,9 +1106,8 @@ trait Form_Component
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-field-group:hover .ui-e-field, {{WRAPPER}} .ui-e-field-group:hover .ui-e-field-select select' => 'color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_TEXT,
-                ],
+                'default' => 'var(--e-global-color-uicore_body)',
+
             ]
         );
         $this->add_control(
@@ -1075,9 +1118,8 @@ trait Form_Component
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-field-group:hover .ui-e-field::placeholder' => 'color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_TEXT,
-                ],
+                'default' => 'var(--e-global-color-uicore_body)',
+
             ]
         );
         $this->add_control(
@@ -1127,9 +1169,8 @@ trait Form_Component
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-field-group .ui-e-field:focus, {{WRAPPER}} .ui-e-field-group .ui-e-field-select select:focus' => 'color: {{VALUE}};',
                 ],
-                'global' => [
-                    'default' => Global_Colors::COLOR_TEXT,
-                ],
+                'default' => 'var(--e-global-color-uicore_body)',
+
             ]
         );
         $this->add_control(
@@ -1242,9 +1283,6 @@ trait Form_Component
             [
                 'label' => esc_html__('Background Color', 'uicore-elements'),
                 'type' => Controls_Manager::COLOR,
-                'global' => [
-                    'default' => Global_Colors::COLOR_ACCENT,
-                ],
                 'selectors' => [
                     '{{WRAPPER}} .e-form__buttons__wrapper__button-next' => 'background-color: {{VALUE}};',
                     '{{WRAPPER}} .elementor-button[type="submit"]' => 'background-color: {{VALUE}};',

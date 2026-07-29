@@ -58,6 +58,19 @@ trait Post_Trait
             ]
         );
         $this->add_control(
+            'split_mobile',
+            [
+                'label' => __('Use Classic Layout on Mobile' . UICORE_ELEMENTS_NEW_OPTION, 'uicore-elements'), // TODO: remove badge, at least 2, releases after 1.3.15
+                'type' => Controls_Manager::SWITCHER,
+                'default' => 'ui-e-apg-split-not-phone',
+                'return_value' => 'ui-e-apg-split-not-phone',
+                'prefix_class' => '',
+                'condition' => [
+                    'box_style' => 'split',
+                ],
+            ]
+        );
+        $this->add_control(
             'image',
             [
                 'label' => __('Image', 'uicore-elements'),
@@ -554,13 +567,16 @@ trait Post_Trait
                 ],
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'image_position',
             [
-                'label' => __('Image position', 'uicore-elements'),
+                'label' => __('Image Position', 'uicore-elements'),
                 'type' => Controls_Manager::SELECT,
                 'default' => 'center center',
+                'tablet_default' => '',
+                'mobile_default' => '',
                 'options' => [
+                    '' => esc_html__('Default', 'uicore-elements'),
                     'left top' => esc_html__('Left Top', 'uicore-elements'),
                     'left center' => esc_html__('Left Center', 'uicore-elements'),
                     'left bottom' => esc_html__('Left Bottom', 'uicore-elements'),
@@ -573,6 +589,25 @@ trait Post_Trait
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-post-img' => 'background-position: {{VALUE}}',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'image_fit',
+            [
+                'label' => __('Image Fit', 'uicore-elements'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'cover',
+                'tablet_default' => '',
+                'mobile_default' => '',
+                'options' => [
+                    '' => esc_html__('Default', 'uicore-elements'),
+                    'cover' => esc_html__('Cover', 'uicore-elements'),
+                    'contain' => esc_html__('Contain', 'uicore-elements'),
+                    'auto' => esc_html__('Auto', 'uicore-elements'),
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .ui-e-post-img' => 'background-size: {{VALUE}}',
                 ],
             ]
         );
@@ -607,7 +642,7 @@ trait Post_Trait
                 'label' => esc_html__('Content Alignment', 'uicore-elements'),
                 'type' => Controls_Manager::CHOOSE,
                 'options' => [
-                    'left' => [
+                    'start' => [
                         'title' => esc_html__('Left', 'uicore-elements'),
                         'icon' => 'eicon-text-align-left',
                     ],
@@ -615,11 +650,19 @@ trait Post_Trait
                         'title' => esc_html__('Center', 'uicore-elements'),
                         'icon' => 'eicon-text-align-center',
                     ],
+                    'end' => [
+                        'title' => esc_html__('Right', 'uicore-elements'),
+                        'icon' => 'eicon-text-align-right',
+                    ],
                     'stretch' => [
                         'title' => esc_html__('Justified', 'uicore-elements'),
                         'icon' => 'eicon-text-align-justify',
                     ],
                 ],
+                'selectors_dictionary' => [
+                    'left' => 'start',
+                ],
+                'default' => is_rtl() ? 'end' : 'start',
                 'selectors' => [
                     '{{WRAPPER}} .ui-e-post-content' => 'align-items: {{VALUE}}; text-align: {{VALUE}};',
                 ],

@@ -180,11 +180,6 @@ trait Post_Filters_Trait
                     'background' => [
                         'default' => 'classic',
                     ],
-                    'color' => [
-                        'global' => [
-                            'default' => Global_Colors::COLOR_ACCENT,
-                        ],
-                    ],
                 ],
             ]
         );

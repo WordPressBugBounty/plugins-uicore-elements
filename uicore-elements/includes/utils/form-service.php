@@ -83,6 +83,10 @@ class Contact_Form_Service
                             $responses['popup'] = $this->popup();
                             break;
 
+                        case 'webhook':
+                            $responses['webhook'] = $this->webhook();
+                            break;
+
                         case 'mailchimp':
                             $responses['mailchimp'] = $this->newsletter_service('mailchimp');
                             break;
@@ -347,11 +351,11 @@ class Contact_Form_Service
         foreach ($metadada as $meta) {
             switch ($meta) {
                 case 'date':
-                    $content .= sprintf('%s: %s', 'Date', gmdate('Y-m-d') . $line_break);
+                    $content .= sprintf('%s: %s', 'Date', wp_date('Y-m-d') . $line_break);
                     break;
 
                 case 'time':
-                    $content .= sprintf('%s: %s', 'Time', gmdate('H:i:s') . $line_break);
+                    $content .= sprintf('%s: %s', 'Time', wp_date('H:i:s') . $line_break);
                     break;
 
                 case 'remote_ip':
@@ -410,6 +414,42 @@ class Contact_Form_Service
             'status'  => 'success',
             'action'  => sanitize_text_field($action),
             'message' => sanitize_text_field($this->get_response_message('popup'))
+        ];
+    }
+    protected function webhook(): array
+    {
+        $request = $this->build_webhook_request();
+
+        $response = wp_remote_post($request['url'], $request['args']);
+
+        if (is_wp_error($response)) {
+            return [
+                'status' => 'error',
+                'message' => $response->get_error_message(),
+            ];
+        }
+
+        $status_code = (int) wp_remote_retrieve_response_code($response);
+
+        if ($status_code < 200 || $status_code >= 300) {
+            $body = wp_remote_retrieve_body($response);
+            $body = is_string($body) ? trim(wp_strip_all_tags($body)) : '';
+            $body = $body ? wp_html_excerpt($body, 160, '...') : esc_html__('Unexpected response from webhook endpoint.', 'uicore-elements');
+
+            return [
+                'status' => 'error',
+                'message' => sprintf(
+                    /* translators: 1: HTTP status code, 2: Response body excerpt. */
+                    esc_html__('Webhook request failed with HTTP %1$s: %2$s', 'uicore-elements'),
+                    $status_code,
+                    $body
+                ),
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'message' => esc_html__('Webhook sent successfully.', 'uicore-elements'),
         ];
     }
     protected function newsletter_service(string $service)
@@ -483,6 +523,20 @@ class Contact_Form_Service
             'status' => true,
             'url' => $url,
         ];
+    }
+    protected function validate_webhook(string $url)
+    {
+        if (empty($url)) {
+            throw new Submit_Exception(esc_html__('Webhook URL is empty.', 'uicore-elements'));
+        }
+
+        $url = esc_url_raw($url);
+
+        if (!$url || !wp_http_validate_url($url)) {
+            throw new Submit_Exception(esc_html__('Webhook URL is invalid.', 'uicore-elements'));
+        }
+
+        return $url;
     }
     protected function validate_field(string $field, string $label)
     {
@@ -584,7 +638,6 @@ class Contact_Form_Service
                 return 'sanitize_text_field';
         }
     }
-
     protected function all_submissions_succedded($responses)
     {
         foreach ($responses as $submission => $data) {
@@ -610,7 +663,8 @@ class Contact_Form_Service
         $options =  [
             'email'  => esc_html__('Email', 'uicore-elements'),
             'email_2' => esc_html__('Email 2', 'uicore-elements'),
-            'redirect' => esc_html__('Redirect', 'uicore-elements')
+            'redirect' => esc_html__('Redirect', 'uicore-elements'),
+            'webhook' => esc_html__('Webhook', 'uicore-elements')
         ];
 
         // Uicore Framework dependent actions
@@ -625,6 +679,96 @@ class Contact_Form_Service
         }
 
         return $options;
+    }
+
+    /**
+     * Webhook Helpers
+     */
+    protected function build_webhook_request(): array
+    {
+        $url = $this->replace_content_shortcode($this->validate_field($this->settings['webhook_url'] ?? '', 'Webhook URL'));
+        $url = $this->validate_webhook($url);
+
+        $advanced_data = ($this->settings['webhook_advanced_data'] ?? '') === 'true';
+        $args = [
+            'timeout' => 15,
+        ];
+
+        if ($advanced_data) {
+            $args['headers'] = [
+                'Content-Type' => 'application/json; charset=UTF-8',
+            ];
+            $args['body'] = wp_json_encode($this->get_advanced_webhook_payload());
+        } else {
+            $args['body'] = [
+                'widget_type' => sanitize_text_field($this->form_data['widget_type'] ?? ''),
+                'fields' => $this->get_submission_fields_payload(),
+                'meta' => $this->get_webhook_meta_payload(),
+            ];
+        }
+
+        return [
+            'url' => $url,
+            'args' => $args,
+        ];
+    }
+    protected function get_advanced_webhook_payload(): array
+    {
+        return $this->sanitize_recursive_payload($this->form_data);
+    }
+    protected function get_webhook_meta_payload(): array
+    {
+        $meta = [
+            'widget_id' => sanitize_text_field($this->form_data['widget_id'] ?? ''),
+            'submitted_at' => wp_date('c'),
+        ];
+
+        if (!empty($this->form_data['post_id'])) {
+            $meta['post_id'] = absint($this->form_data['post_id']);
+        }
+
+        if (isset($_SERVER['HTTP_REFERER'])) {
+            $meta['page_url'] = esc_url_raw(wp_unslash($_SERVER['HTTP_REFERER']));
+        }
+
+        return $meta;
+    }
+    protected function get_submission_fields_payload(): array
+    {
+        $payload = [];
+
+        foreach ($this->get_setting_fields() as $field) {
+            if (empty($field['custom_id'])) {
+                continue;
+            }
+
+            $field_id = $field['custom_id'];
+            $value = $this->form_data['form_fields'][$field_id] ?? '';
+
+            if (is_array($value)) {
+                $payload[$field_id] = array_map('sanitize_text_field', $value);
+                continue;
+            }
+
+            $payload[$field_id] = sanitize_text_field($value);
+        }
+
+        return $payload;
+    }
+    protected function sanitize_recursive_payload($value)
+    {
+        if (is_array($value)) {
+            foreach ($value as $key => $item) {
+                $value[sanitize_text_field((string) $key)] = $this->sanitize_recursive_payload($item);
+                if ((string) $key !== sanitize_text_field((string) $key)) {
+                    unset($value[$key]);
+                }
+            }
+
+            return $value;
+        }
+
+        return sanitize_text_field((string) $value);
     }
 
     /**
@@ -683,6 +827,10 @@ class Contact_Form_Service
         // Submit Actions response - is always an error
         if (isset($responses['submit'])) {
             $data['submit'] = $responses['submit'];
+        }
+
+        if (isset($responses['webhook']) && $responses['webhook']['status'] !== 'success') {
+            $data['submit'] = $responses['webhook'];
         }
 
         // Newsletter Services responses

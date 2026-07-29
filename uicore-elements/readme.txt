@@ -3,8 +3,8 @@ Contributors: uicore
 Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
-Tested up to: 7.0
-Stable tag: 1.3.15
+Tested up to: 7.0.2
+Stable tag: 1.3.16
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -130,6 +130,27 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+
+= 1.3.16 =
+* NEW - Added Webhook action support to the Contact Form and Newsletter widgets
+* NEW - Added an Image Fit option to the Advanced Post and Advanced Product widgets
+* NEW - Added an Excerpt option to the Post Meta widget
+* UPD - Made the Counter widget alignment control responsive
+* UPD - Made the Carousel and Slider widgets arrow padding and border radius controls responsive
+* UPD - Added a Space Between alignment option to the Testimonial widgets
+* UPD - Added a refresh button to manually re-render the Custom Table widget in the editor and reduced unnecessary automatic re-rendering
+* UPD - Now Advanced Post/Product widgets support Split Layout on mobile devices, with an option to keep the classic layout on smartphones
+* UPD - Improved RTL support across multiple widgets
+* FIX - Widget default global colors did not work when the UiCore Framework global colors
+* FIX - Advanced Post and Advanced Product Grid widgets using the Overlay layout without Masonry could lose the width
+* FIX - Custom Table widget displayed extra cells in the editor
+* FIX - Font Awesome icons were not displayed in the Form widgets with Inline SVG experiment enabled
+* FIX - Adding containers to Custom Carousel nested slides could break the container layout
+* FIX - Tab titles in the Tabs widget could wrap onto multiple lines inconsistently
+* FIX - Design Cloud button was not displayed between sections
+* FIX - Carousel widgets with marquee animation, vertical mode, and autoplay would not play instantly in some scenarios
+* FIX - Newsletter widget did not validate email addresses correctly
+* FIX - Contact Form and Newsletter widgets now respect the WordPress timezone settings instead of always using UTC
 
 = 1.3.15 =
 * NEW – Added the new Advanced Menu widget (beta)
