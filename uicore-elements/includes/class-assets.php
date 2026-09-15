@@ -39,7 +39,7 @@ class Assets
     public function enqueue()
     {
         if (Plugin::instance()->editor->is_edit_mode()) {
-            wp_enqueue_script('ui-nested-elements', UICORE_ELEMENTS_ASSETS . '/js/components/nested-elements.js', [], UICORE_ELEMENTS_VERSION, true);
+            wp_enqueue_script('ui-nested-elements', UICORE_ELEMENTS_ASSETS . '/js/components/nested-elements.js', ['nested-elements', 'elementor-editor', 'elementor-common'], UICORE_ELEMENTS_VERSION, true);
         }
     }
 

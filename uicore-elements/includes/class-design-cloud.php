@@ -56,9 +56,7 @@ class DesignCloud
             ? $upload_dir['basedir'] . "/uicore-global.css"
             : $upload_dir['basedir'] . "/elementor/css/post-{$kit_id}.css";
 
-        if (file_exists($css_path)) {
-            $inline_css = file_get_contents($css_path);
-        }
+        $inline_css = file_exists($css_path) ? file_get_contents($css_path) : '';
 
         $local_data = get_option('uicore_connect', [
             'url' => '',

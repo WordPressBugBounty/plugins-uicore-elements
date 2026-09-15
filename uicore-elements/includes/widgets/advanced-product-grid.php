@@ -162,17 +162,21 @@ class AdvancedProductGrid extends AdvancedPostGrid
             'of' => 'show_button',
             'at' => 'after',
         ]);
-        $this->add_control(
-            'show_swatches',
-            [
-                'label' => esc_html__('Swatches', 'uicore-elements'),
-                'type' => \Elementor\Controls_Manager::SWITCHER,
-                'label_on' => esc_html__('Show', 'uicore-elements'),
-                'label_off' => esc_html__('Hide', 'uicore-elements'),
-                'description' => esc_html__('Will only work if you have Uicore Framework plugin active at least on version 6.0.1', 'uicore-elements'),
-                'default' => 'yes',
-            ]
-        );
+
+        if (defined('UICORE_ASSETS')) {
+            $this->add_control(
+                'show_swatches',
+                [
+                    'label' => esc_html__('Swatches', 'uicore-elements'),
+                    'type' => \Elementor\Controls_Manager::SWITCHER,
+                    'label_on' => esc_html__('Show', 'uicore-elements'),
+                    'label_off' => esc_html__('Hide', 'uicore-elements'),
+                    'description' => esc_html__('Will only work if you have Uicore Framework plugin active at least on version 6.0.1', 'uicore-elements'),
+                    'default' => 'yes',
+                ]
+            );
+        }
+
         $this->add_control(
             'show_sale_badge',
             [
@@ -195,7 +199,185 @@ class AdvancedProductGrid extends AdvancedPostGrid
                 ],
             ]
         );
+
         $this->end_injection();
+
+        if (defined('UICORE_ASSETS')) {
+            $this->start_injection([
+                'of' => 'section_style_content',
+                'at' => 'after',
+            ]);
+            $this->start_controls_section(
+                'section_swatches',
+                [
+                    'label' => esc_html__('Swatches', 'uicore-elements') . UICORE_ELEMENTS_NEW_OPTION,
+                    'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+                    'condition' => [
+                        'show_swatches' => 'yes',
+                    ],
+                ]
+            );
+
+            $this->add_control(
+                'swatches_to',
+                [
+                    'label' => esc_html__('Use Framework defaults', 'uicore-elements'),
+                    'type' => \Elementor\Controls_Manager::SWITCHER,
+                    'description' => esc_html__('If enabled, the swatches will inherit your theme options.', 'uicore-elements'),
+                    'label_on' => esc_html__('Yes', 'uicore-elements'),
+                    'label_off' => esc_html__('No', 'uicore-elements'),
+                    'default' => 'yes',
+                ]
+            );
+
+            $this->add_control(
+                'swatches_size',
+                [
+                    'label' => esc_html__('Size', 'uicore-elements'),
+                    'type' => \Elementor\Controls_Manager::SLIDER,
+                    'size_units' => ['px'],
+                    'range' => [
+                        'px' => [
+                            'min' => 10,
+                            'max' => 100,
+                        ],
+                    ],
+                    'default' => [
+                        'unit' => 'px',
+                        'size' => 30,
+                    ],
+                    'condition' => [
+                        'show_swatches' => 'yes',
+                        'swatches_to!' => 'yes',
+                    ],
+                    'selectors' => [
+                        '{{WRAPPER}}' => '--uicore-swatch-size: {{SIZE}}{{UNIT}};',
+                    ],
+                ]
+            );
+
+            $this->add_control(
+                'swatches_outer_radius',
+                [
+                    'label' => esc_html__('Outer Border Radius', 'uicore-elements'),
+                    'type' => \Elementor\Controls_Manager::SLIDER,
+                    'size_units' => ['%', 'px'],
+                    'range' => [
+                        '%' => [
+                            'min' => 0,
+                            'max' => 100,
+                        ],
+                        'px' => [
+                            'min' => 0,
+                            'max' => 50,
+                        ],
+                    ],
+                    'default' => [
+                        'unit' => '%',
+                        'size' => 50,
+                    ],
+                    'separator' => 'before',
+                    'condition' => [
+                        'show_swatches' => 'yes',
+                        'swatches_to!' => 'yes',
+                    ],
+                    'selectors' => [
+                        '{{WRAPPER}}' => '--uicore-swatch-radius: {{SIZE}}{{UNIT}}; --uicore-swatch-big-radius: {{SIZE}}{{UNIT}};',
+                        '{{WRAPPER}} .uicore-swatch.uicore-swatch--color' => 'border-radius: {{SIZE}}{{UNIT}};',
+                    ],
+                ]
+            );
+
+            $this->add_control(
+                'swatches_inner_radius',
+                [
+                    'label' => esc_html__('Inner Border Radius', 'uicore-elements'),
+                    'type' => \Elementor\Controls_Manager::SLIDER,
+                    'size_units' => ['px', '%'],
+                    'range' => [
+                        'px' => [
+                            'min' => 0,
+
+                            'max' => 100,
+                        ],
+                        '%' => [
+                            'min' => 0,
+                            'max' => 50,
+                        ],
+                    ],
+                    'default' => [
+                        'unit' => 'px',
+                        'size' => 4,
+                    ],
+                    'separator' => 'after',
+                    'condition' => [
+                        'show_swatches' => 'yes',
+                        'swatches_to!' => 'yes',
+                    ],
+                    'selectors' => [
+                        '{{WRAPPER}} .uicore-swatch > div' => 'border-radius: {{SIZE}}{{UNIT}};',
+                    ],
+                ]
+            );
+
+            $this->add_group_control(
+                \Elementor\Group_Control_Border::get_type(),
+                [
+                    'name' => 'swatch_border',
+                    'selector' => '{{WRAPPER}} .uicore-swatch',
+                    'condition' => [
+                        'show_swatches' => 'yes',
+                        'swatches_to!' => 'yes',
+                    ],
+                ]
+            );
+
+            $this->add_control(
+                'hover_border_size',
+                [
+                    'label' => esc_html__('Hover Border Size', 'uicore-elements'),
+                    'type' => \Elementor\Controls_Manager::SLIDER,
+                    'size_units' => ['px'],
+                    'range' => [
+                        'px' => [
+                            'min' => 0,
+
+                            'max' => 5,
+                        ],
+                    ],
+                    'default' => [
+                        'unit' => 'px',
+                        'size' => 1,
+                    ],
+                    'condition' => [
+                        'show_swatches' => 'yes',
+                        'swatches_to!' => 'yes',
+                    ],
+                    'selectors' => [
+                        '{{WRAPPER}} .uicore-swatch:hover' => 'box-shadow: 0 0 0 {{SIZE}}{{UNIT}} var(--uicore-swatch-border);',
+                    ],
+                ]
+            );
+
+            $this->add_control(
+                'swatch_hover_color',
+                [
+                    'label' => esc_html__('Hover Border Color', 'uicore-elements'),
+                    'type' => \Elementor\Controls_Manager::COLOR,
+                    'condition' => [
+                        'show_swatches' => 'yes',
+                        'swatches_to!' => 'yes',
+                    ],
+                    'selectors' => [
+                        '{{WRAPPER}}' => '--uicore-swatch-border: {{VALUE}};',
+                        '{{WRAPPER}} .uicore-swatch:hover' => 'border-color: {{VALUE}};',
+                    ],
+                ]
+            );
+
+            $this->end_controls_section();
+            $this->end_injection();
+        }
 
         // Register new Hide out of stock products control
         $this->start_injection([
@@ -214,7 +396,6 @@ class AdvancedProductGrid extends AdvancedPostGrid
         );
         $this->end_injection();
 
-        //
         $this->start_injection([
             'of' => 'text',
             'at' => 'after',

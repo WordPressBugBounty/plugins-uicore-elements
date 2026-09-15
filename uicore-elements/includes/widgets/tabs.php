@@ -1348,7 +1348,9 @@ class Tabs extends UiCoreNestedWidget
         };
 
         add_filter('elementor/frontend/container/should_render', $add_attribute_to_container, 10, 3);
-        $children[$index]->print_element();
+        if (isset($children[$index])) {
+            $children[$index]->print_element();
+        }
         remove_filter('elementor/frontend/container/should_render', $add_attribute_to_container);
     }
 
@@ -1360,7 +1362,7 @@ class Tabs extends UiCoreNestedWidget
             'aria-labelledby' => $item_settings['tab_id'],
             'data-tab-index' => $item_settings['tab_count'],
             'style' => '--ui-e-tabs-order: ' . $item_settings['tab_count'] . ';',
-            'class' => 0 === $item_settings['index'] ? 'e-active' : '',
+            'class' => 0 === $item_settings['index'] ? 'ui-e-active' : '',
         ]);
     }
 
@@ -1426,87 +1428,62 @@ class Tabs extends UiCoreNestedWidget
 
     protected function get_initial_config(): array
     {
-        if (Plugin::$instance->experiments->is_feature_active('e_nested_atomic_repeaters')) {
-            return array_merge(parent::get_initial_config(), [
-                'support_improved_repeaters' => true,
-                'target_container' => ['.ui-e-tabs-heading'],
-                'node' => 'button',
-            ]);
-        }
-
-        return parent::get_initial_config();
+        return array_merge(parent::get_initial_config(), [
+            'support_improved_repeaters' => true,
+            'target_container' => ['.ui-e-tabs-heading'],
+            'node' => 'button',
+        ]);
     }
-    /*
-	protected function content_template_single_repeater_item() {
-		?>
-		<#
-		const tabCount = view.collection.length + 1,
-			elementUid = view.getIDInt().toString().substring( 0, 3 ) + tabCount,
-			tabIcon = elementor.helpers.renderIcon( view, data.tab_icon, { 'aria-hidden': true }, 'i' , 'object' );
 
-		let tabActiveIcon = tabIcon,
-			tabId = 'ui-e-tab-title-' + elementUid;
+    protected function content_template_single_repeater_item()
+    {
+    ?>
+        <#
+            const tabCount=view.collection.length + 1,
+            elementUid=view.getIDInt().toString().substr( 0, 3 ),
+            tabUid=elementUid + tabCount,
+            tabWrapperKey='tab-single-' + tabUid,
+            tabTitleKey='tab-title-' + tabUid,
+            tabIconKey='tab-icon-' + tabUid,
+            tabIcon=elementor.helpers.renderIcon( view, data.tab_icon, { 'aria-hidden' : true }, 'i' , 'object' ),
+            hoverAnimationClass=settings['hover_animation'] ? `elementor-animation-${ settings['hover_animation'] }` : '' ,
+            showDescription=settings['show_description'] ? 'ui-e-toggle-description' : '' ;
 
-		if ( '' !== data.tab_icon_active.value ) {
-			tabActiveIcon = elementor.helpers.renderIcon( view, data.tab_icon_active, { 'aria-hidden': true }, 'i' , 'object' );
-		}
+            let tabActiveIcon=tabIcon,
+            tabId='ui-e-tab-title-' + tabUid;
 
-		const tabWrapperKey = {
-			'id': 'ui-e-tab-title-' + elementUid,
-			'class': [ 'ui-e-tab-title' ],
-			'data-tab-index': tabCount,
-			'role': 'tab',
-			'aria-selected': 1 === tabCount ? 'true' : 'false',
-			'tabindex': 1 === tabCount ? '0' : '-1',
-			'aria-controls': 'ui-e-tab-content-' + elementUid,
-			'style': '--ui-e-tabs-order: ' + tabCount + ';',
-		};
+            if ( data.tab_icon_active && '' !==data.tab_icon_active.value ) {
+            tabActiveIcon=elementor.helpers.renderIcon( view, data.tab_icon_active, { 'aria-hidden' : true }, 'i' , 'object' );
+            }
 
-		const tabIconKey = {
-			'class': [ 'ui-e-tab-icon' ],
-			'data-binding-type': 'repeater-item',
-			'data-binding-repeater-name': 'tabs',
-			'data-binding-setting': [ data.tab_icon.value, data.tab_icon_active.value ],
-			'data-binding-index': tabCount,
-		};
+            if ( data.tab_id && '' !==data.tab_id ) {
+            tabId=data.tab_id;
+            }
 
-		const tabTitleKey = {
-			'class': [ 'ui-e-tab-title-text' ],
-			'data-binding-type': 'repeater-item',
-			'data-binding-repeater-name': 'tabs',
-			'data-binding-setting': [ 'tab_title' ],
-			'data-binding-index': tabCount,
-		};
+            view.addRenderAttribute( tabWrapperKey, { 'id' : tabId, 'class' : [ 'ui-e-tab-title' , hoverAnimationClass, showDescription ], 'data-tab-index' : tabCount, 'role' : 'tab' , 'aria-selected' : 1===tabCount ? 'true' : 'false' , 'tabindex' : 1===tabCount ? '0' : '-1' , 'aria-controls' : 'ui-e-tab-content-' + tabUid, 'style' : '--ui-e-tabs-order: ' + tabCount + ';' ,
+            } );
 
-		view.addRenderAttribute( 'button-container', tabWrapperKey, null, true );
-		view.addRenderAttribute( 'tab-title-container', tabTitleKey, null, true );
-		view.addRenderAttribute( 'tab-icon-key-container', tabIconKey, null, true );
-		#>
+            view.addRenderAttribute( tabTitleKey, { 'class' : [ 'ui-e-tab-texts' ], 'data-binding-type' : 'repeater-item' , 'data-binding-repeater-name' : 'tabs' , 'data-binding-setting' : [ 'tab_title' ], 'data-binding-index' : tabCount,
+            } );
 
-		<button {{{ view.getRenderAttributeString( 'button-container' ) }}}>
-			<# if ( tabIcon.value ) { #>
-				<span {{{ view.getRenderAttributeString( 'tab-icon-key-container' ) }}}> {{{ tabIcon.value }}}{{{ tabActiveIcon.value }}} </span>
-			<# } #>
-			<span {{{ view.getRenderAttributeString( 'tab-title-container' ) }}}> {{{ data.tab_title }}} </span>
-		</button>
-		<?php
-	}
-	*/
-    /*
-	protected function content_template_single_repeater_item() {
-		?>
-		<#
-		const tabIndex = view.collection.length,
-			elementUid = view.getIDInt().toString(),
-			item = data,
-			hoverAnimationSetting = view?.container?.settings?.attributes?.hover_animation;
-			hoverAnimationClass = hoverAnimationSetting
-				? `elementor-animation-${ hoverAnimationSetting }`
-				: '';
-		#>
-		<?php $this->content_template_single_item( '{{ tabIndex }}', '{{ item }}', '{{ elementUid }}', '{{ hoverAnimationClass }}' );
-	}
-	*/
+            view.addRenderAttribute( tabIconKey, { 'class' : [ 'ui-e-tab-icon' ], 'data-binding-type' : 'repeater-item' , 'data-binding-repeater-name' : 'tabs' , 'data-binding-setting' : [ data.tab_icon ? data.tab_icon.value : '' , data.tab_icon_active ? data.tab_icon_active.value : '' ], 'data-binding-index' : tabCount,
+            } );
+            #>
+            <button {{{ view.getRenderAttributeString( tabWrapperKey ) }}}>
+                <# if ( tabIcon && tabIcon.value ) { #>
+                    <span {{{ view.getRenderAttributeString( tabIconKey ) }}}>{{{ tabActiveIcon.value }}}{{{ tabIcon.value }}}</span>
+                    <# } #>
+                        <div {{{ view.getRenderAttributeString( tabTitleKey ) }}}>
+                            <# if ( data.tab_title ) { #>
+                                <span> {{{ data.tab_title }}} </span>
+                                <# } #>
+                                    <# if ( data.tab_description ) { #>
+                                        <p> {{{ data.tab_description }}} </p>
+                                        <# } #>
+                        </div>
+            </button>
+        <?php
+    }
     protected function content_template()
     {
 
@@ -1514,60 +1491,60 @@ class Tabs extends UiCoreNestedWidget
             return;
         }
 
-    ?>
-        <# const elementUid=view.getIDInt().toString().substr( 0, 3 ); #>
-            <div class="ui-e-tabs" data-widget-number="{{ elementUid }}" aria-label="<?php echo esc_html__('Tabs. Open items with Enter or Space, close with Escape and navigate using the Arrow keys.', 'uicore-elements'); ?>">
-                <# if ( settings['tabs'] ) { #>
-                    <div class="ui-e-tabs-heading" role="tablist">
-                        <# _.each( settings['tabs'], function( item, index ) {
-                            const tabCount=index + 1,
-                            tabUid=elementUid + tabCount,
-                            tabWrapperKey=tabUid,
-                            tabTitleKey='tab-title-' + tabUid,
-                            tabIconKey='tab-icon-' + tabUid,
-                            tabIcon=elementor.helpers.renderIcon( view, item.tab_icon, { 'aria-hidden' : true }, 'i' , 'object' ),
-                            hoverAnimationClass=settings['hover_animation'] ? `elementor-animation-${ settings['hover_animation'] }` : '' ,
-                            showDescription=settings['show_description'] ? 'ui-e-toggle-description' : '' ;
+        ?>
+            <# const elementUid=view.getIDInt().toString().substr( 0, 3 ); #>
+                <div class="ui-e-tabs" data-widget-number="{{ elementUid }}" aria-label="<?php echo esc_html__('Tabs. Open items with Enter or Space, close with Escape and navigate using the Arrow keys.', 'uicore-elements'); ?>">
+                    <# if ( settings['tabs'] ) { #>
+                        <div class="ui-e-tabs-heading" role="tablist">
+                            <# _.each( settings['tabs'], function( item, index ) {
+                                const tabCount=index + 1,
+                                tabUid=elementUid + tabCount,
+                                tabWrapperKey=tabUid,
+                                tabTitleKey='tab-title-' + tabUid,
+                                tabIconKey='tab-icon-' + tabUid,
+                                tabIcon=elementor.helpers.renderIcon( view, item.tab_icon, { 'aria-hidden' : true }, 'i' , 'object' ),
+                                hoverAnimationClass=settings['hover_animation'] ? `elementor-animation-${ settings['hover_animation'] }` : '' ,
+                                showDescription=settings['show_description'] ? 'ui-e-toggle-description' : '' ;
 
-                            let tabActiveIcon=tabIcon,
-                            tabId='ui-e-tab-title-' + tabUid;
+                                let tabActiveIcon=tabIcon,
+                                tabId='ui-e-tab-title-' + tabUid;
 
-                            if ( '' !==item.tab_icon_active.value ) {
-                            tabActiveIcon=elementor.helpers.renderIcon( view, item.tab_icon_active, { 'aria-hidden' : true }, 'i' , 'object' );
-                            }
+                                if ( '' !==item.tab_icon_active.value ) {
+                                tabActiveIcon=elementor.helpers.renderIcon( view, item.tab_icon_active, { 'aria-hidden' : true }, 'i' , 'object' );
+                                }
 
-                            if ( '' !==item.tab_id ) {
-                            tabId=item.tab_id;
-                            }
+                                if ( '' !==item.tab_id ) {
+                                tabId=item.tab_id;
+                                }
 
-                            view.addRenderAttribute( tabWrapperKey, { 'id' : tabId, 'class' : [ 'ui-e-tab-title' , hoverAnimationClass, showDescription ], 'data-tab-index' : tabCount, 'role' : 'tab' , 'aria-selected' : 1===tabCount ? 'true' : 'false' , 'tabindex' : 1===tabCount ? '0' : '-1' , 'aria-controls' : 'ui-e-tab-content-' + tabUid, 'style' : '--ui-e-tabs-order: ' + tabCount + ';' ,
-                            } );
+                                view.addRenderAttribute( tabWrapperKey, { 'id' : tabId, 'class' : [ 'ui-e-tab-title' , hoverAnimationClass, showDescription ], 'data-tab-index' : tabCount, 'role' : 'tab' , 'aria-selected' : 1===tabCount ? 'true' : 'false' , 'tabindex' : 1===tabCount ? '0' : '-1' , 'aria-controls' : 'ui-e-tab-content-' + tabUid, 'style' : '--ui-e-tabs-order: ' + tabCount + ';' ,
+                                } );
 
-                            view.addRenderAttribute( tabTitleKey, { 'class' : [ 'ui-e-tab-texts' ], 'data-binding-type' : 'repeater-item' , 'data-binding-repeater-name' : 'tabs' , 'data-binding-setting' : [ 'tab_title' ], 'data-binding-index' : tabCount,
-                            } );
+                                view.addRenderAttribute( tabTitleKey, { 'class' : [ 'ui-e-tab-texts' ], 'data-binding-type' : 'repeater-item' , 'data-binding-repeater-name' : 'tabs' , 'data-binding-setting' : [ 'tab_title' ], 'data-binding-index' : tabCount,
+                                } );
 
-                            view.addRenderAttribute( tabIconKey, { 'class' : [ 'ui-e-tab-icon' ], 'data-binding-type' : 'repeater-item' , 'data-binding-repeater-name' : 'tabs' , 'data-binding-setting' : [ 'tab_icon.value' , 'tab_icon_active.value' ], 'data-binding-index' : tabCount,
-                            } );
-                            #>
-                            <button {{{ view.getRenderAttributeString( tabWrapperKey ) }}}>
-                                <# if ( tabIcon.value ) { #>
-                                    <span {{{ view.getRenderAttributeString( tabIconKey ) }}}>{{{ tabActiveIcon.value }}}{{{ tabIcon.value }}}</span>
-                                    <# } #>
-                                        <div {{{ view.getRenderAttributeString( tabTitleKey ) }}}>
-                                            <# if ( item.tab_title ) { #>
-                                                <span> {{{ item.tab_title }}} </span>
-                                                <# } #>
-                                                    <# if ( item.tab_description ) { #>
-                                                        <p> {{{ item.tab_description }}} </p>
-                                                        <# } #>
-                                        </div>
-                            </button>
-                            <# } ); #>
-                    </div>
-                    <div class="ui-e-tabs-content"></div>
-                    <# } #>
-            </div>
-    <?php
+                                view.addRenderAttribute( tabIconKey, { 'class' : [ 'ui-e-tab-icon' ], 'data-binding-type' : 'repeater-item' , 'data-binding-repeater-name' : 'tabs' , 'data-binding-setting' : [ 'tab_icon.value' , 'tab_icon_active.value' ], 'data-binding-index' : tabCount,
+                                } );
+                                #>
+                                <button {{{ view.getRenderAttributeString( tabWrapperKey ) }}}>
+                                    <# if ( tabIcon.value ) { #>
+                                        <span {{{ view.getRenderAttributeString( tabIconKey ) }}}>{{{ tabActiveIcon.value }}}{{{ tabIcon.value }}}</span>
+                                        <# } #>
+                                            <div {{{ view.getRenderAttributeString( tabTitleKey ) }}}>
+                                                <# if ( item.tab_title ) { #>
+                                                    <span> {{{ item.tab_title }}} </span>
+                                                    <# } #>
+                                                        <# if ( item.tab_description ) { #>
+                                                            <p> {{{ item.tab_description }}} </p>
+                                                            <# } #>
+                                            </div>
+                                </button>
+                                <# } ); #>
+                        </div>
+                        <div class="ui-e-tabs-content"></div>
+                        <# } #>
+                </div>
+        <?php
     }
     /*
 	private function content_template_single_item( $tab_index, $item, $element_uid, $hover_animation_class ) {

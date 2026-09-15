@@ -6,7 +6,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-29 06:12+0000\n"
+"POT-Creation-Date: 2026-09-15 12:02+0000\n"
 "Project-Id-Version: undefined\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -164,7 +164,7 @@ msgstr ""
 msgid "Arrows and Fraction"
 msgstr ""
 
-#: ../includes/utils/carousel-component.php:150, ../includes/utils/logo-component.php:167, ../includes/utils/meta-component.php:21, ../includes/utils/post-component.php:967, ../includes/utils/post-component.php:981, ../includes/utils/post-component.php:1007, ../includes/utils/post-component.php:1022, ../includes/utils/post-component.php:1039, ../includes/utils/testimonial-component.php:507, ../includes/utils/testimonial-component.php:626, ../includes/widgets/accordion.php:1271, ../includes/widgets/accordion.php:1290, ../includes/widgets/advanced-product-grid.php:270, ../includes/widgets/highlighted-text.php:121, ../includes/widgets/icon-box.php:98, ../includes/widgets/icon-box.php:1979, ../includes/widgets/icon-box.php:2035, ../includes/widgets/icon-box.php:2056, ../includes/widgets/icon-box.php:2090, ../includes/widgets/tabs.php:461, ../includes/widgets/theme-builder/advanced-menu.php:563, ../includes/widgets/theme-builder/advanced-menu.php:827, ../includes/widgets/theme-builder/advanced-menu.php:873, ../includes/widgets/theme-builder/post-featured-image.php:89
+#: ../includes/utils/carousel-component.php:150, ../includes/utils/logo-component.php:167, ../includes/utils/meta-component.php:21, ../includes/utils/post-component.php:967, ../includes/utils/post-component.php:981, ../includes/utils/post-component.php:1007, ../includes/utils/post-component.php:1022, ../includes/utils/post-component.php:1039, ../includes/utils/testimonial-component.php:507, ../includes/utils/testimonial-component.php:626, ../includes/widgets/accordion.php:1271, ../includes/widgets/accordion.php:1290, ../includes/widgets/advanced-product-grid.php:451, ../includes/widgets/highlighted-text.php:121, ../includes/widgets/icon-box.php:98, ../includes/widgets/icon-box.php:1979, ../includes/widgets/icon-box.php:2035, ../includes/widgets/icon-box.php:2056, ../includes/widgets/icon-box.php:2090, ../includes/widgets/tabs.php:461, ../includes/widgets/theme-builder/advanced-menu.php:563, ../includes/widgets/theme-builder/advanced-menu.php:827, ../includes/widgets/theme-builder/advanced-menu.php:873, ../includes/widgets/theme-builder/post-featured-image.php:89
 msgid "None"
 msgstr ""
 
@@ -364,7 +364,7 @@ msgstr ""
 msgid "Padding"
 msgstr ""
 
-#: ../includes/utils/carousel-component.php:1243, ../includes/utils/carousel-component.php:1391, ../includes/utils/carousel-component.php:1540, ../includes/utils/testimonial-component.php:432, ../includes/utils/testimonial-component.php:462, ../includes/utils/testimonial-component.php:588, ../includes/utils/testimonial-component.php:1032, ../includes/widgets/accordion.php:821, ../includes/widgets/highlighted-text.php:224, ../includes/widgets/icon-box.php:871, ../includes/widgets/icon-box.php:896, ../includes/widgets/icon-list.php:1227, ../includes/widgets/tabs.php:1010, ../includes/widgets/theme-builder/advanced-menu.php:1324, ../includes/widgets/theme-builder/advanced-menu.php:1461, ../includes/widgets/theme-builder/advanced-menu.php:1522, ../includes/widgets/theme-builder/advanced-menu.php:2023, ../includes/widgets/theme-builder/advanced-menu.php:2139
+#: ../includes/utils/carousel-component.php:1243, ../includes/utils/carousel-component.php:1391, ../includes/utils/carousel-component.php:1540, ../includes/utils/testimonial-component.php:432, ../includes/utils/testimonial-component.php:462, ../includes/utils/testimonial-component.php:588, ../includes/utils/testimonial-component.php:1032, ../includes/widgets/accordion.php:821, ../includes/widgets/advanced-product-grid.php:236, ../includes/widgets/highlighted-text.php:224, ../includes/widgets/icon-box.php:871, ../includes/widgets/icon-box.php:896, ../includes/widgets/icon-list.php:1227, ../includes/widgets/tabs.php:1010, ../includes/widgets/theme-builder/advanced-menu.php:1324, ../includes/widgets/theme-builder/advanced-menu.php:1461, ../includes/widgets/theme-builder/advanced-menu.php:1522, ../includes/widgets/theme-builder/advanced-menu.php:2023, ../includes/widgets/theme-builder/advanced-menu.php:2139
 msgid "Size"
 msgstr ""
 
@@ -1587,11 +1587,11 @@ msgstr ""
 msgid "Sticky Posts"
 msgstr ""
 
-#: ../includes/utils/post-component.php:392, ../includes/utils/post-component.php:982, ../includes/utils/post-component.php:1009, ../includes/utils/post-component.php:1023, ../includes/utils/post-component.php:1040, ../includes/widgets/advanced-product-grid.php:170, ../includes/widgets/advanced-product-grid.php:181, ../includes/widgets/contact-form.php:847, ../includes/widgets/contact-form.php:859, ../includes/widgets/counter.php:84, ../includes/widgets/icon-box.php:1980, ../includes/widgets/icon-box.php:2036, ../includes/widgets/newsletter.php:194, ../includes/widgets/newsletter.php:205, ../includes/widgets/tabs.php:501
+#: ../includes/utils/post-component.php:392, ../includes/utils/post-component.php:982, ../includes/utils/post-component.php:1009, ../includes/utils/post-component.php:1023, ../includes/utils/post-component.php:1040, ../includes/widgets/advanced-product-grid.php:172, ../includes/widgets/advanced-product-grid.php:185, ../includes/widgets/contact-form.php:847, ../includes/widgets/contact-form.php:859, ../includes/widgets/counter.php:84, ../includes/widgets/icon-box.php:1980, ../includes/widgets/icon-box.php:2036, ../includes/widgets/newsletter.php:194, ../includes/widgets/newsletter.php:205, ../includes/widgets/tabs.php:501
 msgid "Show"
 msgstr ""
 
-#: ../includes/utils/post-component.php:393, ../includes/widgets/advanced-product-grid.php:171, ../includes/widgets/advanced-product-grid.php:182, ../includes/widgets/contact-form.php:848, ../includes/widgets/contact-form.php:860, ../includes/widgets/counter.php:85, ../includes/widgets/newsletter.php:195, ../includes/widgets/newsletter.php:206, ../includes/widgets/tabs.php:502
+#: ../includes/utils/post-component.php:393, ../includes/widgets/advanced-product-grid.php:173, ../includes/widgets/advanced-product-grid.php:186, ../includes/widgets/contact-form.php:848, ../includes/widgets/contact-form.php:860, ../includes/widgets/counter.php:85, ../includes/widgets/newsletter.php:195, ../includes/widgets/newsletter.php:206, ../includes/widgets/tabs.php:502
 msgid "Hide"
 msgstr ""
 
@@ -1731,7 +1731,7 @@ msgstr ""
 msgid "Image Hover Animation"
 msgstr ""
 
-#: ../includes/utils/post-component.php:968, ../includes/widgets/advanced-product-grid.php:271, ../includes/widgets/icon-box.php:2091
+#: ../includes/utils/post-component.php:968, ../includes/widgets/advanced-product-grid.php:452, ../includes/widgets/icon-box.php:2091
 msgid "Zoom"
 msgstr ""
 
@@ -2215,7 +2215,7 @@ msgstr ""
 msgid "Advanced Product Grid"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:100, ../includes/widgets/advanced-product-grid.php:429
+#: ../includes/widgets/advanced-product-grid.php:100, ../includes/widgets/advanced-product-grid.php:610
 msgid "Please enable WooCommerce to use this widget."
 msgstr ""
 
@@ -2227,91 +2227,123 @@ msgstr ""
 msgid "Placement"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:168
+#: ../includes/widgets/advanced-product-grid.php:170, ../includes/widgets/advanced-product-grid.php:213
 msgid "Swatches"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:172
+#: ../includes/widgets/advanced-product-grid.php:174
 msgid "Will only work if you have Uicore Framework plugin active at least on version 6.0.1"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:179
+#: ../includes/widgets/advanced-product-grid.php:183
 msgid "Sale Badge"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:191
+#: ../includes/widgets/advanced-product-grid.php:195
 msgid "If you can't see the Sale Badge after setting 'Show', you problably didn't set any Meta option as 'Product Sale', or you don't have products on sale."
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:208
-msgid "Hide out of stock"
+#: ../includes/widgets/advanced-product-grid.php:224
+msgid "Use Framework defaults"
 msgstr ""
 
 #: ../includes/widgets/advanced-product-grid.php:226
+msgid "If enabled, the swatches will inherit your theme options."
+msgstr ""
+
+#: ../includes/widgets/advanced-product-grid.php:227
+msgid "Yes"
+msgstr ""
+
+#: ../includes/widgets/advanced-product-grid.php:228
+msgid "No"
+msgstr ""
+
+#: ../includes/widgets/advanced-product-grid.php:262
+msgid "Outer Border Radius"
+msgstr ""
+
+#: ../includes/widgets/advanced-product-grid.php:294
+msgid "Inner Border Radius"
+msgstr ""
+
+#: ../includes/widgets/advanced-product-grid.php:338
+msgid "Hover Border Size"
+msgstr ""
+
+#: ../includes/widgets/advanced-product-grid.php:365
+msgid "Hover Border Color"
+msgstr ""
+
+#: ../includes/widgets/advanced-product-grid.php:390
+msgid "Hide out of stock"
+msgstr ""
+
+#: ../includes/widgets/advanced-product-grid.php:407
 msgid "Select Options Text"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:229
+#: ../includes/widgets/advanced-product-grid.php:410
 msgid "Variable product purchase text."
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:230
+#: ../includes/widgets/advanced-product-grid.php:411
 msgid "Select Options"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:237
+#: ../includes/widgets/advanced-product-grid.php:418
 msgid "Unavailable Text"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:240
+#: ../includes/widgets/advanced-product-grid.php:421
 msgid "Out of stock or not available purchase text."
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:241
+#: ../includes/widgets/advanced-product-grid.php:422
 msgid "Read more"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:272
+#: ../includes/widgets/advanced-product-grid.php:453
 msgid "Change image"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:309
+#: ../includes/widgets/advanced-product-grid.php:490
 msgid "Product Summary"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:315
+#: ../includes/widgets/advanced-product-grid.php:496
 msgid "Summary Length (words)"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:320
+#: ../includes/widgets/advanced-product-grid.php:501
 msgid "Add to Cart Button"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:327
+#: ../includes/widgets/advanced-product-grid.php:508
 msgid "Add to Cart Text"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:330
+#: ../includes/widgets/advanced-product-grid.php:511
 msgid "Add to cart"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:335
+#: ../includes/widgets/advanced-product-grid.php:516
 msgid "Summary Color"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:339
+#: ../includes/widgets/advanced-product-grid.php:520
 msgid "Summary Typography"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:343
+#: ../includes/widgets/advanced-product-grid.php:524
 msgid "Summary Top Space"
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:443
+#: ../includes/widgets/advanced-product-grid.php:624
 msgid "This widget is set to display related products. To see the results, please preview the page, or customize your widget before setting \"current\" query."
 msgstr ""
 
-#: ../includes/widgets/advanced-product-grid.php:463
+#: ../includes/widgets/advanced-product-grid.php:644
 msgid "No products found."
 msgstr ""
 
@@ -3437,7 +3469,7 @@ msgstr ""
 msgid "Top Spacing"
 msgstr ""
 
-#: ../includes/widgets/tabs.php:1381, ../includes/widgets/tabs.php:1519
+#: ../includes/widgets/tabs.php:1383, ../includes/widgets/tabs.php:1496
 msgid "Tabs. Open items with Enter or Space, close with Escape and navigate using the Arrow keys."
 msgstr ""
 
