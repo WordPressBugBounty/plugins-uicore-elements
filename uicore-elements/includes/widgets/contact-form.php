@@ -165,7 +165,7 @@ class ContactForm extends UiCoreWidget
 
         $value = empty($item['field_value']) ? '' : $item['field_value'];
 
-        return '<input ' . $this->get_render_attribute_string('honeypot' . $item_index) . ' tabindex="-1">' . $value . '</input>';
+        return '<input ' . $this->get_render_attribute_string('honeypot' . $item_index) . ' tabindex="-1">' . esc_html($value) . '</input>';
     }
     function build_textarea_field($item, $item_index)
     {
@@ -189,7 +189,7 @@ class ContactForm extends UiCoreWidget
 
         $value = empty($item['field_value']) ? '' : $item['field_value'];
 
-        return '<textarea ' . $this->get_render_attribute_string('textarea' . $item_index) . '>' . $value . '</textarea>';
+        return '<textarea ' . $this->get_render_attribute_string('textarea' . $item_index) . '>' . esc_textarea($value) . '</textarea>';
     }
     function build_select_field($item, $i)
     {
@@ -269,7 +269,7 @@ class ContactForm extends UiCoreWidget
         $options = preg_split("/\\r\\n|\\r|\\n/", $item['field_options']);
         $html = '';
         if ($options) {
-            $html .= '<div class="ui-e-field-subgroup ' . esc_attr($item['css_classes']) . ' ' . $item['inline_list'] . '">';
+            $html .= '<div class="ui-e-field-subgroup ' . esc_attr($item['css_classes']) . ' ' . esc_attr($item['inline_list']) . '">';
             foreach ($options as $key => $option) {
                 $element_id = $item['custom_id'] . $key;
                 $html_id = $this->get_attribute_id($item) . '-' . $key;
@@ -301,7 +301,11 @@ class ContactForm extends UiCoreWidget
                     $this->add_required_attribute($element_id);
                 }
 
-                $html .= '<span class="ui-e-field-option"><input ' . $this->get_render_attribute_string($element_id) . '> <label for="' . $html_id . '">' . $option_label . '</label></span>';
+                $html .= '<span class="ui-e-field-option">';
+                $html .= '<input ' . $this->get_render_attribute_string($element_id) . '>';
+                $html .= '<label for="' . $html_id . '">';
+                $html .= esc_html($option_label);
+                $html .= '</label></span>';
             }
             $html .= '</div>';
         }
@@ -315,7 +319,7 @@ class ContactForm extends UiCoreWidget
         $this->add_render_attribute('input' . $item_index, 'type', 'checkbox', true);
 
         if (! empty($item['acceptance_text'])) {
-            $text = '<label for="' . $this->get_attribute_id($item) . '">' . $item['acceptance_text'] . '</label>';
+            $text = '<label for="' . $this->get_attribute_id($item) . '">' . Helper::esc_string($item['acceptance_text']) . '</label>';
         }
 
         if (! empty($item['checked_by_default'])) {
@@ -836,7 +840,7 @@ class ContactForm extends UiCoreWidget
                         'width' => '100',
                     ],
                 ],
-                'title_field' => '{{{ field_label }}}',
+                'title_field' => '{{ field_label }}',
             ]
         );
         $this->add_control(
@@ -1280,7 +1284,7 @@ class ContactForm extends UiCoreWidget
                         ?>
                             <label <?php $this->print_render_attribute_string('label' . $item_index); ?>>
                                 <?php // PHPCS - the variable $item['field_label'] is safe.
-                                echo $item['field_label']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                echo Helper::esc_string($item['field_label']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                 ?>
                             </label>
                             <?php
@@ -1289,7 +1293,7 @@ class ContactForm extends UiCoreWidget
                         // Print field
                         switch ($item['field_type']):
                             case 'html':
-                                echo do_shortcode($item['field_html']);
+                                echo wp_kses_post(do_shortcode($item['field_html']));
                                 break;
 
                             case 'textarea':
@@ -1304,7 +1308,7 @@ class ContactForm extends UiCoreWidget
 
                             case 'acceptance':
                                 // PHPCS - the method build_select_field is safe.
-                                echo $this->build_acceptance_field($item, $item_index); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                $this->build_acceptance_field($item, $item_index); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                 break;
 
                             case 'radio':
@@ -1392,232 +1396,5 @@ class ContactForm extends UiCoreWidget
         </script>
 <?php
     }
-
-    /*
-	protected function content_template() {
-		?>
-		<#
-		view.addRenderAttribute(
-			'form',
-			{
-				'id': settings.form_id,
-				'name': settings.form_name,
-			}
-		);
-		if ( 'no' === settings.form_validation ) {
-			view.addRenderAttribute( 'form', 'novalidate' );
-		}
-		#>
-		<form class="ui-e-form" {{{ view.getRenderAttributeString( 'form' ) }}}>
-			<div class="ui-e-fields-wrp">
-				<#
-					for ( var i in settings.form_fields ) {
-						var item = settings.form_fields[ i ];
-						item.field_type  = _.escape( item.field_type );
-						item.field_value = _.escape( item.field_value );
-
-						var options = item.field_options ? item.field_options.split( '\n' ) : [],
-							itemClasses = _.escape( item.css_classes ),
-							labelVisibility = '',
-							placeholder = '',
-							required = '',
-							checked_by_default = '',
-							inputField = '',
-							multiple = '',
-							fieldGroupClasses = 'ui-e-field-group elementor-column ui-e-field-type-' + item.field_type,
-							printLabel = settings.show_labels && ! [ 'hidden', 'html', 'recaptcha', 'recaptcha_v3' ].includes( item.field_type );
-
-						fieldGroupClasses += ' elementor-col-' + ( ( '' !== item.width ) ? item.width : '100' );
-
-						if ( item.width_tablet ) {
-							fieldGroupClasses += ' elementor-md-' + item.width_tablet;
-						}
-
-						if ( item.width_mobile ) {
-							fieldGroupClasses += ' elementor-sm-' + item.width_mobile;
-						}
-
-						if ( item.required ) {
-							required = 'required';
-							fieldGroupClasses += ' ui-e-field-required';
-
-							if ( settings.mark_required ) {
-								fieldGroupClasses += ' ui-e-required';
-							}
-						}
-
-						if ( item.placeholder ) {
-							placeholder = 'placeholder="' + _.escape( item.placeholder ) + '"';
-						}
-
-						if ( item.allow_multiple ) {
-							multiple = ' multiple';
-							fieldGroupClasses += ' ui-e-field-type-' + item.field_type + '-multiple';
-						}
-
-						switch ( item.field_type ) {
-							case 'html':
-								inputField = item.field_html;
-								break;
-
-							case 'textarea':
-								inputField = '<textarea class="ui-e-field ui-e-field-textual elementor-size-' + settings.input_size + ' ' + itemClasses + '" name="form_field_' + i + '" id="form_field_' + i + '" rows="' + item.rows + '" ' + required + ' ' + placeholder + '>' + item.field_value + '</textarea>';
-								break;
-
-							case 'select':
-								if ( options ) {
-									var size = '';
-									if ( item.allow_multiple && item.select_size ) {
-										size = ' size="' + item.select_size + '"';
-									}
-									inputField = '<div class="ui-e-field ui-e-field-select ui-e-field-subgroup' + itemClasses + '">';
-									inputField += '<select class="ui-e-field-textual" name="form_field_' + i + '" id="form_field_' + i + '" ' + required + multiple + size + ' >';
-									for ( var x in options ) {
-										var option_value = options[ x ];
-										var option_label = options[ x ];
-										var option_id = 'form_field_option' + i + x;
-
-										if ( options[ x ].indexOf( '|' ) > -1 ) {
-											var label_value = options[ x ].split( '|' );
-											option_label = label_value[0];
-											option_value = label_value[1];
-										}
-
-										view.addRenderAttribute( option_id, 'value', option_value );
-										if ( item.field_value.split( ',' ) .indexOf( option_value ) ) {
-											view.addRenderAttribute( option_id, 'selected', 'selected' );
-										}
-										inputField += '<option ' + view.getRenderAttributeString( option_id ) + '>' + option_label + '</option>';
-									}
-									inputField += '</select></div>';
-								}
-								break;
-
-							case 'radio':
-							case 'checkbox':
-								if ( options ) {
-									var multiple = '';
-
-									if ( 'checkbox' === item.field_type && options.length > 1 ) {
-										multiple = '[]';
-									}
-
-									inputField = '<div class="ui-e-field-subgroup ' + itemClasses + ' ' + _.escape( item.inline_list ) + '">';
-
-									for ( var x in options ) {
-										var option_value = options[ x ];
-										var option_label = options[ x ];
-										var option_id = 'form_field_' + item.field_type + i + x;
-										if ( options[x].indexOf( '|' ) > -1 ) {
-											var label_value = options[x].split( '|' );
-											option_label = label_value[0];
-											option_value = label_value[1];
-										}
-
-										view.addRenderAttribute( option_id, {
-											value: option_value,
-											type: item.field_type,
-											id: 'form_field_' + i + '-' + x,
-											name: 'form_field_' + i + multiple
-										} );
-
-										if ( option_value ===  item.field_value ) {
-											view.addRenderAttribute( option_id, 'checked', 'checked' );
-										}
-
-										inputField += '<span class="ui-e-field-option"><input ' + view.getRenderAttributeString( option_id ) + ' ' + required + '> ';
-										inputField += '<label for="form_field_' + i + '-' + x + '">' + option_label + '</label></span>';
-
-									}
-
-									inputField += '</div>';
-								}
-								break;
-
-							case 'acceptance' :
-								var checked = '';
-								if(item.checked_by_default == 'yes') {
-									checked = ' checked';
-								}
-								inputField += '<div class="ui-e-field-subgroup">';
-								inputField += '<input type="checkbox" class="ui-e-field ui-e-acceptance-field" name="form_field_' + i + '" id="form_field_' + i + '" ' + required + checked + '>';
-								inputField += '<label for="form_field_' + i + '">' + item.acceptance_text + '</label>';
-								inputField += '</div>';
-								break;
-
-                            case 'recaptcha' :
-                            case 'recaptcha_v3' :
-                                inputField = '<input type="hidden" name="recaptcha"/> <div id="ui-e-recaptcha"></div>';
-                                break;
-
-							default:
-								itemClasses = 'ui-e-field-textual ' + itemClasses;
-								inputField = '<input size="1" type="' + item.field_type + '" value="' + item.field_value + '" class="ui-e-field elementor-size-' + settings.input_size + ' ' + itemClasses + '" name="form_field_' + i + '" id="form_field_' + i + '" ' + required + ' ' + placeholder + ' >';
-								break;
-						}
-
-						if ( inputField ) {
-							#>
-							<div class="{{ fieldGroupClasses }}">
-
-								<# if ( printLabel && item.field_label ) { #>
-									<label class="ui-e-field-label" for="form_field_{{ i }}" {{{ labelVisibility }}}>{{{ item.field_label }}}</label>
-								<# } #>
-
-								{{{ inputField }}}
-							</div>
-							<#
-						}
-					}
-
-
-					var buttonClasses = 'ui-e-field-group elementor-column ui-e-field-type-submit e-form__buttons';
-
-					buttonClasses += ' elementor-col-' + ( ( '' !== settings.button_width ) ? settings.button_width : '100' );
-
-					if ( settings.button_width_tablet ) {
-						buttonClasses += ' elementor-md-' + settings.button_width_tablet;
-					}
-
-					if ( settings.button_width_mobile ) {
-						buttonClasses += ' elementor-sm-' + settings.button_width_mobile;
-					}
-
-					var iconHTML = elementor.helpers.renderIcon( view, settings.selected_button_icon, { 'aria-hidden': true }, 'i' , 'object' )
-					#>
-
-					<div class="{{ buttonClasses }}">
-						<button id="{{ settings.button_css_id }}" type="submit" class="elementor-button elementor-animation-{{ settings.button_hover_animation }}">
-							<span>
-								<# if ( settings.button_icon || settings.selected_button_icon ) { #>
-									<span class="ui-e-icon ui-e-align-{{ settings.button_icon_align }}">
-										<# if ( iconHTML && iconHTML.rendered && ( ! settings.button_icon ) ) { #>
-											{{{ iconHTML.value }}}
-										<# } else { #>
-											<i class="{{ settings.button_icon }}" aria-hidden="true"></i>
-										<# } #>
-										<span class="elementor-screen-only"><?php echo esc_html__( 'Submit', 'uicore-elements' ); ?></span>
-									</span>
-								<# } #>
-
-								<# if ( settings.button_text ) { #>
-									<span class="ui-e-text">{{{ settings.button_text }}}</span>
-								<# } #>
-							</span>
-						</button>
-					</div>
-			</div>
-            <div class="ui-e-message elementor-hidden">
-                <#
-                    const success = settings.success_message;
-                    const error = settings.error_message;
-                #>
-                <span class="success">{{{ success }}}</span> <br>
-                <span class="error">{{{ error }}}</span>
-            </div>
-		</form>
-		<?php
-	}
-    */
 }
 \Elementor\Plugin::instance()->widgets_manager->register(new ContactForm());

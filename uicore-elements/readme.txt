@@ -3,8 +3,8 @@ Contributors: uicore
 Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
-Tested up to: 7.1
-Stable tag: 1.3.17
+Tested up to: 7.1.2
+Stable tag: 1.3.18
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -130,6 +130,9 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+
+= 1.3.18 =
+* FIX - Resolved a security vulnerability in the Contact Form widget
 
 = 1.3.17 =
 * NEW - Added Swatch style controls to Advanced Product Grid
