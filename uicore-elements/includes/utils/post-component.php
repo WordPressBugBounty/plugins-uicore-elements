@@ -1111,15 +1111,25 @@ trait Post_Trait
                 if ($this->is_edit_mode()) {
                     $query_args['post_type'] = 'post';
                 } else {
-                    $query_args = $default_query;
+                    $query_args = is_array($default_query) ? $default_query : [];
 
                     /// TODO: very likely commit `38c618c` on Elements repo make this fallback useless. Test it
                     // Post type fallback for APG
                     if (isset($default_query['post_type']) || isset($default_query['query']['post_type'])) {
                         $post_type = $default_query['post_type'] ?? $default_query['query']['post_type'];
+                        if (!is_string($post_type) || !is_post_type_viewable($post_type)) {
+                            $post_type = 'post';
+                        }
+                        $query_args['post_type'] = $post_type;
                     } else {
-                        $post_type = 'post';
+                        $detected_post_type = get_post_type();
+                        $post_type = ($detected_post_type && is_post_type_viewable($detected_post_type))
+                            ? $detected_post_type
+                            : 'post';
                     }
+
+                    // Force published status so unpublished/private content is never exposed
+                    $query_args['post_status'] = 'publish';
 
                     // Set pagination
                     $query_args['paged'] = Query::get_queried_page($settings);
@@ -1141,6 +1151,8 @@ trait Post_Trait
             if ($post_type === 'portfolio') {
                 $query_args['orderby'] = 'menu_order date';
             }
+
+            $query_args['post_status'] = 'publish';
 
             $this->_query = new \WP_Query($query_args);
         }

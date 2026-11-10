@@ -80,6 +80,10 @@ class REST_API
         // Get widget settings
         $settings = get_transient('ui_elements_widgetdata_' . $widget_id);
 
+        if (!is_array($settings)) {
+            return new \WP_Error('invalid_widget', __('Widget data not found.', 'uicore-elements'), ['status' => 400]);
+        }
+
         // Check if is an "Advanced Product.." widget to determine the proper control slug
         $slug = $is_product ? 'product-filter' : 'posts-filter';
 
@@ -95,10 +99,11 @@ class REST_API
         }
 
         // Build current query if requested
-        if ($settings[$slug . '_post_type'] == 'current') {
-            $current_query = $request->get_param('current_query');
-            $current_query = json_decode(urldecode($current_query), true); //decode url and transform to array
-            $current_query['paged'] = $request->get_param('page');
+        if (isset($settings[$slug . '_post_type']) && $settings[$slug . '_post_type'] == 'current') {
+            $raw_query = $request->get_param('current_query');
+            $decoded_query = is_string($raw_query) ? json_decode(urldecode($raw_query), true) : [];
+            $current_query = $this->sanitize_current_query(is_array($decoded_query) ? $decoded_query : []);
+            $current_query['paged'] = absint($request->get_param('page')) ?: 1;
         }
 
         // Create the element data
@@ -119,6 +124,59 @@ class REST_API
             'markup' => $data['markup'],
             'total_pages' => $is_product ? $data['total_pages'] : $widget->get_query()->max_num_pages,
         ];
+    }
+
+    /**
+     * Sanitize and whitelist client-supplied current_query args so only public archive query vars are allowed.
+     *
+     * @param array $query Raw decoded query array from request.
+     * @return array Sanitized query args.
+     */
+    private function sanitize_current_query(array $query)
+    {
+        // Backward compatibility with legacy nested query structure
+        if (!isset($query['post_type']) && isset($query['query']['post_type'])) {
+            $query['post_type'] = $query['query']['post_type'];
+        }
+
+        $allowed_keys = [
+            'post_type',
+            'cat',
+            'category_name',
+            'tag',
+            'tag_id',
+            'author',
+            'author_name',
+            'year',
+            'monthnum',
+            'day',
+            'w',
+            'm',
+            's',
+            'taxonomy',
+            'term',
+            'orderby',
+            'order',
+        ];
+
+        foreach (get_taxonomies(['public' => true], 'objects') as $tax_object) {
+            if (!empty($tax_object->query_var) && is_string($tax_object->query_var)) {
+                $allowed_keys[] = $tax_object->query_var;
+            }
+        }
+
+        $sanitized = array_intersect_key($query, array_flip($allowed_keys));
+
+        // Only allow a single, publicly viewable post type (never 'any' or private/internal post types)
+        if (isset($sanitized['post_type'])) {
+            if (!is_string($sanitized['post_type']) || !is_post_type_viewable($sanitized['post_type'])) {
+                $sanitized['post_type'] = 'post';
+            }
+        }
+
+        $sanitized['post_status'] = 'publish';
+
+        return $sanitized;
     }
 
     public function process_submission(\WP_REST_Request $request)

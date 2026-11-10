@@ -9,15 +9,18 @@ use Elementor\Plugin;
  */
 class Assets
 {
+    private static $registered = false;
 
     function __construct()
     {
         if (is_admin()) {
-            add_action('admin_enqueue_scripts', [$this, 'register'], 5);
+            add_action('admin_enqueue_scripts', [__CLASS__, 'register'], 0);
             add_action('elementor/editor/after_enqueue_scripts', [$this, 'enqueue'], 5);
         } else {
-            add_action('wp_enqueue_scripts', [$this, 'register'], 5);
+            add_action('wp_enqueue_scripts', [__CLASS__, 'register'], 0);
         }
+        add_action('elementor/frontend/before_register_styles', [__CLASS__, 'register']);
+        add_action('elementor/frontend/before_register_scripts', [__CLASS__, 'register']);
     }
 
     /**
@@ -25,10 +28,15 @@ class Assets
      *
      * @return void
      */
-    public function register()
+    public static function register()
     {
-        $this->register_scripts($this->get_scripts());
-        $this->register_styles($this->get_styles());
+        if (self::$registered) {
+            return;
+        }
+        self::$registered = true;
+
+        self::register_scripts(self::get_scripts());
+        self::register_styles(self::get_styles());
     }
 
     /**
@@ -50,7 +58,7 @@ class Assets
      *
      * @return void
      */
-    private function register_scripts($scripts)
+    private static function register_scripts($scripts)
     {
         foreach ($scripts as $handle => $script) {
             $deps      = isset($script['deps']) ? $script['deps'] : false;
@@ -68,7 +76,7 @@ class Assets
      *
      * @return void
      */
-    public function register_styles($styles)
+    private static function register_styles($styles)
     {
         foreach ($styles as $handle => $style) {
             $deps = isset($style['deps']) ? $style['deps'] : false;
@@ -82,7 +90,7 @@ class Assets
      *
      * @return array
      */
-    public function get_scripts()
+    public static function get_scripts()
     {
         $prefix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
 
@@ -181,7 +189,7 @@ class Assets
      *
      * @return array
      */
-    public function get_styles()
+    public static function get_styles()
     {
 
         // Singular files widgets may enqueue

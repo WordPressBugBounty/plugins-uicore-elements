@@ -3,8 +3,8 @@ Contributors: uicore
 Tags: elementor, widgets, page builder, ui elements
 Requires at least: 4.6
 Requires PHP: 7.4
-Tested up to: 7.1.2
-Stable tag: 1.3.18
+Tested up to: 7.1.4
+Stable tag: 1.3.19
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -130,6 +130,10 @@ No need to worry. UiCore Elements is optimized for performance and ensures a lig
 1. /assets/screenshots/1.png
 
 == Changelog ==
+
+= 1.3.19 =
+* FIX - Addressed widget asset loading issues caused by recent changes to Elementor's asset management system
+* FIX - Resolved a security vulnerability in Post widgets
 
 = 1.3.18 =
 * FIX - Resolved a security vulnerability in the Contact Form widget

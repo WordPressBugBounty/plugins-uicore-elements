@@ -127,19 +127,55 @@ class Helper
     static function register_widget_style($name, $deps = [], $external = false)
     {
         $handle = (!$external ? 'ui-e-' : '') . $name;
-        wp_register_style($handle, UICORE_ELEMENTS_ASSETS . '/css/elements/' . $name . '.css', $deps, UICORE_ELEMENTS_VERSION);
+
+        if ($external) {
+            return $handle;
+        }
+
+        if (wp_style_is($handle, 'registered')) {
+            return $handle;
+        }
+
+        // Ensure central assets from Assets class are registered
+        Assets::register();
+
+        if (wp_style_is($handle, 'registered')) {
+            return $handle;
+        }
+
+        $file_path = UICORE_ELEMENTS_PATH . '/assets/css/elements/' . $name . '.css';
+        if (file_exists($file_path)) {
+            wp_register_style($handle, UICORE_ELEMENTS_ASSETS . '/css/elements/' . $name . '.css', $deps, UICORE_ELEMENTS_VERSION);
+        }
+
         return $handle;
     }
     static function register_widget_script($name, $deps = [], $external = false)
     {
         $handle = (!$external ? 'ui-e-' : '') . $name;
-        //if name contains / then we need to set a custom path
-        if (strpos($name, '/') !== false) {
-            $path = '';
-        } else {
-            $path = 'elements/';
+
+        if ($external) {
+            return $handle;
         }
-        wp_register_script($handle, UICORE_ELEMENTS_ASSETS . '/js/' . $path . $name . '.js', $deps, UICORE_ELEMENTS_VERSION, true);
+
+        if (wp_script_is($handle, 'registered')) {
+            return $handle;
+        }
+
+        // Ensure central assets from Assets class are registered
+        Assets::register();
+
+        if (wp_script_is($handle, 'registered')) {
+            return $handle;
+        }
+
+        // if name contains / then we need to set a custom path
+        $path = (strpos($name, '/') !== false) ? '' : 'elements/';
+        $file_path = UICORE_ELEMENTS_PATH . '/assets/js/' . $path . $name . '.js';
+        if (file_exists($file_path)) {
+            wp_register_script($handle, UICORE_ELEMENTS_ASSETS . '/js/' . $path . $name . '.js', $deps, UICORE_ELEMENTS_VERSION, true);
+        }
+
         return $handle;
     }
 

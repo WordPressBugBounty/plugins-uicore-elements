@@ -327,9 +327,10 @@ class AdvancedPostGrid extends UiCoreWidget
             ) {
 
                 // Build the public query args the ajax request script passes to rest api
-                $public_query = array();
-                $public_query['query']['post_type'] = get_post_type();
-                $public_query['query_vars'] = $wp_query->query_vars;
+                $public_query = is_array($default_query->query) ? $default_query->query : [];
+                if (empty($public_query['post_type'])) {
+                    $public_query['post_type'] = get_post_type() ?: 'post';
+                }
 
                 echo '<script>';
                 echo 'window.ui_total_pages_' . esc_html($ID) . ' = "none";'; // add none to avoid ajax errors for lack of value, but posts don't need it

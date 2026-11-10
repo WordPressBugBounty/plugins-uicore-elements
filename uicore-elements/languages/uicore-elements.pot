@@ -6,7 +6,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-24 17:18+0000\n"
+"POT-Creation-Date: 2026-11-10 10:54+0000\n"
 "Project-Id-Version: undefined\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
@@ -58,6 +58,10 @@ msgstr ""
 
 #: ../includes/class-nested-widget-base.php:188, ../includes/widgets/theme-builder/advanced-menu.php:177
 msgid "Feature Disabled."
+msgstr ""
+
+#: ../includes/class-rest-api.php:84
+msgid "Widget data not found."
 msgstr ""
 
 #: ../includes/controls/class-lightbox-button.php:47
@@ -1767,7 +1771,7 @@ msgstr ""
 msgid "Button Top Space"
 msgstr ""
 
-#: ../includes/utils/post-component.php:1163, ../includes/utils/post-component.php:1180, ../includes/utils/post-component.php:1337, ../includes/utils/post-component.php:1338
+#: ../includes/utils/post-component.php:1175, ../includes/utils/post-component.php:1192, ../includes/utils/post-component.php:1349, ../includes/utils/post-component.php:1350
 msgid "View Post:"
 msgstr ""
 
